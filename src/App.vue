@@ -13,14 +13,10 @@
             </mu-list-item>
           </mu-list>
         </div>
-        <mu-flex>
-            <!-- monaco编辑器 -->
-            <m-monaco-editor style="height:97vh;width:85vw" 
+        <mu-flex direction="column">
+          <!-- monaco编辑器 -->
+          <m-monaco-editor style="height:97vh;width:85vw"
             v-model="code" :mode="mode" :theme="theme" :fontSize="26"></m-monaco-editor>
-            <Deformation :w="100" :h="100" v-on:dragging="onDrag" v-on:resizing="onResize" :parent="true">
-              <p>Hello! I'm a flexible component. You can drag me around and you can resize me.<br>
-              X: {{ x }} / Y: {{ y }} - Width: {{ width }} / Height: {{ height }}</p>
-            </Deformation>
         </mu-flex>
       </mu-flex>
       <!-- 底栏 -->
@@ -35,23 +31,22 @@
       </mu-flex>
     </mu-flex>
 
-    <!-- 终端界面,弹窗的形式 -->
-    <mu-dialog width="360" transition="slide-bottom" fullscreen :open.sync="showTerm">
+    <!-- terminal div -->
+    <div ref="term_container" v-show="showTerm" style="width:85vw;height:300px;position:fixed;left:15vw;bottom:3vh;background:#000">
       <mu-appbar style="width: 100%;" color='#212121' title="Title">
         <mu-button slot="left" icon @click="closeFullscreenDialog">
           <mu-icon value="arrow_back"></mu-icon>
         </mu-button>
         <mu-flex style="height:46px" justify-content="center" align-items="center">
-          <mu-text-field prefix="ws://"  style="height:46px;background:#212121;margin:auto 6px" v-model="url" 
-            placeholder="192.168.2.189:8266/" ></mu-text-field>
+          <mu-text-field style="height:46px;background:#212121;margin:auto 6px" color="white" v-model="url" 
+            placeholder="ws://192.168.2.189:8266/"></mu-text-field>
           <mu-button color="#414141" :disabled="is_connected" @click="connect()">Connect</mu-button>
         </mu-flex>
       </mu-appbar>
-      <mu-flex direction="row" style="width:100vw;height:100vh;background:#000">
-        <div v-show="is_connected" ref="term" style="width:100vw;height:400px"></div>
+      <mu-flex direction="row" style="width:100%;height:100%;background:#000">
+        <div v-show="true" ref="term" style="width:85vw"></div>
       </mu-flex>
-      
-    </mu-dialog>
+    </div>
 
   </div>
 </template>
@@ -73,20 +68,21 @@ export default {
       showTerm: false,
       ws: null,
       term: null,
-      url: "",
+      url: "ws://192.168.2.189:8266/",
       is_connected: false
     };
   },
   mounted: function() {
     this.$nextTick(function() {
-      var size = this.calculate_size(window)
+      var size = this.calculate_size(this.$refs.term_container)
       // 初始化term对象,完成视图的渲染
       this.term = new Terminal({
         cols: size[0],
         rows: size[1],
         useStyle: true,
         screenKeys: true,
-        cursorBlink: false
+        cursorBlink: true,
+        fontsize: 40
       });
       // this.term.open(document.getElementById("term"))
       this.term.open(this.$refs.term);
@@ -102,17 +98,17 @@ export default {
       this.showTerm = false;
     },
     calculate_size(win) {
-      var cols = Math.max(80, Math.min(150, (win.innerWidth - 280) / 7)) | 0;
-      var rows = Math.max(24, Math.min(80, (win.innerHeight - 180) / 12)) | 0;
+      var cols = win.innerWidth / 7 ;
+      var rows = win.innerHeight / 12;
       return [cols, rows];
     },
     connect() {
-      var size = this.calculate_size(window);
+      var size = this.calculate_size(this.$refs.term_container);
 
-      window.addEventListener("resize", function() {
-        var size = this.calculate_size(winow);
-        this.term.resize(size[0], size[1]);
-      });
+      // window.addEventListener("resize", function() {
+      //   var size = this.calculate_size(this.$refs.term_container);
+      //   this.term.resize(size[0], size[1]);
+      // });
 
       this.ws = new WebSocket(this.url);
       this.is_connected = true
@@ -124,14 +120,14 @@ export default {
           // LF as EOL chars.
           data = data.replace(/\n/g, "\r");
           this.ws.send(data);
-        });
+        }.bind(this));
 
         this.term.on("title", function(title) {
           document.title = title;
         });
 
-        // this.term.focus();
-        // this.term.element.focus();
+        this.term.focus();
+        this.term.element.focus();
         this.term.write("\x1b[31mWelcome to MicroPython!\x1b[m\r\n");
 
         this.ws.onmessage = function(event) {
@@ -237,16 +233,16 @@ export default {
             }
           }
           this.term.write(event.data);
-        };
-      };
+        }.bind(this);
+      }.bind(this);
 
       this.ws.onclose = function() {
         this.is_connected = false;
         if (this.term) {
           this.term.write("\x1b[31mDisconnected\x1b[m\r\n");
         }
-        prepare_for_connect();
-      };
+        // prepare_for_connect();
+      }.bind(this);
     }
   }
 };
