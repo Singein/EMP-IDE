@@ -16,7 +16,7 @@
         <mu-flex direction="column">
           <!-- monaco编辑器 -->
           <m-monaco-editor style="height:97vh;width:85vw"
-            v-model="code" :mode="mode" :theme="theme" :fontSize="26"></m-monaco-editor>
+            v-model="code" :mode="mode" :theme="theme" :fontSize="20"></m-monaco-editor>
         </mu-flex>
       </mu-flex>
       <!-- 底栏 -->
@@ -38,9 +38,11 @@
           <mu-icon value="arrow_back"></mu-icon>
         </mu-button>
         <mu-flex style="height:46px" justify-content="center" align-items="center">
-          <mu-text-field style="height:46px;background:#212121;margin:auto 6px" color="white" v-model="url" 
+          <mu-text-field style="height:46px;background:#212121;margin:auto 6px"
+            :disabled="is_connected" color="white" v-model="url" 
             placeholder="ws://192.168.2.189:8266/"></mu-text-field>
-          <mu-button color="#414141" :disabled="is_connected" @click="connect()">Connect</mu-button>
+
+          <mu-button color="#414141" @click="button_clicked()">{{button_text}}</mu-button>
         </mu-flex>
       </mu-appbar>
       <mu-flex direction="row" style="width:100%;height:100%;background:#000">
@@ -53,15 +55,15 @@
 
 <script>
 import Terminal from "../term.js";
-import Deformation from 'deformation'
+import Deformation from "deformation";
 export default {
   name: "App",
-  components:{
+  components: {
     Deformation
   },
   data() {
     return {
-      msg: ['main.py'],
+      msg: ["main.py"],
       code: "import this",
       mode: "python",
       theme: "vs-dark",
@@ -69,20 +71,20 @@ export default {
       ws: null,
       term: null,
       url: "ws://192.168.2.189:8266/",
-      is_connected: false
+      is_connected: false,
+      button_text: "connect"
     };
   },
   mounted: function() {
     this.$nextTick(function() {
-      var size = this.calculate_size(this.$refs.term_container)
+      var size = this.calculate_size(this.$refs.term_container);
       // 初始化term对象,完成视图的渲染
       this.term = new Terminal({
         cols: size[0],
         rows: size[1],
         useStyle: true,
         screenKeys: true,
-        cursorBlink: true,
-        fontsize: 40
+        cursorBlink: false
       });
       // this.term.open(document.getElementById("term"))
       this.term.open(this.$refs.term);
@@ -98,29 +100,43 @@ export default {
       this.showTerm = false;
     },
     calculate_size(win) {
-      var cols = win.innerWidth / 7 ;
+      var cols = win.innerWidth / 7;
       var rows = win.innerHeight / 12;
       return [cols, rows];
     },
+    prepare_for_connect() {
+      this.is_connected = false;
+      this.button_text = "Connect";
+    },
+    button_clicked() {
+      if (this.is_connected) {
+        this.ws.close();
+      } else {
+        this.button_text = "Disconnect";
+        this.connect();
+      }
+      this.is_connected = !this.is_connected;
+    },
     connect() {
       var size = this.calculate_size(this.$refs.term_container);
-
       // window.addEventListener("resize", function() {
       //   var size = this.calculate_size(this.$refs.term_container);
       //   this.term.resize(size[0], size[1]);
       // });
 
       this.ws = new WebSocket(this.url);
-      this.is_connected = true
       this.ws.binaryType = "arraybuffer";
       this.ws.onopen = function() {
         this.term.removeAllListeners("data");
-        this.term.on("data", function(data) {
-          // Pasted data from clipboard will likely contain
-          // LF as EOL chars.
-          data = data.replace(/\n/g, "\r");
-          this.ws.send(data);
-        }.bind(this));
+        this.term.on(
+          "data",
+          function(data) {
+            // Pasted data from clipboard will likely contain
+            // LF as EOL chars.
+            data = data.replace(/\n/g, "\r");
+            this.ws.send(data);
+          }.bind(this)
+        );
 
         this.term.on("title", function(title) {
           document.title = title;
@@ -241,7 +257,7 @@ export default {
         if (this.term) {
           this.term.write("\x1b[31mDisconnected\x1b[m\r\n");
         }
-        // prepare_for_connect();
+        this.prepare_for_connect();
       }.bind(this);
     }
   }
