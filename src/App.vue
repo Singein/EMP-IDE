@@ -5,11 +5,11 @@
         <div>
           <!-- 文件结构 嵌套列表的方式 -->
           <mu-list style="background:#212121;width:15vw;height:97vh">
-            <mu-list-item button :ripple="false" v-for="(i,index) in msg" :key="index">
+            <mu-list-item button :ripple="false" v-for="(i,index) in root_files" :key="index">
               <mu-list-item-action>
-                <mu-icon value="file" color='grey'></mu-icon>
+                <mu-icon value="description" color='grey'></mu-icon>
               </mu-list-item-action>
-              <mu-list-item-title style="color:#fff">main.py</mu-list-item-title>
+              <mu-list-item-title style="color:#fff">{{i}}</mu-list-item-title>
             </mu-list-item>
           </mu-list>
         </div>
@@ -19,9 +19,9 @@
             v-model="code" :mode="mode" :theme="theme" :fontSize="20"></m-monaco-editor>
         </mu-flex>
       </mu-flex>
+
       <!-- 底栏 -->
       <mu-flex style="width:100vw;height:3vh;background:#414141;padding-right:16px"  justify-content="end">
-
         <mu-button small icon color="white" @click="showTermDialog">
           <mu-icon value="keyboard_arrow_right" ></mu-icon>
         </mu-button>
@@ -31,22 +31,27 @@
       </mu-flex>
     </mu-flex>
 
-    <!-- terminal div -->
-    <div ref="term_container" v-show="showTerm" style="width:85vw;height:300px;position:fixed;left:15vw;bottom:3vh;background:#000">
-      <mu-appbar style="width: 100%;" color='#212121' title="Title">
+    <!-- terminal container -->
+    <div v-show="showTerm" style="width:85vw;height:auto;position:fixed;left:15vw;bottom:3vh;background:#000">
+      <mu-appbar :z-Depth="3" style="width: 100%;height:48px" color='#414141' title="Title">
         <mu-button slot="left" icon @click="closeFullscreenDialog">
-          <mu-icon value="arrow_back"></mu-icon>
+          <mu-icon value="keyboard_arrow_down"></mu-icon>
         </mu-button>
-        <mu-flex style="height:46px" justify-content="center" align-items="center">
-          <mu-text-field style="height:46px;background:#212121;margin:auto 6px"
+        <mu-flex style="height:46px" justify-content="end" align-items="center">
+          <p id="file-status"></p>
+          <input type="file" ref="file_dialog" style="display:none">
+          <mu-button style="margin-right:6px" :disabled="!is_connected" color="blue" small @click="send()" >SEND</mu-button>
+          <mu-text-field style="height:46px;margin:auto 6px"
             :disabled="is_connected" color="white" v-model="url" 
             placeholder="ws://192.168.2.189:8266/"></mu-text-field>
+          <mu-button style="margin-right:6px" color="red" small @click="button_clicked()">{{button_text}}</mu-button>
+          
 
-          <mu-button color="#414141" @click="button_clicked()">{{button_text}}</mu-button>
         </mu-flex>
       </mu-appbar>
-      <mu-flex direction="row" style="width:100%;height:100%;background:#000">
-        <div v-show="true" ref="term" style="width:85vw"></div>
+      <!-- terminal -->
+      <mu-flex ref="term_container" direction="row" style="width:100%;background:#000">
+        <div v-show="true" ref="term" style="width:100%"></div>
       </mu-flex>
     </div>
 
@@ -55,21 +60,26 @@
 
 <script>
 import Terminal from "../term.js";
-import Deformation from "deformation";
+var put_file_data = null;
+var put_file_name = null;
 export default {
   name: "App",
-  components: {
-    Deformation
-  },
+  components: {},
   data() {
     return {
-      msg: ["main.py"],
       code: "import this",
       mode: "python",
       theme: "vs-dark",
       showTerm: false,
+      binary_state: 0,
+
+      get_file_name: null,
+      get_file_data: null,
       ws: null,
       term: null,
+      last_command: "",
+      ws_return: "",
+      root_files: [],
       url: "ws://192.168.2.189:8266/",
       is_connected: false,
       button_text: "connect"
@@ -77,8 +87,13 @@ export default {
   },
   mounted: function() {
     this.$nextTick(function() {
-      var size = this.calculate_size(this.$refs.term_container);
+      var size = [190, 20];
       // 初始化term对象,完成视图的渲染
+      this.$refs.file_dialog.addEventListener(
+        "change",
+        this.handle_put_file_select,
+        false
+      );
       this.term = new Terminal({
         cols: size[0],
         rows: size[1],
@@ -86,15 +101,12 @@ export default {
         screenKeys: true,
         cursorBlink: false
       });
-      // this.term.open(document.getElementById("term"))
       this.term.open(this.$refs.term);
-
-      // console.log(this.url)
     });
   },
   methods: {
     showTermDialog() {
-      this.showTerm = true;
+      this.showTerm = !this.showTerm;
     },
     closeFullscreenDialog() {
       this.showTerm = false;
@@ -104,6 +116,50 @@ export default {
       var rows = win.innerHeight / 12;
       return [cols, rows];
     },
+    send() {
+      if (!this.$refs.file_dialog.value) this.$refs.file_dialog.click();
+      else {
+        this.put_file(this);
+      }
+    },
+    put_file(vm) {
+      var dest_fname = put_file_name;
+      var dest_fsize = put_file_data.length;
+
+      // WEBREPL_FILE = "<2sBBQLH64s"
+      var rec = new Uint8Array(2 + 1 + 1 + 8 + 4 + 2 + 64);
+      rec[0] = "W".charCodeAt(0);
+      rec[1] = "A".charCodeAt(0);
+      rec[2] = 1; // put
+      rec[3] = 0;
+      rec[4] = 0;
+      rec[5] = 0;
+      rec[6] = 0;
+      rec[7] = 0;
+      rec[8] = 0;
+      rec[9] = 0;
+      rec[10] = 0;
+      rec[11] = 0;
+      rec[12] = dest_fsize & 0xff;
+      rec[13] = (dest_fsize >> 8) & 0xff;
+      rec[14] = (dest_fsize >> 16) & 0xff;
+      rec[15] = (dest_fsize >> 24) & 0xff;
+      rec[16] = dest_fname.length & 0xff;
+      rec[17] = (dest_fname.length >> 8) & 0xff;
+      for (var i = 0; i < 64; ++i) {
+        if (i < dest_fname.length) {
+          rec[18 + i] = dest_fname.charCodeAt(i);
+        } else {
+          rec[18 + i] = 0;
+        }
+      }
+
+      // initiate put
+      vm.binary_state = 11;
+      // update_file_status('Sending ' + put_file_name + '...');
+      vm.ws.send(rec);
+    },
+
     prepare_for_connect() {
       this.is_connected = false;
       this.button_text = "Connect";
@@ -118,12 +174,7 @@ export default {
       this.is_connected = !this.is_connected;
     },
     connect() {
-      var size = this.calculate_size(this.$refs.term_container);
-      // window.addEventListener("resize", function() {
-      //   var size = this.calculate_size(this.$refs.term_container);
-      //   this.term.resize(size[0], size[1]);
-      // });
-
+      // var size = this.calculate_size(this.$refs.term_container);
       this.ws = new WebSocket(this.url);
       this.ws.binaryType = "arraybuffer";
       this.ws.onopen = function() {
@@ -135,6 +186,7 @@ export default {
             // LF as EOL chars.
             data = data.replace(/\n/g, "\r");
             this.ws.send(data);
+            this.last_command += data;
           }.bind(this)
         );
 
@@ -149,10 +201,10 @@ export default {
         this.ws.onmessage = function(event) {
           if (event.data instanceof ArrayBuffer) {
             var data = new Uint8Array(event.data);
-            switch (binary_state) {
+            switch (this.binary_state) {
               case 11:
                 // first response for put
-                if (decode_resp(data) == 0) {
+                if (this.decode_resp(data) == 0) {
                   // send file data in chunks
                   for (
                     var offset = 0;
@@ -161,13 +213,13 @@ export default {
                   ) {
                     this.ws.send(put_file_data.slice(offset, offset + 1024));
                   }
-                  binary_state = 12;
+                  this.binary_state = 12;
                 }
                 break;
               case 12:
                 // final response for put
-                if (decode_resp(data) == 0) {
-                  update_file_status(
+                if (this.decode_resp(data) == 0) {
+                  this.update_file_status(
                     "Sent " +
                       put_file_name +
                       ", " +
@@ -175,15 +227,17 @@ export default {
                       " bytes"
                   );
                 } else {
-                  update_file_status("Failed sending " + put_file_name);
+                  this.update_file_status(
+                    "Failed sending " + put_file_name
+                  );
                 }
-                binary_state = 0;
+                this.binary_state = 0;
                 break;
 
               case 21:
                 // first response for get
-                if (decode_resp(data) == 0) {
-                  binary_state = 22;
+                if (this.decode_resp(data) == 0) {
+                  this.binary_state = 22;
                   var rec = new Uint8Array(1);
                   rec[0] = 0;
                   this.ws.send(rec);
@@ -196,18 +250,20 @@ export default {
                   // we assume that the data comes in single chunks
                   if (sz == 0) {
                     // end of file
-                    binary_state = 23;
+                    this.binary_state = 23;
                   } else {
                     // accumulate incoming data to get_file_data
-                    var new_buf = new Uint8Array(get_file_data.length + sz);
-                    new_buf.set(get_file_data);
-                    new_buf.set(data.slice(2), get_file_data.length);
-                    get_file_data = new_buf;
-                    update_file_status(
+                    var new_buf = new Uint8Array(
+                      this.get_file_data.length + sz
+                    );
+                    new_buf.set(this.get_file_data);
+                    new_buf.set(data.slice(2), this.get_file_data.length);
+                    this.get_file_data = new_buf;
+                    this.update_file_status(
                       "Getting " +
-                        get_file_name +
+                        this.get_file_name +
                         ", " +
-                        get_file_data.length +
+                        this.get_file_data.length +
                         " bytes"
                     );
 
@@ -216,39 +272,50 @@ export default {
                     this.ws.send(rec);
                   }
                 } else {
-                  binary_state = 0;
+                  this.binary_state = 0;
                 }
                 break;
               }
               case 23:
                 // final response
-                if (decode_resp(data) == 0) {
-                  update_file_status(
+                if (this.decode_resp(data) == 0) {
+                  this.update_file_status(
                     "Got " +
-                      get_file_name +
+                      this.get_file_name +
                       ", " +
-                      get_file_data.length +
+                      this.get_file_data.length +
                       " bytes"
                   );
                   saveAs(
-                    new Blob([get_file_data], {
+                    new Blob([this.get_file_data], {
                       type: "application/octet-stream"
                     }),
-                    get_file_name
+                    this.get_file_name
                   );
                 } else {
-                  update_file_status("Failed getting " + get_file_name);
+                  this.update_file_status(
+                    "Failed getting " + this.get_file_name
+                  );
                 }
-                binary_state = 0;
+                this.binary_state = 0;
                 break;
               case 31:
                 // first (and last) response for GET_VER
                 console.log("GET_VER", data);
-                binary_state = 0;
+                this.binary_state = 0;
                 break;
             }
           }
           this.term.write(event.data);
+
+          if (this.last_command[this.last_command.length - 1] === "\r") {
+            // console.log(this.last_command);
+            // if(event.data.length<4)
+            if (this.last_command.indexOf("os.listdir") >= 0)
+              this.ws_return += event.data;
+            // this.last_command = "";
+            // console.log(this.ws_return);
+          }
         }.bind(this);
       }.bind(this);
 
@@ -259,6 +326,62 @@ export default {
         }
         this.prepare_for_connect();
       }.bind(this);
+    },
+    init_tree(dir) {},
+    update_file_status(s) {
+      document.getElementById("file-status").innerHTML = s;
+    },
+    handle_put_file_select(evt) {
+      // The event holds a FileList object which is a list of File objects,
+      // but we only support single file selection at the moment.
+      var files = evt.target.files;
+
+      // Get the file info and load its data.
+      var f = files[0];
+      put_file_name = f.name;
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        put_file_data = new Uint8Array(e.target.result);
+        console.log(
+          put_file_name + " - " + put_file_data.length + " bytes"
+        );
+        // document.getElementById("put-file-button").disabled = false;
+      };
+      reader.readAsArrayBuffer(f);
+    },
+    decode_resp(data) {
+      if (data[0] == "W".charCodeAt(0) && data[1] == "B".charCodeAt(0)) {
+        var code = data[2] | (data[3] << 8);
+        return code;
+      } else {
+        return -1;
+      }
+    }
+  },
+  watch: {
+    last_command: function() {},
+    ws_return: function() {
+      if (this.ws_return.endsWith(">>> "))
+        if (this.last_command.indexOf("os.listdir") >= 0) {
+          var root_files = this.ws_return.slice(0, this.ws_return.length - 5);
+          console.log("root files:", root_files);
+          this.root_files = root_files
+            .slice(3, root_files.length - 2)
+            .split(", ");
+          for (let i = 0; i <= this.root_files.length - 1; i++) {
+            this.root_files[i] = this.root_files[i].slice(
+              1,
+              this.root_files[i].length - 1
+            );
+          }
+          console.log("root files:", this.root_files);
+
+          this.ws_return = "";
+          this.last_command = "";
+        }
+    },
+    put_file_name: function() {
+      console.log(put_file_name);
     }
   }
 };
