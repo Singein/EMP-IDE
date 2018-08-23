@@ -21,7 +21,9 @@
       </mu-flex>
 
       <!-- 底栏 -->
-      <mu-flex style="width:100vw;height:3vh;background:#414141;padding-right:16px"  justify-content="end">
+      <mu-flex style="width:100vw;height:3vh;background:#414141;padding-right:16px;color:white"  
+        justify-content="end" align-items="center">
+        <p id="file-status" style="padding:auto 0;margin:0 6px;font-size:16px"></p>
         <mu-button small icon color="white" @click="showTermDialog">
           <mu-icon value="keyboard_arrow_right" ></mu-icon>
         </mu-button>
@@ -38,13 +40,14 @@
           <mu-icon value="keyboard_arrow_down"></mu-icon>
         </mu-button>
         <mu-flex style="height:46px" justify-content="end" align-items="center">
-          <p id="file-status"></p>
+          
           <input type="file" ref="file_dialog" style="display:none">
-          <mu-button style="margin-right:6px" :disabled="!is_connected" color="blue" small @click="send()" >SEND</mu-button>
+          <mu-text-field @click="file_input()" placeholder="select a file" color='#414141' style="height:46px;margin:auto 6px"></mu-text-field><br/>
+          <mu-button style="margin-right:6px" :disabled="!is_connected" color="blue" small @click="send_button_clicked()" >SEND</mu-button>
           <mu-text-field style="height:46px;margin:auto 6px"
             :disabled="is_connected" color="white" v-model="url" 
             placeholder="ws://192.168.2.189:8266/"></mu-text-field>
-          <mu-button style="margin-right:6px" color="red" small @click="button_clicked()">{{button_text}}</mu-button>
+          <mu-button style="margin-right:6px" color="red" small @click="connect_button_clicked()">{{button_text}}</mu-button>
           
 
         </mu-flex>
@@ -108,21 +111,26 @@ export default {
     showTermDialog() {
       this.showTerm = !this.showTerm;
     },
+
     closeFullscreenDialog() {
       this.showTerm = false;
     },
+
     calculate_size(win) {
       var cols = win.innerWidth / 7;
       var rows = win.innerHeight / 12;
       return [cols, rows];
     },
-    send() {
-      if (!this.$refs.file_dialog.value) this.$refs.file_dialog.click();
-      else {
-        this.put_file(this);
-      }
+
+    file_input() {
+      this.$refs.file_dialog.click();
     },
-    put_file(vm) {
+
+    send_button_clicked() {
+      this.put_file();
+    },
+
+    put_file() {
       var dest_fname = put_file_name;
       var dest_fsize = put_file_data.length;
 
@@ -155,16 +163,17 @@ export default {
       }
 
       // initiate put
-      vm.binary_state = 11;
-      // update_file_status('Sending ' + put_file_name + '...');
-      vm.ws.send(rec);
+      this.binary_state = 11;
+      this.update_file_status("Sending " + put_file_name + "...");
+      this.ws.send(rec);
     },
 
     prepare_for_connect() {
       this.is_connected = false;
       this.button_text = "Connect";
     },
-    button_clicked() {
+
+    connect_button_clicked() {
       if (this.is_connected) {
         this.ws.close();
       } else {
@@ -174,7 +183,6 @@ export default {
       this.is_connected = !this.is_connected;
     },
     connect() {
-      // var size = this.calculate_size(this.$refs.term_container);
       this.ws = new WebSocket(this.url);
       this.ws.binaryType = "arraybuffer";
       this.ws.onopen = function() {
@@ -220,16 +228,15 @@ export default {
                 // final response for put
                 if (this.decode_resp(data) == 0) {
                   this.update_file_status(
-                    "Sent " +
+                    "Send success " +
                       put_file_name +
                       ", " +
                       put_file_data.length +
                       " bytes"
                   );
+                  put_file_data = null;
                 } else {
-                  this.update_file_status(
-                    "Failed sending " + put_file_name
-                  );
+                  this.update_file_status("Failed sending " + put_file_name);
                 }
                 this.binary_state = 0;
                 break;
@@ -342,9 +349,7 @@ export default {
       var reader = new FileReader();
       reader.onload = function(e) {
         put_file_data = new Uint8Array(e.target.result);
-        console.log(
-          put_file_name + " - " + put_file_data.length + " bytes"
-        );
+        console.log(put_file_name + " - " + put_file_data.length + " bytes");
         // document.getElementById("put-file-button").disabled = false;
       };
       reader.readAsArrayBuffer(f);
