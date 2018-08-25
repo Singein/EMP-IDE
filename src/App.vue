@@ -4,12 +4,33 @@
       <mu-flex direction='row'>
         <div>
           <!-- 文件结构 嵌套列表的方式 -->
-          <mu-list style="background:#212121;width:15vw;height:97vh">
-            <mu-list-item button :ripple="false" v-for="(i,index) in root_files" :key="index">
+
+           <mu-list toggle-nested style="background:#212121;width:15vw;height:97vh;padding:0" 
+              :value="list_index" @change="handleChange">
+
+            <mu-list-item button :ripple="false" @click="update_tree()" :value="-1" nested :open="false">
+             
+              <mu-icon value="folder" style="padding:6px" color='blue'></mu-icon>
+              <mu-list-item-title style="color:#fff">root</mu-list-item-title>
               <mu-list-item-action>
-                <mu-icon value="description" color='grey'></mu-icon>
+                <mu-icon class="toggle-icon" size="24" color='grey' value="keyboard_arrow_down"></mu-icon>
               </mu-list-item-action>
-              <mu-list-item-title style="color:#fff">{{i}}</mu-list-item-title>
+              <!-- 开始遍历 this.root_files -->
+        
+              <mu-list-item v-for="(i,index) in root_files.children" :key="index" :value="i.index" 
+                button :ripple="false" @click="get_code(i.name)" nested slot="nested">     
+
+                <mu-icon v-if="i.children" value="folder" style="padding:6px" color='blue'></mu-icon>
+                <mu-icon v-if="!i.children" value="description" style="padding:6px" color='green'></mu-icon>
+                <mu-list-item-title style="color:#fff">{{i.name}}</mu-list-item-title>
+                <mu-icon v-if="i.children" class="toggle-icon" size="24" color='grey' value="keyboard_arrow_down"></mu-icon>
+
+                <mu-list-item  v-for="j in i.children" :key="j.name" button :ripple="false" @click="get_code(i.name)" slot="nested" :value="j.index">
+                  <mu-icon value="description" style="padding:6px" color='green'></mu-icon>
+                  <mu-list-item-title style="color:#fff">{{j.name}}</mu-list-item-title>
+                </mu-list-item>
+              </mu-list-item>
+
             </mu-list-item>
           </mu-list>
         </div>
@@ -43,7 +64,7 @@
           
           <input type="file" ref="file_dialog" style="display:none">
           <mu-text-field @click="file_input()" placeholder="select a file" color='#414141' style="height:46px;margin:auto 6px"></mu-text-field><br/>
-          <mu-button style="margin-right:6px" :disabled="!is_connected" color="blue" small @click="send_button_clicked()" >SEND</mu-button>
+          <mu-button style="margin-right:6px" :disabled="is_connected" color="blue" small @click="send_button_clicked()" >SEND</mu-button>
           <mu-text-field style="height:46px;margin:auto 6px"
             :disabled="is_connected" color="white" v-model="url" 
             placeholder="ws://192.168.2.189:8266/"></mu-text-field>
@@ -70,8 +91,9 @@ export default {
   components: {},
   data() {
     return {
-      code: "import this",
+      code: "",
       mode: "python",
+      list_index: -1,
       theme: "vs-dark",
       showTerm: false,
       binary_state: 0,
@@ -83,7 +105,7 @@ export default {
       last_command: "",
       ws_return: "",
       root_files: [],
-      url: "ws://192.168.2.189:8266/",
+      url: "ws://192.168.0.123:8266/",
       is_connected: false,
       button_text: "connect"
     };
@@ -120,6 +142,21 @@ export default {
       var cols = win.innerWidth / 7;
       var rows = win.innerHeight / 12;
       return [cols, rows];
+    },
+
+    handleChange(val) {
+      this.list_index = val;
+    },
+
+    get_code(filename) {
+      this.last_command = "get_code('" + filename + "')\r";
+      this.ws.send("get_code('" + filename + "')\r");
+    },
+
+    update_tree() {
+      // this.ws.send("from tools import tree\r");
+      this.last_command = "tree()\r";
+      this.ws.send("tree()\r");
     },
 
     file_input() {
@@ -182,6 +219,7 @@ export default {
       }
       this.is_connected = !this.is_connected;
     },
+
     connect() {
       this.ws = new WebSocket(this.url);
       this.ws.binaryType = "arraybuffer";
@@ -194,7 +232,7 @@ export default {
             // LF as EOL chars.
             data = data.replace(/\n/g, "\r");
             this.ws.send(data);
-            this.last_command += data;
+            // this.last_command += data;
           }.bind(this)
         );
 
@@ -315,14 +353,7 @@ export default {
           }
           this.term.write(event.data);
 
-          if (this.last_command[this.last_command.length - 1] === "\r") {
-            // console.log(this.last_command);
-            // if(event.data.length<4)
-            if (this.last_command.indexOf("os.listdir") >= 0)
-              this.ws_return += event.data;
-            // this.last_command = "";
-            // console.log(this.ws_return);
-          }
+          if (this.last_command !== "") this.ws_return += event.data;
         }.bind(this);
       }.bind(this);
 
@@ -334,10 +365,11 @@ export default {
         this.prepare_for_connect();
       }.bind(this);
     },
-    init_tree(dir) {},
+
     update_file_status(s) {
       document.getElementById("file-status").innerHTML = s;
     },
+
     handle_put_file_select(evt) {
       // The event holds a FileList object which is a list of File objects,
       // but we only support single file selection at the moment.
@@ -354,6 +386,7 @@ export default {
       };
       reader.readAsArrayBuffer(f);
     },
+
     decode_resp(data) {
       if (data[0] == "W".charCodeAt(0) && data[1] == "B".charCodeAt(0)) {
         var code = data[2] | (data[3] << 8);
@@ -367,23 +400,31 @@ export default {
     last_command: function() {},
     ws_return: function() {
       if (this.ws_return.endsWith(">>> "))
-        if (this.last_command.indexOf("os.listdir") >= 0) {
-          var root_files = this.ws_return.slice(0, this.ws_return.length - 5);
+        if (this.last_command === "tree()\r") {
+          var root_files = this.ws_return
+            .slice(0, this.ws_return.length - 5)
+            .replace(this.last_command, "");
           console.log("root files:", root_files);
-          this.root_files = root_files
-            .slice(3, root_files.length - 2)
-            .split(", ");
-          for (let i = 0; i <= this.root_files.length - 1; i++) {
-            this.root_files[i] = this.root_files[i].slice(
-              1,
-              this.root_files[i].length - 1
-            );
-          }
+          this.root_files = JSON.parse(root_files);
+          // this.root_files = root_files
+          //   .slice(3, root_files.length - 2)
+          //   .split(", ");
+          // for (let i = 0; i <= this.root_files.length - 1; i++) {
+          //   this.root_files[i] = this.root_files[i].slice(
+          //     1,
+          //     this.root_files[i].length - 1
+          //   );
+          // }
           console.log("root files:", this.root_files);
-
           this.ws_return = "";
           this.last_command = "";
         }
+      if (this.last_command.indexOf("get_code") >= 0) {
+        var code = this.ws_return;
+        this.code = code;
+        // this.ws_return = "";
+        // this.last_command = "";
+      }
     },
     put_file_name: function() {
       console.log(put_file_name);

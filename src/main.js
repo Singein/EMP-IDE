@@ -6,17 +6,20 @@ import router from './router'
 import MuseUI from 'muse-ui';
 import 'muse-ui/dist/muse-ui.css';
 import MMonacoEditor from 'vue-m-monaco-editor';
-import deformation from 'deformation'
 
-Vue.component('Deformation', deformation)
+
+
+MuseUI.theme.use('light');
 Vue.use(MuseUI);
 Vue.use(MMonacoEditor)
 Vue.config.productionTip = false
-
+// theme.use('dark');
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
-  components: { App },
+  components: {
+    App
+  },
   template: '<App/>'
 })
