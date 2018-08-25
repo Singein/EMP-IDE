@@ -21,7 +21,6 @@ def tree(path='/'):
             for j in i['children']:
                 j['index'] = index
                 index += 1
-
     print(json.dumps(root))
 
 

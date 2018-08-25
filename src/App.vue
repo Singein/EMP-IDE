@@ -5,28 +5,64 @@
         <div>
           <!-- 文件结构 嵌套列表的方式 -->
 
-           <mu-list toggle-nested style="background:#212121;width:15vw;height:97vh;padding:0" 
-              :value="list_index" @change="handleChange">
+          <mu-list toggle-nested
+            style="background:#212121;width:15vw;height:97vh;padding:0"
+            :value="list_index"
+            @change="handleChange">
 
-            <mu-list-item button :ripple="false" @click="update_tree()" :value="-1" nested :open="false">
-             
-              <mu-icon value="folder" style="padding:6px" color='blue'></mu-icon>
+            <mu-list-item button
+              :ripple="false"
+              @click="update_tree()"
+              :value="-1"
+              nested
+              :open="false">
+
+              <mu-icon value="folder"
+                style="padding:6px"
+                color='blue'></mu-icon>
               <mu-list-item-title style="color:#fff">root</mu-list-item-title>
               <mu-list-item-action>
-                <mu-icon class="toggle-icon" size="24" color='grey' value="keyboard_arrow_down"></mu-icon>
+                <mu-icon class="toggle-icon"
+                  size="24"
+                  color='grey'
+                  value="keyboard_arrow_down"></mu-icon>
               </mu-list-item-action>
               <!-- 开始遍历 this.root_files -->
-        
-              <mu-list-item v-for="(i,index) in root_files.children" :key="index" :value="i.index" 
-                button :ripple="false" @click="get_code(i.name)" nested slot="nested">     
 
-                <mu-icon v-if="i.children" value="folder" style="padding:6px" color='blue'></mu-icon>
-                <mu-icon v-if="!i.children" value="description" style="padding:6px" color='green'></mu-icon>
+              <mu-list-item v-for="(i,index) in root_files.children"
+                :key="index"
+                :value="i.index"
+                button
+                :ripple="false"
+                @click="get_code(i.name)"
+                nested
+                slot="nested">
+
+                <mu-icon v-if="i.children"
+                  value="folder"
+                  style="padding:6px"
+                  color='blue'></mu-icon>
+                <mu-icon v-if="!i.children"
+                  value="description"
+                  style="padding:6px"
+                  color='green'></mu-icon>
                 <mu-list-item-title style="color:#fff">{{i.name}}</mu-list-item-title>
-                <mu-icon v-if="i.children" class="toggle-icon" size="24" color='grey' value="keyboard_arrow_down"></mu-icon>
+                <mu-icon v-if="i.children"
+                  class="toggle-icon"
+                  size="24"
+                  color='grey'
+                  value="keyboard_arrow_down"></mu-icon>
 
-                <mu-list-item  v-for="j in i.children" :key="j.name" button :ripple="false" @click="get_code(i.name)" slot="nested" :value="j.index">
-                  <mu-icon value="description" style="padding:6px" color='green'></mu-icon>
+                <mu-list-item v-for="j in i.children"
+                  :key="j.name"
+                  button
+                  :ripple="false"
+                  @click="get_code(i.name)"
+                  slot="nested"
+                  :value="j.index">
+                  <mu-icon value="description"
+                    style="padding:6px"
+                    color='green'></mu-icon>
                   <mu-list-item-title style="color:#fff">{{j.name}}</mu-list-item-title>
                 </mu-list-item>
               </mu-list-item>
@@ -37,45 +73,80 @@
         <mu-flex direction="column">
           <!-- monaco编辑器 -->
           <m-monaco-editor style="height:97vh;width:85vw"
-            v-model="code" :mode="mode" :theme="theme" :fontSize="20"></m-monaco-editor>
+            v-model="code"
+            :mode="mode"
+            :theme="theme"
+            :fontSize="20"></m-monaco-editor>
         </mu-flex>
       </mu-flex>
 
       <!-- 底栏 -->
-      <mu-flex style="width:100vw;height:3vh;background:#414141;padding-right:16px;color:white"  
-        justify-content="end" align-items="center">
-        <p id="file-status" style="padding:auto 0;margin:0 6px;font-size:16px"></p>
-        <mu-button small icon color="white" @click="showTermDialog">
-          <mu-icon value="keyboard_arrow_right" ></mu-icon>
+      <mu-flex style="width:100vw;height:3vh;background:#414141;padding-right:16px;color:white"
+        justify-content="end"
+        align-items="center">
+        <p id="file-status"
+          style="padding:auto 0;margin:0 6px;font-size:16px"></p>
+        <mu-button small
+          icon
+          color="white"
+          @click="showTermDialog">
+          <mu-icon value="keyboard_arrow_right"></mu-icon>
         </mu-button>
-        <mu-button small icon color="white">
-          <mu-icon value="settings" ></mu-icon>
+        <mu-button small
+          icon
+          color="white">
+          <mu-icon value="settings"></mu-icon>
         </mu-button>
       </mu-flex>
     </mu-flex>
 
     <!-- terminal container -->
-    <div v-show="showTerm" style="width:85vw;height:auto;position:fixed;left:15vw;bottom:3vh;background:#000">
-      <mu-appbar :z-Depth="3" style="width: 100%;height:48px" color='#414141' title="Title">
-        <mu-button slot="left" icon @click="closeFullscreenDialog">
+    <div v-show="showTerm"
+      style="width:85vw;height:auto;position:fixed;left:15vw;bottom:3vh;background:#000">
+      <mu-appbar :z-Depth="3"
+        style="width: 100%;height:48px"
+        color='#414141'
+        title="Title">
+        <mu-button slot="left"
+          icon
+          @click="closeFullscreenDialog">
           <mu-icon value="keyboard_arrow_down"></mu-icon>
         </mu-button>
-        <mu-flex style="height:46px" justify-content="end" align-items="center">
-          
-          <input type="file" ref="file_dialog" style="display:none">
-          <mu-text-field @click="file_input()" placeholder="select a file" color='#414141' style="height:46px;margin:auto 6px"></mu-text-field><br/>
-          <mu-button style="margin-right:6px" :disabled="is_connected" color="blue" small @click="send_button_clicked()" >SEND</mu-button>
+        <mu-flex style="height:46px"
+          justify-content="end"
+          align-items="center">
+
+          <input type="file"
+            ref="file_dialog"
+            style="display:none">
+          <mu-text-field @click="file_input()"
+            placeholder="select a file"
+            color='#414141'
+            style="height:46px;margin:auto 6px"></mu-text-field><br/>
+          <mu-button style="margin-right:6px"
+            :disabled="!is_connected"
+            color="blue"
+            small
+            @click="send_button_clicked()">SEND</mu-button>
           <mu-text-field style="height:46px;margin:auto 6px"
-            :disabled="is_connected" color="white" v-model="url" 
+            :disabled="is_connected"
+            color="white"
+            v-model="url"
             placeholder="ws://192.168.2.189:8266/"></mu-text-field>
-          <mu-button style="margin-right:6px" color="red" small @click="connect_button_clicked()">{{button_text}}</mu-button>
-          
+          <mu-button style="margin-right:6px"
+            color="red"
+            small
+            @click="connect_button_clicked()">{{button_text}}</mu-button>
 
         </mu-flex>
       </mu-appbar>
       <!-- terminal -->
-      <mu-flex ref="term_container" direction="row" style="width:100%;background:#000">
-        <div v-show="true" ref="term" style="width:100%"></div>
+      <mu-flex ref="term_container"
+        direction="row"
+        style="width:100%;background:#000">
+        <div v-show="true"
+          ref="term"
+          style="width:100%"></div>
       </mu-flex>
     </div>
 
@@ -399,35 +470,29 @@ export default {
   watch: {
     last_command: function() {},
     ws_return: function() {
-      if (this.ws_return.endsWith(">>> "))
-        if (this.last_command === "tree()\r") {
+      if (this.ws_return.endsWith(">>> ")) {
+        console.log("raw:", this.ws_return);
+        if (this.ws_return.startsWith("tree")) {
           var root_files = this.ws_return
-            .slice(0, this.ws_return.length - 5)
+            .slice(7, this.ws_return.length - 5)
             .replace(this.last_command, "");
-          console.log("root files:", root_files);
+          console.log("sliced:", root_files);
           this.root_files = JSON.parse(root_files);
-          // this.root_files = root_files
-          //   .slice(3, root_files.length - 2)
-          //   .split(", ");
-          // for (let i = 0; i <= this.root_files.length - 1; i++) {
-          //   this.root_files[i] = this.root_files[i].slice(
-          //     1,
-          //     this.root_files[i].length - 1
-          //   );
-          // }
-          console.log("root files:", this.root_files);
+
+          console.log("tree obj:", this.root_files);
           this.ws_return = "";
           this.last_command = "";
         }
-      if (this.last_command.indexOf("get_code") >= 0) {
-        var code = this.ws_return;
-        this.code = code;
-        // this.ws_return = "";
-        // this.last_command = "";
+
+        if (this.ws_return.startsWith("get_code")) {
+          var code = this.ws_return;
+          this.code = code;
+          this.ws_return = "";
+          this.last_command = "";
+        } else {
+          this.ws_return = "";
+        }
       }
-    },
-    put_file_name: function() {
-      console.log(put_file_name);
     }
   }
 };
