@@ -2,7 +2,7 @@
   <div>
     <mu-flex direction='column'>
       <mu-flex direction='row'>
-        <div>
+        <div style="width:15vw;height:97vh;padding:0">
           <!-- 文件结构 嵌套列表的方式 -->
 
           <mu-list toggle-nested
@@ -21,6 +21,7 @@
                 style="padding:6px"
                 color='blue'></mu-icon>
               <mu-list-item-title style="color:#fff">root</mu-list-item-title>
+
               <mu-list-item-action>
                 <mu-icon class="toggle-icon"
                   size="24"
@@ -34,7 +35,7 @@
                 :value="i.index"
                 button
                 :ripple="false"
-                @click="get_code(i.name)"
+                @click="get_code('',i.name,i.children)"
                 nested
                 slot="nested">
 
@@ -57,7 +58,7 @@
                   :key="j.name"
                   button
                   :ripple="false"
-                  @click="get_code(i.name)"
+                  @click="get_code(i.name,j.name,false)"
                   slot="nested"
                   :value="j.index">
                   <mu-icon value="description"
@@ -76,6 +77,7 @@
             v-model="code"
             :mode="mode"
             :theme="theme"
+            :syncInput="true"
             :fontSize="20"></m-monaco-editor>
         </mu-flex>
       </mu-flex>
@@ -84,20 +86,39 @@
       <mu-flex style="width:100vw;height:3vh;background:#414141;padding-right:16px;color:white"
         justify-content="end"
         align-items="center">
-        <p id="file-status"
-          style="padding:auto 0;margin:0 6px;font-size:16px"></p>
-        <mu-button small
-          icon
-          color="white"
-          @click="showTermDialog">
-          <mu-icon value="keyboard_arrow_right"></mu-icon>
-        </mu-button>
-        <mu-button small
-          icon
-          color="white">
-          <mu-icon value="settings"></mu-icon>
-        </mu-button>
+
+        <mu-flex style="width:60vw;padding-left:8px;"
+          justify-content="start"
+          align-items="center">
+          <mu-button icon
+            small
+            color="white"
+            @click="update_code()">
+            <mu-icon value="save"></mu-icon>
+          </mu-button>
+          <p style="margin:0;text-align:center">Current file: {{opened_file}}</p>
+        </mu-flex>
+
+        <mu-flex style="width:40vw"
+          justify-content="end"
+          align-items="center">
+          <p id="file-status"
+            style="padding:auto 0;margin:0 6px;font-size:16px"></p>
+          <mu-button small
+            icon
+            color="white"
+            @click="showTermDialog">
+            <mu-icon value="keyboard_arrow_right"></mu-icon>
+          </mu-button>
+          <mu-button small
+            icon
+            color="white">
+            <mu-icon value="settings"></mu-icon>
+          </mu-button>
+        </mu-flex>
+
       </mu-flex>
+
     </mu-flex>
 
     <!-- terminal container -->
@@ -168,7 +189,7 @@ export default {
       theme: "vs-dark",
       showTerm: false,
       binary_state: 0,
-
+      opened_file: "",
       get_file_name: null,
       get_file_data: null,
       ws: null,
@@ -219,11 +240,23 @@ export default {
       this.list_index = val;
     },
 
-    get_code(filename) {
-      this.last_command = "get_code('" + filename + "')\r";
-      this.ws.send("get_code('" + filename + "')\r");
+    get_code(dir = "", filename, is_dir) {
+      if (!is_dir) {
+        this.opened_file = dir + "/" + filename;
+        this.last_command = "get_code('" + dir + "/" + filename + "')\r";
+        this.ws.send(this.last_command);
+      }
     },
-
+    update_code(codes) {
+      this.ws.send(
+        'update_code("' +
+          this.opened_file +
+          '",' +
+          '"""' +
+          this.replace('\t','\0\0\0\0') +
+          '""")\r'
+      );
+    },
     update_tree() {
       // this.ws.send("from tools import tree\r");
       this.last_command = "tree()\r";
@@ -485,7 +518,9 @@ export default {
         }
 
         if (this.ws_return.startsWith("get_code")) {
-          var code = this.ws_return;
+          var code = this.ws_return
+            .slice(0, this.ws_return.length - 5)
+            .replace(this.last_command + "\n", "");
           this.code = code;
           this.ws_return = "";
           this.last_command = "";
