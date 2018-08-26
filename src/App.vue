@@ -247,16 +247,13 @@ export default {
         this.ws.send(this.last_command);
       }
     },
-    update_code(codes) {
-      this.ws.send(
-        'update_code("' +
-          this.opened_file +
-          '",' +
-          '"""' +
-          this.replace('\t','\0\0\0\0') +
-          '""")\r'
-      );
+    update_code() {
+      var uint8array = new TextEncoder().encode(this.code);
+      put_file_name = this.opened_file;
+      put_file_data = uint8array;
+      this.put_file();
     },
+
     update_tree() {
       // this.ws.send("from tools import tree\r");
       this.last_command = "tree()\r";
@@ -521,6 +518,7 @@ export default {
           var code = this.ws_return
             .slice(0, this.ws_return.length - 5)
             .replace(this.last_command + "\n", "");
+          console.log(code);
           this.code = code;
           this.ws_return = "";
           this.last_command = "";
