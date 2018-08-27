@@ -5,102 +5,138 @@
         <mu-flex direction="column"
           style="background:#212121;width:15vw;height:97vh;padding:0">
           <!-- 文件结构 嵌套列表的方式 -->
-
-          <mu-list toggle-nested
-            style="background:#212121;width:15vw;height:77vh;padding:0"
-            :value="list_index"
-            @change="handleChange">
-
-            <mu-list-item button
-              :ripple="false"
-              @click="update_tree()"
-              :value="-1"
-              nested
-              :open="false">
-
-              <mu-icon value="folder"
-                style="padding:6px"
-                color='blue'></mu-icon>
-              <mu-list-item-title style="color:#fff">root</mu-list-item-title>
-
-              <mu-list-item-action>
-                <mu-icon class="toggle-icon"
-                  size="24"
-                  color='grey'
-                  value="keyboard_arrow_down"></mu-icon>
-              </mu-list-item-action>
-              <!-- 开始遍历 this.root_files -->
-
-              <mu-list-item v-for="(i,index) in root_files.children"
-                :key="index"
-                :value="i.index"
-                button
-                :ripple="false"
-                @click="get_code('',i.name,i.children)"
-                nested
-                slot="nested">
-
-                <mu-icon v-if="i.children"
-                  value="folder"
-                  style="padding:6px"
-                  color='blue'></mu-icon>
-                <mu-icon v-if="!i.children"
-                  value="description"
-                  style="padding:6px"
-                  color='green'></mu-icon>
-
-                <mu-list-item-title style="color:#fff">{{i.name}}</mu-list-item-title>
-                <mu-icon v-if="i.children"
-                  class="toggle-icon"
-                  size="24"
-                  color='grey'
-                  value="keyboard_arrow_down"></mu-icon>
-                <!-- 二级目录 -->
-                <mu-list-item v-for="j in i.children"
-                  :key="j.name"
-                  button
-                  :ripple="false"
-                  @click="get_code(i.name,j.name,false)"
-                  slot="nested"
-                  :value="j.index">
-                  <mu-icon value="description"
-                    style="padding:6px"
-                    color='green'></mu-icon>
-                  <mu-list-item-title style="color:#fff">{{j.name}}</mu-list-item-title>
-                </mu-list-item>
-              </mu-list-item>
-            </mu-list-item>
-          </mu-list>
-
-          <mu-flex direction='column'
-            style="height:20vh"
-            justify-content="end"
-            align-items="end">
+          <mu-expansion-panel @change="update_tree()"
+            style="width:15vw;background:#212121;">
+            <div slot="header"
+              style="color:#eeeeee;height:20px;">Root</div>
             <mu-divider style="background:#42424242"></mu-divider>
-            <mu-expansion-panel style="width:15vw;background:#212121;"
-              :expand="panel === 'panel1'"
-              @change="toggle('panel1')">
-              <div slot="header"
-                style="color:grey">New File</div>
-              <mu-flex>
-                <mu-text-field placeholder="file name"></mu-text-field>
+            <div class="outer-container">
+              <div class="inner-container">
+                <mu-list toggle-nested
+                  class="list content"
+                  :value="list_index"
+                  @change="handleChange">
+
+                  <mu-list-item v-for="(i,index) in root_files.children"
+                    :key="index"
+                    :value="i.index"
+                    button
+                    :ripple="false"
+                    @click="get_code('',i.name,i.children)"
+                    nested>
+
+                    <mu-icon v-if="i.children"
+                      value="folder"
+                      style="padding:6px"
+                      color='blue'></mu-icon>
+                    <mu-icon v-if="!i.children"
+                      value="description"
+                      style="padding:6px"
+                      color='green'></mu-icon>
+
+                    <mu-list-item-title style="color:#fff">{{i.name}}</mu-list-item-title>
+                    <mu-icon v-if="i.children"
+                      class="toggle-icon"
+                      size="24"
+                      color='grey'
+                      value="keyboard_arrow_down"></mu-icon>
+                    <!-- 二级目录 -->
+                    <mu-list-item v-for="j in i.children"
+                      :key="j.name"
+                      button
+                      :ripple="false"
+                      @click="get_code(i.name,j.name,false)"
+                      slot="nested"
+                      :value="j.index">
+                      <mu-icon value="description"
+                        style="padding:6px"
+                        color='green'></mu-icon>
+                      <mu-list-item-title style="color:#fff">{{j.name}}</mu-list-item-title>
+                    </mu-list-item>
+                  </mu-list-item>
+
+                </mu-list>
+              </div>
+            </div>
+
+          </mu-expansion-panel>
+
+          <mu-expansion-panel style="width:15vw;background:#212121;"
+            :expand="panel === 'panel1'"
+            @change="toggle('panel1')">
+            <div slot="header"
+              style="color:#eeeeee;height:20px;">New File</div>
+            <mu-flex justify-content="end"
+              align-items="center"
+              direction="column"
+              style="width:100%;padding:8px 24px">
+              <mu-text-field style="width:100%"
+                placeholder="file name"></mu-text-field>
+              <mu-flex style="width:100%"
+                align-items="center"
+                justify-content="end">
                 <mu-button small
-                  color="secondary">add</mu-button>
+                  color="success">add</mu-button>
               </mu-flex>
-            </mu-expansion-panel>
-            <mu-expansion-panel style="width:15vw;background:#212121;"
-              :expand="panel === 'panel2'"
-              color="grey"
-              @change="toggle('panel2')">
-              <div slot="header"
-                style="color:grey">New Folder</div>
-              <mu-flex>
-                <mu-text-field placeholder="folder name"></mu-text-field>
+            </mu-flex>
+          </mu-expansion-panel>
+          <mu-expansion-panel style="width:15vw;background:#212121;"
+            :expand="panel === 'panel2'"
+            color="grey"
+            @change="toggle('panel2')">
+            <div slot="header"
+              style="color:#eeeeee;height:20px;">New Folder</div>
+            <mu-flex justify-content="end"
+              align-items="center"
+              direction="column"
+              style="width:100%;padding:8px 24px">
+              <mu-text-field style="width:100%"
+                placeholder="folder name"></mu-text-field>
+              <mu-flex style="width:100%"
+                align-items="center"
+                justify-content="end">
                 <mu-button small
-                  color="secondary">add</mu-button>
+                  color="success">add</mu-button>
               </mu-flex>
-            </mu-expansion-panel>
-          </mu-flex>
+            </mu-flex>
+          </mu-expansion-panel>
+
+          <mu-expansion-panel style="width:15vw;background:#212121;"
+            :expand="panel === 'panel3'"
+            color="grey"
+            @change="toggle('panel3')">
+            <div slot="header"
+              style="color:#eeeeee;height:20px;">Send File</div>
+            <mu-flex justify-content="end"
+              align-items="center"
+              direction="column"
+              style="width:100%;padding:8px 24px">
+
+              <p id="filename"
+                style="color:#5c6bc0;font-size:14px;text-align:center">none selected. </p>
+
+              <mu-flex style="width:100%;padding-top:6px"
+                align-items="center"
+                justify-content="end">
+                <mu-button small
+                  @click="file_input()"
+                  color="indigo400"
+                  style="margin:0 6px">
+                  Browser...
+                </mu-button>
+                <mu-button :disabled="!is_connected"
+                  color="blue"
+                  small
+                  @click="send_button_clicked()">SEND</mu-button>
+              </mu-flex>
+              <p id="file-status"
+                style="margin:12px 0;font-size:14px;color:#5c6bc0"></p>
+            </mu-flex>
+
+            <input type="file"
+              ref="file_dialog"
+              style="display:none">
+          </mu-expansion-panel>
 
         </mu-flex>
         <mu-flex direction="column"
@@ -143,8 +179,8 @@
         <mu-flex style="width:40vw"
           justify-content="end"
           align-items="center">
-          <p id="file-status"
-            style="padding:auto 0;margin:0 6px;font-size:16px"></p>
+          <!-- <p id="file-status"
+            style="padding:auto 0;margin:0 6px;font-size:16px"></p> -->
           <mu-button small
             icon
             color="white"
@@ -172,31 +208,20 @@
         <mu-button slot="left"
           icon
           @click="closeFullscreenDialog">
-          <mu-icon value="keyboard_arrow_down" color="grey"></mu-icon>
+          <mu-icon value="keyboard_arrow_down"
+            color="grey"></mu-icon>
         </mu-button>
         <mu-flex style="height:46px"
           justify-content="end"
           align-items="center">
 
-          <input type="file"
-            ref="file_dialog"
-            style="display:none">
-          <mu-text-field @click="file_input()"
-            placeholder="select a file"
-            color='#414141'
-            style="height:46px;margin:auto 6px"></mu-text-field><br/>
-          <mu-button style="margin-right:6px"
-            :disabled="!is_connected"
-            color="blue"
-            small
-            @click="send_button_clicked()">SEND</mu-button>
           <mu-text-field style="height:46px;margin:auto 6px"
             :disabled="is_connected"
             color="white"
             v-model="url"
             placeholder="ws://192.168.xxx.xxx:8266/"></mu-text-field>
           <mu-button style="margin-right:6px"
-            color="red"
+            color="secondary"
             small
             @click="connect_button_clicked()">{{button_text}}</mu-button>
 
@@ -417,7 +442,7 @@ export default {
                 // final response for put
                 if (this.decode_resp(data) == 0) {
                   this.update_file_status(
-                    "Send success " +
+                    "success! " +
                       put_file_name +
                       ", " +
                       put_file_data.length +
@@ -535,7 +560,7 @@ export default {
         put_file_data = new Uint8Array(e.target.result);
         console.log("put file data", put_file_data);
         console.log(put_file_name + " - " + put_file_data.length + " bytes");
-        // document.getElementById("put-file-button").disabled = false;
+        document.getElementById("filename").innerHTML = put_file_name;
       };
       reader.readAsArrayBuffer(f);
     },
@@ -596,11 +621,39 @@ export default {
 }
 
 .terminal {
-	float: left;
-	border: #1e1e1e solid 8px;
-	font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
-	font-size: 16px;
-	color: #f0f0f0;
-	background: #1e1e1e !important;
+  float: left;
+  border: #1e1e1e solid 8px;
+  font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
+  font-size: 16px;
+  color: #f0f0f0;
+  background: #1e1e1e !important;
+}
+
+.mu-expansion-panel-content {
+  padding: 6px;
+}
+
+.list {
+  background: #212121;
+  width: 16vw;
+  /* min-height: 20vh; */
+  /* max-height: 60vh; */
+  padding: 0;
+}
+
+.outer-container,
+.content {
+  /* min-height: 20vh; */
+  height: 50vh;
+}
+.outer-container {
+  position: relative;
+  overflow: hidden;
+}
+.inner-container {
+  position: absolute;
+  left: 0;
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 </style>
