@@ -61,6 +61,7 @@
 
           </mu-expansion-panel>
 
+          <!-- 创建文件 -->
           <mu-expansion-panel style="width:15vw;background:#212121;"
             :expand="panel === 'panel1'"
             @change="toggle('panel1')">
@@ -71,15 +72,19 @@
               direction="column"
               style="width:100%;padding:8px 24px">
               <mu-text-field style="width:100%"
+                v-model="new_file_name"
                 placeholder="file name"></mu-text-field>
               <mu-flex style="width:100%"
                 align-items="center"
                 justify-content="end">
                 <mu-button small
+                  @click="new_file()"
                   color="success">add</mu-button>
               </mu-flex>
             </mu-flex>
           </mu-expansion-panel>
+
+          <!-- 创建文件夹 -->
           <mu-expansion-panel style="width:15vw;background:#212121;"
             :expand="panel === 'panel2'"
             color="grey"
@@ -91,16 +96,19 @@
               direction="column"
               style="width:100%;padding:8px 24px">
               <mu-text-field style="width:100%"
+                v-model="new_folder_name"
                 placeholder="folder name"></mu-text-field>
               <mu-flex style="width:100%"
                 align-items="center"
                 justify-content="end">
                 <mu-button small
+                  @click="new_folder()"
                   color="success">add</mu-button>
               </mu-flex>
             </mu-flex>
           </mu-expansion-panel>
 
+          <!-- 发送文件 -->
           <mu-expansion-panel style="width:15vw;background:#212121;"
             :expand="panel === 'panel3'"
             color="grey"
@@ -139,6 +147,8 @@
           </mu-expansion-panel>
 
         </mu-flex>
+        <!-- 左侧栏 结束 -->
+
         <mu-flex direction="column"
           style="height:97vh;width:85vw;background:#1e1e1e">
           <!-- monaco编辑器 -->
@@ -257,6 +267,8 @@ export default {
       showTerm: false,
       binary_state: 0,
       opened_file: "",
+      new_file_name: "",
+      new_folder_name: "",
       get_file_name: null,
       get_file_data: null,
       ws: null,
@@ -309,6 +321,16 @@ export default {
 
     handleChange(val) {
       this.list_index = val;
+    },
+
+    new_file() {
+      this.last_command = "new_file('" + this.new_file_name + "')\r";
+      this.ws.send(this.last_command);
+    },
+
+    new_folder() {
+      this.last_command = "create_folder('" + this.new_folder_name + "')\r";
+      this.ws.send(this.last_command);
     },
 
     get_code(dir = "", filename, is_dir) {
@@ -579,11 +601,20 @@ export default {
     ws_return: function() {
       if (this.ws_return.endsWith(">>> ")) {
         // console.log("raw:", this.ws_return);
-        if (this.ws_return.startsWith("tree")) {
+        if (
+          this.ws_return.startsWith("tree") ||
+          this.ws_return.startsWith("new_file") ||
+          this.ws_return.startsWith("create_folder")
+        ) {
           var root_files = this.ws_return
-            .slice(7, this.ws_return.length - 5)
-            .replace(this.last_command, "");
+            .slice(0, this.ws_return.length - 5)
+            .replace(this.last_command + "\n", "");
           // console.log("sliced:", root_files);
+          if (this.ws_return.startsWith("new_file")) {
+            root_files = this.ws_return
+              .replace(this.last_command + "\n", "")
+              .slice(2, this.ws_return.length - 5);
+          }
           this.root_files = JSON.parse(root_files);
 
           // console.log("tree obj:", this.root_files);
@@ -596,7 +627,8 @@ export default {
             .slice(0, this.ws_return.length - 5)
             .replace(this.last_command + "\n", "");
           // console.log(code);
-          this.code = code.replace("\r\n", "\n");
+
+          this.code = code;
           this.ws_return = "";
           this.last_command = "";
         } else {
