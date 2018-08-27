@@ -35,3 +35,13 @@ def update_code(filename, content):
     gc.collect()
     with open(filename, 'w') as f:
         print(f.write(content))
+
+def create_folder(folder):
+    try:
+        os.mkdir(folder)
+    except:
+        pass
+
+        
+def new_file(filename):
+    update_code(filename,'')

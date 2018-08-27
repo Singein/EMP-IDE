@@ -2,11 +2,12 @@
   <div>
     <mu-flex direction='column'>
       <mu-flex direction='row'>
-        <div style="width:15vw;height:97vh;padding:0">
+        <mu-flex direction="column"
+          style="background:#212121;width:15vw;height:97vh;padding:0">
           <!-- 文件结构 嵌套列表的方式 -->
 
           <mu-list toggle-nested
-            style="background:#212121;width:15vw;height:97vh;padding:0"
+            style="background:#212121;width:15vw;height:77vh;padding:0"
             :value="list_index"
             @change="handleChange">
 
@@ -47,15 +48,14 @@
                   value="description"
                   style="padding:6px"
                   color='green'></mu-icon>
-             
+
                 <mu-list-item-title style="color:#fff">{{i.name}}</mu-list-item-title>
                 <mu-icon v-if="i.children"
                   class="toggle-icon"
                   size="24"
                   color='grey'
                   value="keyboard_arrow_down"></mu-icon>
-
-    
+                <!-- 二级目录 -->
                 <mu-list-item v-for="j in i.children"
                   :key="j.name"
                   button
@@ -69,13 +69,44 @@
                   <mu-list-item-title style="color:#fff">{{j.name}}</mu-list-item-title>
                 </mu-list-item>
               </mu-list-item>
-
             </mu-list-item>
           </mu-list>
-        </div>
-        <mu-flex direction="column" style="height:97vh;width:85vw;background:#1e1e1e">
+
+          <mu-flex direction='column'
+            style="height:20vh"
+            justify-content="end"
+            align-items="end">
+            <mu-divider style="background:#42424242"></mu-divider>
+            <mu-expansion-panel style="width:15vw;background:#212121;"
+              :expand="panel === 'panel1'"
+              @change="toggle('panel1')">
+              <div slot="header"
+                style="color:grey">New File</div>
+              <mu-flex>
+                <mu-text-field placeholder="file name"></mu-text-field>
+                <mu-button small
+                  color="secondary">add</mu-button>
+              </mu-flex>
+            </mu-expansion-panel>
+            <mu-expansion-panel style="width:15vw;background:#212121;"
+              :expand="panel === 'panel2'"
+              color="grey"
+              @change="toggle('panel2')">
+              <div slot="header"
+                style="color:grey">New Folder</div>
+              <mu-flex>
+                <mu-text-field placeholder="folder name"></mu-text-field>
+                <mu-button small
+                  color="secondary">add</mu-button>
+              </mu-flex>
+            </mu-expansion-panel>
+          </mu-flex>
+
+        </mu-flex>
+        <mu-flex direction="column"
+          style="height:97vh;width:85vw;background:#1e1e1e">
           <!-- monaco编辑器 -->
-          <m-monaco-editor style="height:97vh;width:85vw;background:#212121"
+          <m-monaco-editor style="height:97vh;width:85vw;"
             v-if="is_connected"
             v-model="code"
             :mode="mode"
@@ -93,33 +124,20 @@
         <mu-flex style="width:15vw;padding-left:8px;"
           justify-content="start"
           align-items="center">
-          <mu-button v-if="is_connected" icon
-            small style="margin:4px"
-        
-            color="grey">
-            <mu-icon value="note_add"></mu-icon>
-
-          </mu-button>
-
-          <mu-button v-if="is_connected" icon
-            small style="margin:4px"
-            @click="create_folder()"
-            color="grey">
-            <mu-icon value="create_new_folder"></mu-icon>
-
-          </mu-button>
 
         </mu-flex>
         <mu-flex style="width:45vw;padding-left:8px;"
           justify-content="start"
           align-items="center">
-          <mu-button v-if="opened_file" icon
+          <mu-button v-if="opened_file"
+            icon
             small
             color="grey"
             @click="update_code()">
             <mu-icon value="save"></mu-icon>
           </mu-button>
-          <p v-if="opened_file" style="margin:0;font-size:16px;text-align:center;color:#007acc">Current file: {{opened_file}}</p>
+          <p v-if="opened_file"
+            style="margin:0;font-size:16px;text-align:center;color:white">Current file: {{opened_file}}</p>
         </mu-flex>
 
         <mu-flex style="width:40vw"
@@ -146,15 +164,15 @@
 
     <!-- terminal container -->
     <div v-show="showTerm"
-      style="width:85vw;height:auto;position:fixed;left:15vw;bottom:3vh;background:#000">
+      style="width:85vw;height:auto;position:fixed;left:15vw;bottom:3vh;background:#1e1e1e">
       <mu-appbar :z-Depth="3"
         style="width: 100%;height:48px"
-        color='#414141'
+        color='#1e1e1e'
         title="Title">
         <mu-button slot="left"
           icon
           @click="closeFullscreenDialog">
-          <mu-icon value="keyboard_arrow_down"></mu-icon>
+          <mu-icon value="keyboard_arrow_down" color="grey"></mu-icon>
         </mu-button>
         <mu-flex style="height:46px"
           justify-content="end"
@@ -187,7 +205,7 @@
       <!-- terminal -->
       <mu-flex ref="term_container"
         direction="row"
-        style="width:100%;background:#000">
+        style="width:100%;background:#1e1e1e">
         <div v-show="true"
           ref="term"
           style="width:100%"></div>
@@ -209,6 +227,7 @@ export default {
       code: "",
       mode: "python",
       list_index: -1,
+      panel: "",
       theme: "vs-dark",
       showTerm: false,
       binary_state: 0,
@@ -220,14 +239,14 @@ export default {
       last_command: "",
       ws_return: "",
       root_files: [],
-      url: "ws://192.168.2.189:8266/",
+      url: "ws://192.168.0.123:8266/",
       is_connected: false,
       button_text: "connect"
     };
   },
   mounted: function() {
     this.$nextTick(function() {
-      var size = [190, 20];
+      var size = [155, 20];
       // 初始化term对象,完成视图的渲染
       this.$refs.file_dialog.addEventListener(
         "change",
@@ -251,6 +270,10 @@ export default {
 
     closeFullscreenDialog() {
       this.showTerm = false;
+    },
+
+    toggle(panel) {
+      this.panel = panel === this.panel ? "" : panel;
     },
 
     calculate_size(win) {
@@ -559,3 +582,25 @@ export default {
   }
 };
 </script>
+
+<style>
+.mu-expansion-toggle-btn.mu-button {
+  margin-left: auto;
+  margin-right: -12px;
+  color: rgba(221, 207, 207, 0.67);
+  -webkit-transform: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.mu-text-field-input {
+  color: rgba(221, 207, 207, 0.67) !important;
+}
+
+.terminal {
+	float: left;
+	border: #1e1e1e solid 8px;
+	font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
+	font-size: 16px;
+	color: #f0f0f0;
+	background: #1e1e1e !important;
+}
+</style>
