@@ -47,6 +47,7 @@
                   value="description"
                   style="padding:6px"
                   color='green'></mu-icon>
+             
                 <mu-list-item-title style="color:#fff">{{i.name}}</mu-list-item-title>
                 <mu-icon v-if="i.children"
                   class="toggle-icon"
@@ -54,6 +55,7 @@
                   color='grey'
                   value="keyboard_arrow_down"></mu-icon>
 
+    
                 <mu-list-item v-for="j in i.children"
                   :key="j.name"
                   button
@@ -71,9 +73,10 @@
             </mu-list-item>
           </mu-list>
         </div>
-        <mu-flex direction="column">
+        <mu-flex direction="column" style="height:97vh;width:85vw;background:#1e1e1e">
           <!-- monaco编辑器 -->
-          <m-monaco-editor style="height:97vh;width:85vw"
+          <m-monaco-editor style="height:97vh;width:85vw;background:#212121"
+            v-if="is_connected"
             v-model="code"
             :mode="mode"
             :theme="theme"
@@ -87,16 +90,36 @@
         justify-content="end"
         align-items="center">
 
-        <mu-flex style="width:60vw;padding-left:8px;"
+        <mu-flex style="width:15vw;padding-left:8px;"
           justify-content="start"
           align-items="center">
-          <mu-button icon
+          <mu-button v-if="is_connected" icon
+            small style="margin:4px"
+        
+            color="grey">
+            <mu-icon value="note_add"></mu-icon>
+
+          </mu-button>
+
+          <mu-button v-if="is_connected" icon
+            small style="margin:4px"
+            @click="create_folder()"
+            color="grey">
+            <mu-icon value="create_new_folder"></mu-icon>
+
+          </mu-button>
+
+        </mu-flex>
+        <mu-flex style="width:45vw;padding-left:8px;"
+          justify-content="start"
+          align-items="center">
+          <mu-button v-if="opened_file" icon
             small
-            color="white"
+            color="grey"
             @click="update_code()">
             <mu-icon value="save"></mu-icon>
           </mu-button>
-          <p style="margin:0;text-align:center">Current file: {{opened_file}}</p>
+          <p v-if="opened_file" style="margin:0;font-size:16px;text-align:center;color:#007acc">Current file: {{opened_file}}</p>
         </mu-flex>
 
         <mu-flex style="width:40vw"
@@ -153,7 +176,7 @@
             :disabled="is_connected"
             color="white"
             v-model="url"
-            placeholder="ws://192.168.2.189:8266/"></mu-text-field>
+            placeholder="ws://192.168.xxx.xxx:8266/"></mu-text-field>
           <mu-button style="margin-right:6px"
             color="red"
             small
@@ -197,7 +220,7 @@ export default {
       last_command: "",
       ws_return: "",
       root_files: [],
-      url: "ws://192.168.0.123:8266/",
+      url: "ws://192.168.2.189:8266/",
       is_connected: false,
       button_text: "connect"
     };
@@ -248,7 +271,11 @@ export default {
       }
     },
     update_code() {
-      var uint8array = new TextEncoder().encode(this.code);
+      var uint8array = new TextEncoder().encode(
+        this.code.replace(/\r\n/g, "\n")
+      );
+      console.log("uint", uint8array);
+
       put_file_name = this.opened_file;
       put_file_data = uint8array;
       this.put_file();
@@ -481,7 +508,9 @@ export default {
       put_file_name = f.name;
       var reader = new FileReader();
       reader.onload = function(e) {
+        // console.log("sdfs", e.target.result);
         put_file_data = new Uint8Array(e.target.result);
+        console.log("put file data", put_file_data);
         console.log(put_file_name + " - " + put_file_data.length + " bytes");
         // document.getElementById("put-file-button").disabled = false;
       };
@@ -501,15 +530,15 @@ export default {
     last_command: function() {},
     ws_return: function() {
       if (this.ws_return.endsWith(">>> ")) {
-        console.log("raw:", this.ws_return);
+        // console.log("raw:", this.ws_return);
         if (this.ws_return.startsWith("tree")) {
           var root_files = this.ws_return
             .slice(7, this.ws_return.length - 5)
             .replace(this.last_command, "");
-          console.log("sliced:", root_files);
+          // console.log("sliced:", root_files);
           this.root_files = JSON.parse(root_files);
 
-          console.log("tree obj:", this.root_files);
+          // console.log("tree obj:", this.root_files);
           this.ws_return = "";
           this.last_command = "";
         }
@@ -518,8 +547,8 @@ export default {
           var code = this.ws_return
             .slice(0, this.ws_return.length - 5)
             .replace(this.last_command + "\n", "");
-          console.log(code);
-          this.code = code;
+          // console.log(code);
+          this.code = code.replace("\r\n", "\n");
           this.ws_return = "";
           this.last_command = "";
         } else {

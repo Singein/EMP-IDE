@@ -1,6 +1,6 @@
 import os
 import json
-
+import gc
 
 def tree(path='/'):
     root = dict(name=path, children=[])
@@ -22,13 +22,16 @@ def tree(path='/'):
                 j['index'] = index
                 index += 1
     print(json.dumps(root))
+    gc.collect()
 
 
 def get_code(filename):
+    gc.collect()
     with open(filename, 'r') as f:
         print(f.read())
 
 
 def update_code(filename, content):
+    gc.collect()
     with open(filename, 'w') as f:
         print(f.write(content))
