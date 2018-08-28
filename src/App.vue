@@ -4,10 +4,10 @@
     <mu-flex direction='column'>
       <mu-flex direction='row'>
         <mu-flex direction="column"
-          style="background:#212121;width:15vw;height:97vh;padding:0">
+          style="background:#212121;width:15vw;min-width:250px;height:97vh;padding:0">
           <!-- 文件结构 嵌套列表的方式 -->
           <mu-expansion-panel @change="update_tree()"
-            style="width:15vw;background:#212121;">
+            style="width:15vw;min-width:250px;background:#212121;">
             <div slot="header"
               style="color:#eeeeee;height:20px;">
               <mu-button flat small color="grey">
@@ -68,7 +68,7 @@
           </mu-expansion-panel>
 
           <!-- 创建文件 -->
-          <mu-expansion-panel style="width:15vw;background:#212121;"
+          <mu-expansion-panel style="width:15vw;min-width:250px;background:#212121;"
             :expand="panel === 'panel1'"
             @change="toggle('panel1')">
             <div slot="header"
@@ -96,7 +96,7 @@
           </mu-expansion-panel>
 
           <!-- 创建文件夹 -->
-          <mu-expansion-panel style="width:15vw;background:#212121;"
+          <mu-expansion-panel style="width:15vw;min-width:250px;background:#212121;"
             :expand="panel === 'panel2'"
             color="grey"
             @change="toggle('panel2')">
@@ -125,7 +125,7 @@
           </mu-expansion-panel>
 
           <!-- 发送文件 -->
-          <mu-expansion-panel style="width:15vw;background:#212121;"
+          <mu-expansion-panel style="width:15vw;min-width:250px;background:#212121;"
             :expand="panel === 'panel3'"
             color="grey"
             @change="toggle('panel3')">
@@ -237,8 +237,8 @@
     <!-- terminal container -->
     <div v-show="showTerm"
       style="width:85vw;height:auto;position:fixed;left:15vw;bottom:3vh;background:#1e1e1e">
-      <mu-appbar :z-Depth="3"
-        style="width: 100%;height:48px"
+      <mu-appbar :z-depth="0"
+        style="width: 100%;height:48px;border-top:1px solid #61616161;"
         color='#1e1e1e'
         title="Title">
         <mu-button slot="left"
