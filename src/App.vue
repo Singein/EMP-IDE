@@ -202,8 +202,7 @@
           justify-content="start"
           align-items="center">
           
-          <p
-            style="margin:0;font-size:16px;text-align:center;color:grey">MicroIDE@1ZLAB</p>
+          <p style="margin:0;font-size:16px;text-align:center;color:grey">MicroIDE@1ZLAB</p>
           <a href="http://dev.1zlab.com/help" style="color:grey;margin:0 6px;font-size:16px" target="_blank">Help</a>
         </mu-flex>
         <mu-flex style="width:45vw;padding-left:8px;"
