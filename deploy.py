@@ -46,11 +46,24 @@ def overwrite_file(new_html):
         f.write(new_html)
     print('index.html replaced')
 
+def del_static(des_path):
+    try:
+        os.system('rm -rf '+des_path)
+        print(des_path,'removed.')
+    except:
+        pass
+
+
+def copy_static(src_path,des_path):
+    os.system('cp -rp '+ src_path +' '+ des_path)
+    print('copy finish')
 
 if __name__ == '__main__':
     new_html = get_html()
     overwrite_file(new_html)
-    shutil.rmtree(flask_path+'/static', True)
-    shutil.copytree(vue_path+"/dist/static/", flask_path+'/static/')
-    print('dir: /static replaced')
+    # shutil.rmtree(flask_path+'/static', True)
+    # shutil.copytree(vue_path+"/dist/static/", flask_path+'/static/')
+    del_static('./server/static')
+    copy_static('./dist/static','./server')
+
     print('autodeploy done.')
