@@ -739,11 +739,10 @@ def new_file(filename):
 </script>
 
 <style>
-/*! autoprefixer: off */
 .mu-expansion-toggle-btn.mu-button {
   margin-left: auto;
   margin-right: -12px;
-  color: rgba(221, 207, 207, 0.67);
+  color: rgba(221, 207, 207, 0.67) !important;
   -webkit-transform: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   transform: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -766,7 +765,7 @@ def new_file(filename):
 
 .list {
   background: #212121;
-  width: 16vw;
+  width: 16vw !important;
   /* min-height: 20vh; */
   /* max-height: 60vh; */
   padding: 0;
@@ -788,8 +787,7 @@ def new_file(filename):
   overflow-y: scroll;
 }
 .mu-appbar-title {
-  font-size: 16px;
+  font-size: 16px !important;
   color: #e0e0e0;
 }
-/*! autoprefixer: on */
 </style>
