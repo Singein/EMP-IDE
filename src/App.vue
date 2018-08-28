@@ -251,12 +251,12 @@
           justify-content="end"
           align-items="center">
           <!-- 部署按钮 -->
-          <!-- <mu-button small
+          <mu-button small
             icon
             color="grey"
             @click="deploy()">
             <mu-icon value="cloud_download"></mu-icon>
-          </mu-button> -->
+          </mu-button>
 
           <mu-text-field style="height:46px;margin:auto 6px"
             :disabled="is_connected"
@@ -357,8 +357,8 @@ export default {
       this.list_index = val;
     },
 
-    help(){
-      location.href='/doc'
+    help() {
+      location.href = "/doc";
     },
 
     new_file() {
@@ -444,14 +444,10 @@ def create_folder(folder):
 def new_file(filename):
     update_code(filename,'')
 `;
-      var uint8array = new TextEncoder().encode(
-        tools.replace(/\r\n/g, "\n")
-      );
-      put_file_name = 'tools.py';
+      var uint8array = new TextEncoder().encode(tools.replace(/\r\n/g, "\n"));
+      put_file_name = "microide.py";
       put_file_data = uint8array;
       this.put_file();
-
-      this.ws.send('from tools import *\r')
     },
 
     file_input() {
@@ -567,6 +563,8 @@ def new_file(filename):
                       put_file_data.length +
                       " bytes"
                   );
+                  if (put_file_name === "microide.py")
+                    this.ws.send("from microide import *\r");
                   put_file_data = null;
                 } else {
                   this.update_file_status("Failed sending " + put_file_name);
