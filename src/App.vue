@@ -1,5 +1,6 @@
 <template>
   <div>
+    <mu-linear-progress v-if="loading" color="secondary"></mu-linear-progress>
     <mu-flex direction='column'>
       <mu-flex direction='row'>
         <mu-flex direction="column"
@@ -8,7 +9,12 @@
           <mu-expansion-panel @change="update_tree()"
             style="width:15vw;background:#212121;">
             <div slot="header"
-              style="color:#eeeeee;height:20px;">Root</div>
+              style="color:#eeeeee;height:20px;">
+              <mu-button flat small color="grey">
+                <mu-icon left value="folder"></mu-icon>
+                Root DIR
+              </mu-button>
+              </div>
             <mu-divider style="background:#42424242"></mu-divider>
             <div class="outer-container">
               <div class="inner-container">
@@ -66,7 +72,12 @@
             :expand="panel === 'panel1'"
             @change="toggle('panel1')">
             <div slot="header"
-              style="color:#eeeeee;height:20px;">New File</div>
+              style="color:#eeeeee;height:20px;">
+              <mu-button flat small color="grey">
+                <mu-icon left value="note_add"></mu-icon>
+                New File
+              </mu-button>
+            </div>
             <mu-flex justify-content="end"
               align-items="center"
               direction="column"
@@ -90,7 +101,12 @@
             color="grey"
             @change="toggle('panel2')">
             <div slot="header"
-              style="color:#eeeeee;height:20px;">New Folder</div>
+              style="color:#eeeeee;height:20px;">
+              <mu-button flat small color="grey">
+                <mu-icon left value="create_new_folder"></mu-icon>
+                New Folder
+              </mu-button>
+            </div>
             <mu-flex justify-content="end"
               align-items="center"
               direction="column"
@@ -114,7 +130,12 @@
             color="grey"
             @change="toggle('panel3')">
             <div slot="header"
-              style="color:#eeeeee;height:20px;">Send File</div>
+              style="color:#eeeeee;height:20px;">
+              <mu-button flat small color="grey">
+                <mu-icon left value="send"></mu-icon>
+                Send File
+              </mu-button>
+            </div>
             <mu-flex justify-content="end"
               align-items="center"
               direction="column"
@@ -137,8 +158,8 @@
                   small
                   @click="send_button_clicked()">SEND</mu-button>
               </mu-flex>
-              <p id="file-status"
-                style="margin:12px 0;font-size:14px;color:#5c6bc0"></p>
+              <!-- <p id="file-status"
+                style="margin:12px 0;font-size:14px;color:#5c6bc0"></p> -->
             </mu-flex>
 
             <input type="file"
@@ -151,6 +172,16 @@
 
         <mu-flex direction="column"
           style="height:97vh;width:85vw;background:#1e1e1e">
+          <!-- 顶栏 -->
+          <mu-appbar style="width:100%;height:32px;" 
+            :z-depth="1" 
+            color="#252526">
+            Current File: 
+            {{opened_file}}
+            <mu-button icon small slot="left" @click="update_code()">
+              <mu-icon color="grey" value="get_app"></mu-icon>
+            </mu-button>
+          </mu-appbar>
           <!-- monaco编辑器 -->
           <m-monaco-editor style="height:97vh;width:85vw;"
             v-if="is_connected"
@@ -170,36 +201,32 @@
         <mu-flex style="width:15vw;padding-left:8px;"
           justify-content="start"
           align-items="center">
-
+          
+          <p
+            style="margin:0;font-size:16px;text-align:center;color:grey">MicroIDE@1ZLAB</p>
+          <a href="http://dev.1zlab.com/help" style="color:grey;margin:0 6px;font-size:16px" target="_blank">Help</a>
         </mu-flex>
         <mu-flex style="width:45vw;padding-left:8px;"
           justify-content="start"
           align-items="center">
-          <mu-button v-if="opened_file"
-            icon
-            small
-            color="grey"
-            @click="update_code()">
-            <mu-icon value="save"></mu-icon>
-          </mu-button>
-          <p v-if="opened_file"
-            style="margin:0;font-size:16px;text-align:center;color:white">Current file: {{opened_file}}</p>
+          <p id="file-status"
+            style="padding:auto 0;margin:0 6px;font-size:16px;color:#5c6bc0"></p>
         </mu-flex>
 
         <mu-flex style="width:40vw"
           justify-content="end"
           align-items="center">
-          <!-- <p id="file-status"
-            style="padding:auto 0;margin:0 6px;font-size:16px"></p> -->
+         
+         
           <mu-button small
             icon
-            color="white"
+            color="grey"
             @click="showTermDialog">
             <mu-icon value="keyboard_arrow_right"></mu-icon>
           </mu-button>
           <mu-button small
             icon
-            color="white">
+            color="grey">
             <mu-icon value="settings"></mu-icon>
           </mu-button>
         </mu-flex>
@@ -224,6 +251,13 @@
         <mu-flex style="height:46px"
           justify-content="end"
           align-items="center">
+          <!-- 部署按钮 -->
+          <!-- <mu-button small
+            icon
+            color="grey"
+            @click="deploy()">
+            <mu-icon value="cloud_download"></mu-icon>
+          </mu-button> -->
 
           <mu-text-field style="height:46px;margin:auto 6px"
             :disabled="is_connected"
@@ -263,6 +297,7 @@ export default {
       mode: "python",
       list_index: -1,
       panel: "",
+      loading: false,
       theme: "vs-dark",
       showTerm: false,
       binary_state: 0,
@@ -276,7 +311,7 @@ export default {
       last_command: "",
       ws_return: "",
       root_files: [],
-      url: "ws://192.168.0.123:8266/",
+      url: "ws://192.168.2.189:8266/",
       is_connected: false,
       button_text: "connect"
     };
@@ -323,6 +358,10 @@ export default {
       this.list_index = val;
     },
 
+    help(){
+      location.href='/doc'
+    },
+
     new_file() {
       this.last_command = "new_file('" + this.new_file_name + "')\r";
       this.ws.send(this.last_command);
@@ -335,6 +374,7 @@ export default {
 
     get_code(dir = "", filename, is_dir) {
       if (!is_dir) {
+        this.loading = true;
         this.opened_file = dir + "/" + filename;
         this.last_command = "get_code('" + dir + "/" + filename + "')\r";
         this.ws.send(this.last_command);
@@ -352,9 +392,67 @@ export default {
     },
 
     update_tree() {
-      // this.ws.send("from tools import tree\r");
       this.last_command = "tree()\r";
-      this.ws.send("tree()\r");
+      this.ws.send(this.last_command);
+    },
+
+    deploy() {
+      var tools = `import os
+import json
+import gc
+
+def tree(path='/'):
+    root = dict(name=path, children=[])
+    index = 0
+    dirs = os.listdir(path)
+    for i in dirs:
+        try:
+            root['children'].append(
+                dict(name=i, children=[dict(name=j) for j in os.listdir(i)]))
+        except:
+            root['children'].append(dict(name=i))
+
+    for i in root['children']:
+        if not i.get('children', False):
+            i['index'] = index
+            index += 1
+        else:
+            for j in i['children']:
+                j['index'] = index
+                index += 1
+    print(json.dumps(root))
+    gc.collect()
+
+
+def get_code(filename):
+    gc.collect()
+    with open(filename, 'r') as f:
+        print(f.read())
+
+
+def update_code(filename, content):
+    gc.collect()
+    with open(filename, 'w') as f:
+        print(f.write(content))
+
+def create_folder(folder):
+    try:
+        os.mkdir(folder)
+    except:
+        pass
+
+        
+def new_file(filename):
+    update_code(filename,'')
+`;
+      var uint8array = new TextEncoder().encode(
+        tools.replace(/\r\n/g, "\n")
+      );
+      put_file_name = 'tools.py';
+      put_file_data = uint8array;
+      this.put_file();
+
+      this.ws.send('from tools import *\r')
     },
 
     file_input() {
@@ -629,6 +727,7 @@ export default {
           // console.log(code);
 
           this.code = code;
+          this.loading = false;
           this.ws_return = "";
           this.last_command = "";
         } else {
@@ -687,5 +786,9 @@ export default {
   left: 0;
   overflow-x: hidden;
   overflow-y: scroll;
+}
+.mu-appbar-title {
+  font-size: 16px;
+  color: #e0e0e0;
 }
 </style>
