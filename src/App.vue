@@ -739,6 +739,7 @@ def new_file(filename):
 </script>
 
 <style>
+/*! autoprefixer: off */
 .mu-expansion-toggle-btn.mu-button {
   margin-left: auto;
   margin-right: -12px;
@@ -790,4 +791,5 @@ def new_file(filename):
   font-size: 16px;
   color: #e0e0e0;
 }
+/*! autoprefixer: on */
 </style>
