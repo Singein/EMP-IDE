@@ -298,26 +298,45 @@ export default {
     return {
       code: "",
       mode: "python",
-      list_index: -1,
-      panel: "",
-      loading: false,
       theme: "vs-dark",
-      // theme: "hc-dark",
-      showTerm: false,
-      binary_state: 0,
+      // 当前文件
       opened_file: "",
+      //目录列表
+      root_files: [],
+      // list列表,目前没用
+      list_index: -1,
+      // 左侧列表panel
+      panel: "",
+      // 进度条
+      loading: false, 
+      // 显示终端
+      showTerm: false,
+      // websocket对象
+      ws: null,
+      url: "ws://192.168.2.189:8266/",
+      // ws是否连接
+      is_connected: false,
+      // terminal对像
+      term: null,
+
+      // 字节流标志
+      binary_state: 0,
+
+      
       new_file_name: "",
       new_folder_name: "",
+    
+      
+      // 上一条命令记录
+      last_command: "",
+      // websocket 返回数据接受对象
+      ws_return: "",
+      
+      
+      button_text: "connect",
+
       get_file_name: null,
       get_file_data: null,
-      ws: null,
-      term: null,
-      last_command: "",
-      ws_return: "",
-      root_files: [],
-      url: "ws://192.168.2.189:8266/",
-      is_connected: false,
-      button_text: "connect"
     };
   },
   mounted: function() {
@@ -574,77 +593,6 @@ def new_file(filename):
                 } else {
                   this.update_file_status("Failed sending " + put_file_name);
                 }
-                this.binary_state = 0;
-                break;
-
-              case 21:
-                // first response for get
-                if (this.decode_resp(data) == 0) {
-                  this.binary_state = 22;
-                  var rec = new Uint8Array(1);
-                  rec[0] = 0;
-                  this.ws.send(rec);
-                }
-                break;
-              case 22: {
-                // file data
-                var sz = data[0] | (data[1] << 8);
-                if (data.length == 2 + sz) {
-                  // we assume that the data comes in single chunks
-                  if (sz == 0) {
-                    // end of file
-                    this.binary_state = 23;
-                  } else {
-                    // accumulate incoming data to get_file_data
-                    var new_buf = new Uint8Array(
-                      this.get_file_data.length + sz
-                    );
-                    new_buf.set(this.get_file_data);
-                    new_buf.set(data.slice(2), this.get_file_data.length);
-                    this.get_file_data = new_buf;
-                    this.update_file_status(
-                      "Getting " +
-                        this.get_file_name +
-                        ", " +
-                        this.get_file_data.length +
-                        " bytes"
-                    );
-
-                    var rec = new Uint8Array(1);
-                    rec[0] = 0;
-                    this.ws.send(rec);
-                  }
-                } else {
-                  this.binary_state = 0;
-                }
-                break;
-              }
-              case 23:
-                // final response
-                if (this.decode_resp(data) == 0) {
-                  this.update_file_status(
-                    "Got " +
-                      this.get_file_name +
-                      ", " +
-                      this.get_file_data.length +
-                      " bytes"
-                  );
-                  saveAs(
-                    new Blob([this.get_file_data], {
-                      type: "application/octet-stream"
-                    }),
-                    this.get_file_name
-                  );
-                } else {
-                  this.update_file_status(
-                    "Failed getting " + this.get_file_name
-                  );
-                }
-                this.binary_state = 0;
-                break;
-              case 31:
-                // first (and last) response for GET_VER
-                console.log("GET_VER", data);
                 this.binary_state = 0;
                 break;
             }
