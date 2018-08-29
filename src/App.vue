@@ -3,23 +3,26 @@
     <mu-linear-progress v-if="loading" color="secondary"></mu-linear-progress>
     <mu-flex direction='column'>
       <mu-flex direction='row'>
+        <!-- 左侧栏 -->
         <mu-flex direction="column"
-          style="background:#212121;width:15vw;min-width:250px;height:97vh;padding:0">
+          class="ide-side-bar">
           <!-- 文件结构 嵌套列表的方式 -->
           <mu-expansion-panel @change="update_tree()"
-            style="width:15vw;min-width:250px;background:#212121;">
+            class="ide-panel">
             <div slot="header"
-              style="color:#eeeeee;height:20px;">
+              class="ide-panel-header">
               <mu-button flat small color="grey">
                 <mu-icon left value="folder"></mu-icon>
                 Root DIR
               </mu-button>
               </div>
-            <mu-divider style="background:#42424242"></mu-divider>
+            <mu-divider class="ide-panel-divider"></mu-divider>
+            <!-- file List -->
             <div class="outer-container">
               <div class="inner-container">
+
                 <mu-list toggle-nested
-                  class="list content"
+                  class="ide-list content"
                   :value="list_index"
                   @change="handleChange">
 
@@ -60,19 +63,19 @@
                       <mu-list-item-title style="color:#fff">{{j.name}}</mu-list-item-title>
                     </mu-list-item>
                   </mu-list-item>
-
                 </mu-list>
+
               </div>
             </div>
 
           </mu-expansion-panel>
 
           <!-- 创建文件 -->
-          <mu-expansion-panel style="width:15vw;min-width:250px;background:#212121;"
+          <mu-expansion-panel class="ide-panel"
             :expand="panel === 'panel1'"
             @change="toggle('panel1')">
             <div slot="header"
-              style="color:#eeeeee;height:20px;">
+              class="ide-panel-header">
               <mu-button flat small color="grey">
                 <mu-icon left value="note_add"></mu-icon>
                 New File
@@ -81,7 +84,7 @@
             <mu-flex justify-content="end"
               align-items="center"
               direction="column"
-              style="width:100%;padding:8px 24px">
+              class="ide-panel-flex">
               <mu-text-field style="width:100%"
                 v-model="new_file_name"
                 placeholder="file name"></mu-text-field>
@@ -96,12 +99,12 @@
           </mu-expansion-panel>
 
           <!-- 创建文件夹 -->
-          <mu-expansion-panel style="width:15vw;min-width:250px;background:#212121;"
+          <mu-expansion-panel class="ide-panel"
             :expand="panel === 'panel2'"
             color="grey"
             @change="toggle('panel2')">
             <div slot="header"
-              style="color:#eeeeee;height:20px;">
+              class="ide-panel-header">
               <mu-button flat small color="grey">
                 <mu-icon left value="create_new_folder"></mu-icon>
                 New Folder
@@ -110,7 +113,7 @@
             <mu-flex justify-content="end"
               align-items="center"
               direction="column"
-              style="width:100%;padding:8px 24px">
+              class="ide-panel-flex">
               <mu-text-field style="width:100%"
                 v-model="new_folder_name"
                 placeholder="folder name"></mu-text-field>
@@ -125,12 +128,12 @@
           </mu-expansion-panel>
 
           <!-- 发送文件 -->
-          <mu-expansion-panel style="width:15vw;min-width:250px;background:#212121;"
+          <mu-expansion-panel class="ide-panel"
             :expand="panel === 'panel3'"
             color="grey"
             @change="toggle('panel3')">
             <div slot="header"
-              style="color:#eeeeee;height:20px;">
+              class="ide-panel-header">
               <mu-button flat small color="grey">
                 <mu-icon left value="send"></mu-icon>
                 Send File
@@ -139,7 +142,7 @@
             <mu-flex justify-content="end"
               align-items="center"
               direction="column"
-              style="width:100%;padding:8px 24px">
+              class="ide-panel-flex">
 
               <p id="filename"
                 style="color:#5c6bc0;font-size:14px;text-align:center">none selected. </p>
@@ -170,11 +173,12 @@
         </mu-flex>
         <!-- 左侧栏 结束 -->
 
+        <!-- 编辑器区域 -->
         <mu-flex direction="column"
-          style="height:97vh;width:85vw;background:#1e1e1e">
+          class="ide-top-bar">
           <!-- 顶栏 -->
-          <mu-appbar style="width:100%;height:32px;" 
-            :z-depth="1" 
+          <mu-appbar class="ide-top-bar-appbar" 
+            :z-depth="0" 
             color="#252526">
             Current File: 
             {{opened_file}}
@@ -183,7 +187,7 @@
             </mu-button>
           </mu-appbar>
           <!-- monaco编辑器 -->
-          <m-monaco-editor style="height:97vh;width:85vw;"
+          <m-monaco-editor class="ide-editor"
             v-if="is_connected"
             v-model="code"
             :mode="mode"
@@ -194,35 +198,35 @@
       </mu-flex>
 
       <!-- 底栏 -->
-      <mu-flex style="width:100vw;height:3vh;background:#414141;padding-right:16px;color:white"
+      <mu-flex class="ide-bottom-bar"
         justify-content="end"
         align-items="center">
 
-        <mu-flex style="width:15vw;padding-left:8px;"
+        <mu-flex class="ide-bottom-bar-left"
           justify-content="start"
           align-items="center">
-          
-          <p style="margin:0;font-size:16px;text-align:center;color:grey">MicroIDE@1ZLAB</p>
-          <a href="http://dev.1zlab.com/help" style="color:grey;margin:0 6px;font-size:16px" target="_blank">Help</a>
+          <p class="ide-bottom-bar-author">MicroIDE@1ZLAB</p>
+          <a href="http://dev.1zlab.com/help" class="ide-bottom-bar-help" target="_blank">Help</a>
         </mu-flex>
-        <mu-flex style="width:45vw;padding-left:8px;"
+
+        <mu-flex class="ide-bottom-bar-center"
           justify-content="start"
           align-items="center">
           <p id="file-status"
-            style="padding:auto 0;margin:0 6px;font-size:16px;color:#5c6bc0"></p>
+            class="ide-bottom-bar-message"></p>
         </mu-flex>
 
-        <mu-flex style="width:40vw"
+        <mu-flex class="ide-bottom-bar-right"
           justify-content="end"
           align-items="center">
-         
-         
+         <!-- Terminal Icon -->
           <mu-button small
             icon
             color="grey"
             @click="showTermDialog">
             <mu-icon value="keyboard_arrow_right"></mu-icon>
           </mu-button>
+          <!-- Settings Icon -->
           <mu-button small
             icon
             color="grey">
@@ -236,9 +240,9 @@
 
     <!-- terminal container -->
     <div v-show="showTerm"
-      style="width:85vw;height:auto;position:fixed;left:15vw;bottom:3vh;background:#1e1e1e">
+      class="ide-terminal-container">
       <mu-appbar :z-depth="0"
-        style="width: 100%;height:48px;border-top:1px solid #61616161;"
+        class="ide-terminal-appbar"
         color='#1e1e1e'
         title="Title">
         <mu-button slot="left"
@@ -247,7 +251,7 @@
           <mu-icon value="keyboard_arrow_down"
             color="grey"></mu-icon>
         </mu-button>
-        <mu-flex style="height:46px"
+        <mu-flex class="ide-terminal-flex"
           justify-content="end"
           align-items="center">
           <!-- 部署按钮 -->
@@ -258,12 +262,12 @@
             <mu-icon value="cloud_download"></mu-icon>
           </mu-button>
 
-          <mu-text-field style="height:46px;margin:auto 6px"
+          <mu-text-field class="ide-terminal-url"
             :disabled="is_connected"
-            color="white"
+            color="#61616161"
             v-model="url"
             placeholder="ws://192.168.xxx.xxx:8266/"></mu-text-field>
-          <mu-button style="margin-right:6px"
+          <mu-button class="ide-terminal-button"
             color="secondary"
             small
             @click="connect_button_clicked()">{{button_text}}</mu-button>
@@ -273,7 +277,7 @@
       <!-- terminal -->
       <mu-flex ref="term_container"
         direction="row"
-        style="width:100%;background:#1e1e1e">
+        class="ide-terminal-term">
         <div v-show="true"
           ref="term"
           style="width:100%"></div>
@@ -737,6 +741,137 @@ def new_file(filename):
 </script>
 
 <style>
+/* 侧栏区域 */
+.ide-side-bar {
+  background: #252526;
+  width: 15vw;
+  min-width: 250px;
+  height: 97vh;
+  padding: 0;
+}
+
+.ide-panel {
+  width: 15vw;
+  min-width: 250px;
+  background: #252526 !important;
+}
+
+.ide-panel-header {
+  color: #eeeeee;
+  height: 20px;
+}
+
+.ide-panel-divider {
+  background: #42424242;
+}
+
+.ide-panel-flex {
+  width: 100%;
+  padding: 8px 24px;
+}
+
+.ide-list {
+  background: #252526;
+  width: 16vw !important;
+  min-width: 260px;
+  padding: 0;
+}
+
+/* 顶栏区域 */
+.ide-top-bar {
+  height: 97vh;
+  width: 85vw;
+  background: #1e1e1e;
+}
+
+.ide-top-bar-appbar {
+  width: 100%;
+  height: 48px;
+}
+
+.ide-editor {
+  height: 97vh;
+  width: 85vw;
+}
+
+/* 底栏区域 */
+.ide-bottom-bar {
+  width: 100vw;
+  height: 3vh;
+  background: #414141;
+  padding-right: 16px;
+  color: white;
+}
+
+.ide-bottom-bar-left {
+  width: 15vw;
+  padding-left: 8px;
+}
+
+.ide-bottom-bar-center {
+  width: 45vw;
+  padding-left: 8px;
+}
+
+.ide-bottom-bar-right {
+  width: 40vw;
+}
+
+.ide-bottom-bar-author {
+  margin: 0;
+  font-size: 16px;
+  text-align: center;
+  color: grey;
+}
+
+.ide-bottom-bar-help {
+  color: grey;
+  margin: 0 6px;
+  font-size: 16px;
+}
+
+.ide-bottom-bar-message {
+  padding: auto 0;
+  margin: 0 6px;
+  font-size: 16px;
+  color: #5c6bc0;
+}
+
+/* Terminal */
+.ide-terminal-container {
+  width: 85vw;
+  height: auto;
+  position: fixed;
+  left: 15vw;
+  bottom: 3vh;
+  background: #1e1e1e;
+}
+
+.ide-terminal-appbar {
+  width: 100%;
+  height: 48px;
+  border-top: 1px solid #61616161;
+}
+
+.ide-terminal-flex {
+  height: 46px;
+}
+
+.ide-terminal-url {
+  height: 46px !important;
+  margin: auto 6px !important;
+}
+
+.ide-terminal-button {
+  margin-right: 6px;
+}
+
+.ide-terminal-term {
+  width: 100%;
+  background: #1e1e1e;
+}
+
+/*覆盖样式 */
 .mu-expansion-toggle-btn.mu-button {
   margin-left: auto;
   margin-right: -12px;
@@ -744,6 +879,7 @@ def new_file(filename):
   -webkit-transform: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   transform: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 .mu-text-field-input {
   color: rgba(221, 207, 207, 0.67) !important;
 }
@@ -757,16 +893,20 @@ def new_file(filename):
   background: #1e1e1e !important;
 }
 
+.mu-expansion-panel__expand .mu-expansion-panel-header {
+  min-height: 48px !important;
+}
+
 .mu-expansion-panel-content {
   padding: 6px;
 }
 
-.list {
-  background: #212121;
-  width: 16vw !important;
-  /* min-height: 20vh; */
-  /* max-height: 60vh; */
-  padding: 0;
+.monaco-editor,
+.monaco-editor-background,
+.monaco-editor .inputarea.ime-input {
+  background-color: #1e1e1e;
+  height: calc(97vh-48px) !important;
+  width: 85vw !important;
 }
 
 .outer-container,
