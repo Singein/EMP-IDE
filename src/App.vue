@@ -302,6 +302,7 @@ export default {
       panel: "",
       loading: false,
       theme: "vs-dark",
+      // theme: "hc-dark",
       showTerm: false,
       binary_state: 0,
       opened_file: "",
