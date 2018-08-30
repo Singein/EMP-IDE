@@ -2,6 +2,7 @@ import os
 import json
 import gc
 
+
 def tree(path='/'):
     root = dict(name=path, children=[])
     index = 0
@@ -36,6 +37,7 @@ def update_code(filename, content):
     with open(filename, 'w') as f:
         print(f.write(content))
 
+
 def create_folder(folder):
     try:
         os.mkdir(folder)
@@ -43,7 +45,7 @@ def create_folder(folder):
         pass
     tree()
 
-        
+
 def new_file(filename):
-    update_code(filename,'')
+    update_code(filename, '')
     tree()

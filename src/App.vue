@@ -325,7 +325,7 @@ export default {
       showTerm: false,
       // websocket对象
       ws: null,
-      url: "ws://192.168.2.189:8266/",
+      url: "ws://192.168.0.123:8266/",
       // ws是否连接
       is_connected: false,
       // terminal对像
@@ -445,6 +445,7 @@ export default {
 import json
 import gc
 
+
 def tree(path='/'):
     root = dict(name=path, children=[])
     index = 0
@@ -479,6 +480,7 @@ def update_code(filename, content):
     with open(filename, 'w') as f:
         print(f.write(content))
 
+
 def create_folder(folder):
     try:
         os.mkdir(folder)
@@ -486,10 +488,11 @@ def create_folder(folder):
         pass
     tree()
 
-        
+
 def new_file(filename):
-    update_code(filename,'')
+    update_code(filename, '')
     tree()
+
 `;
       var uint8array = new TextEncoder().encode(tools.replace(/\r\n/g, "\n"));
       put_file_name = "microide.py";
@@ -580,7 +583,7 @@ def new_file(filename):
 
         this.term.focus();
         this.term.element.focus();
-        this.term.write("\x1b[31mWelcome to MicroPython!\x1b[m\r\n");
+        this.term.write("\x1b[31mWelcome to 1ZLAB-MicroIDE!\x1b[m\r\n");
 
         this.ws.onmessage = function(event) {
           if (event.data instanceof ArrayBuffer) {
@@ -610,8 +613,9 @@ def new_file(filename):
                       put_file_data.length +
                       " bytes"
                   );
-                  if (put_file_name === "microide.py")
+                  if (put_file_name === "microide.py") {
                     this.ws.send("from microide import *\r");
+                  }
                   put_file_data = null;
                 } else {
                   this.update_file_status("Failed sending " + put_file_name);
@@ -651,8 +655,8 @@ def new_file(filename):
       reader.onload = function(e) {
         // console.log("sdfs", e.target.result);
         put_file_data = new Uint8Array(e.target.result);
-        console.log("put file data", put_file_data);
-        console.log(put_file_name + " - " + put_file_data.length + " bytes");
+        // console.log("put file data", put_file_data);
+        // console.log(put_file_name + " - " + put_file_data.length + " bytes");
         document.getElementById("filename").innerHTML = put_file_name;
       };
       reader.readAsArrayBuffer(f);
@@ -680,14 +684,14 @@ def new_file(filename):
           var root_files = this.ws_return
             .slice(0, this.ws_return.length - 5)
             .replace(this.last_command + "\n", "");
-          
+
           if (this.ws_return.startsWith("new_file")) {
             root_files = this.ws_return
               .replace(this.last_command + "\n", "")
               .slice(2, -5);
             console.log("newfile return:", root_files);
           }
-          
+
           this.root_files = JSON.parse(root_files);
 
           // console.log("tree obj:", this.root_files);
