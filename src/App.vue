@@ -41,9 +41,15 @@
                     <mu-icon v-if="!i.children"
                       value="description"
                       style="padding:6px"
-                      color='green'></mu-icon>
+                      color='orange200'></mu-icon>
+                    
+                      <mu-list-item-title style="color:#fff">{{i.name}}</mu-list-item-title>
+                      <mu-tooltip content="run script">
+                        <mu-button v-show="i.index===list_index&&!i.children" icon small @click="excute_script">
+                          <mu-icon value="play_arrow" color="success"></mu-icon>
+                        </mu-button>
+                      </mu-tooltip>
 
-                    <mu-list-item-title style="color:#fff">{{i.name}}</mu-list-item-title>
                     <mu-icon v-if="i.children"
                       class="toggle-icon"
                       size="24"
@@ -59,8 +65,14 @@
                       :value="j.index">
                       <mu-icon value="description"
                         style="padding:6px"
-                        color='green'></mu-icon>
+                        color='orange200'></mu-icon>
+
                       <mu-list-item-title style="color:#fff">{{j.name}}</mu-list-item-title>
+                      <mu-tooltip content="run script">
+                        <mu-button v-show="j.index===list_index" icon small @click="excute_script">
+                          <mu-icon value="play_arrow" color="success"></mu-icon>
+                        </mu-button>
+                      </mu-tooltip>
                     </mu-list-item>
                   </mu-list-item>
                 </mu-list>
@@ -308,7 +320,7 @@ export default {
       // 左侧列表panel
       panel: "",
       // 进度条
-      loading: false, 
+      loading: false,
       // 显示终端
       showTerm: false,
       // websocket对象
@@ -322,21 +334,18 @@ export default {
       // 字节流标志
       binary_state: 0,
 
-      
       new_file_name: "",
       new_folder_name: "",
-    
-      
+
       // 上一条命令记录
       last_command: "",
       // websocket 返回数据接受对象
       ws_return: "",
-      
-      
+
       button_text: "connect",
 
       get_file_name: null,
-      get_file_data: null,
+      get_file_data: null
     };
   },
   mounted: function() {
@@ -395,14 +404,26 @@ export default {
       this.ws.send(this.last_command);
     },
 
+    excute_script() {
+      this.last_command = "excute_script";
+      this.ws.send(
+        "exec(open('" + this.opened_file + "').read(), globals())\r"
+      );
+    },
+
     get_code(dir = "", filename, is_dir) {
       if (!is_dir) {
-        this.loading = true;
-        this.opened_file = dir + "/" + filename;
-        this.last_command = "get_code('" + dir + "/" + filename + "')\r";
-        this.ws.send(this.last_command);
+        if (this.last_command === "excute_script") {
+          this.last_command = "";
+        } else {
+          this.loading = true;
+          this.opened_file = dir + "/" + filename;
+          this.last_command = "get_code('" + dir + "/" + filename + "')\r";
+          this.ws.send(this.last_command);
+        }
       }
     },
+
     update_code() {
       var uint8array = new TextEncoder().encode(
         this.code.replace(/\r\n/g, "\n")
@@ -463,10 +484,12 @@ def create_folder(folder):
         os.mkdir(folder)
     except:
         pass
+    tree()
 
         
 def new_file(filename):
     update_code(filename,'')
+    tree()
 `;
       var uint8array = new TextEncoder().encode(tools.replace(/\r\n/g, "\n"));
       put_file_name = "microide.py";
@@ -648,7 +671,7 @@ def new_file(filename):
     last_command: function() {},
     ws_return: function() {
       if (this.ws_return.endsWith(">>> ")) {
-        // console.log("raw:", this.ws_return);
+        console.log("raw:", this.ws_return);
         if (
           this.ws_return.startsWith("tree") ||
           this.ws_return.startsWith("new_file") ||
@@ -657,12 +680,14 @@ def new_file(filename):
           var root_files = this.ws_return
             .slice(0, this.ws_return.length - 5)
             .replace(this.last_command + "\n", "");
-          // console.log("sliced:", root_files);
+          
           if (this.ws_return.startsWith("new_file")) {
             root_files = this.ws_return
               .replace(this.last_command + "\n", "")
-              .slice(2, this.ws_return.length - 5);
+              .slice(2, -5);
+            console.log("newfile return:", root_files);
           }
+          
           this.root_files = JSON.parse(root_files);
 
           // console.log("tree obj:", this.root_files);

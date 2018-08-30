@@ -41,7 +41,9 @@ def create_folder(folder):
         os.mkdir(folder)
     except:
         pass
+    tree()
 
         
 def new_file(filename):
     update_code(filename,'')
+    tree()
