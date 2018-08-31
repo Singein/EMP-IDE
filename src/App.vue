@@ -44,17 +44,32 @@
                       color='orange200'></mu-icon>
                     
                       <mu-list-item-title style="color:#fff">{{i.name}}</mu-list-item-title>
-                      <mu-tooltip content="run script">
+                   
+                        <mu-button v-show="i.index===list_index&&!i.children" icon small @click="del_file">
+                          <mu-icon value="delete" color="red300"></mu-icon>
+                        </mu-button>
+                    
+             
+                        <mu-button v-show="i.index===list_index&&!i.children" icon small @click="update_code">
+                          <mu-icon value="get_app" color="blue"></mu-icon>
+                        </mu-button>
+                     
+                                         
                         <mu-button v-show="i.index===list_index&&!i.children" icon small @click="excute_script">
                           <mu-icon value="play_arrow" color="success"></mu-icon>
                         </mu-button>
-                      </mu-tooltip>
-
-                    <mu-icon v-if="i.children"
-                      class="toggle-icon"
-                      size="24"
-                      color='grey'
-                      value="keyboard_arrow_down"></mu-icon>
+                    
+                    <mu-tooltip placement="left-start">
+                      <mu-icon v-if="i.children"
+                        class="toggle-icon"
+                        size="24"
+                        color='grey'
+                        value="keyboard_arrow_down"></mu-icon>
+                        <mu-button icon small @click="del_folder(i.name)"
+                           slot='content'>
+                          <mu-icon value="delete" color="red300"></mu-icon>
+                        </mu-button>
+                    </mu-tooltip>
                     <!-- 二级目录 -->
                     <mu-list-item v-for="j in i.children"
                       :key="j.name"
@@ -68,11 +83,21 @@
                         color='orange200'></mu-icon>
 
                       <mu-list-item-title style="color:#fff">{{j.name}}</mu-list-item-title>
-                      <mu-tooltip content="run script">
+                     
+                        <mu-button v-show="j.index===list_index" icon small @click="del_file">
+                          <mu-icon value="delete" color="red300"></mu-icon>
+                        </mu-button>
+                     
+                  
+                        <mu-button v-show="j.index===list_index" icon small @click="update_code">
+                          <mu-icon value="get_app" color="blue"></mu-icon>
+                        </mu-button>
+                   
+                
                         <mu-button v-show="j.index===list_index" icon small @click="excute_script">
                           <mu-icon value="play_arrow" color="success"></mu-icon>
                         </mu-button>
-                      </mu-tooltip>
+                     
                     </mu-list-item>
                   </mu-list-item>
                 </mu-list>
@@ -191,11 +216,10 @@
           <!-- 顶栏 -->
           <mu-appbar class="ide-top-bar-appbar" 
             :z-depth="0" 
-            color="#252526">
-            Current File: 
-            {{opened_file}}
+            color="#252526"> 
+            {{opened_file.split('/')[1]}}
             <mu-button icon small slot="left" @click="update_code()">
-              <mu-icon color="grey" value="get_app"></mu-icon>
+              <mu-icon color="grey" value="save"></mu-icon>
             </mu-button>
           </mu-appbar>
           <!-- monaco编辑器 -->
@@ -325,7 +349,7 @@ export default {
       showTerm: false,
       // websocket对象
       ws: null,
-      url: "ws://192.168.0.123:8266/",
+      url: "ws://192.168.2.189:8266/",
       // ws是否连接
       is_connected: false,
       // terminal对像
@@ -348,6 +372,7 @@ export default {
       get_file_data: null
     };
   },
+
   mounted: function() {
     this.$nextTick(function() {
       var size = [155, 20];
@@ -399,8 +424,18 @@ export default {
       this.ws.send(this.last_command);
     },
 
+    del_file() {
+      this.last_command = "del_file('" + this.opened_file + "')\r";
+      this.ws.send(this.last_command);
+    },
+
     new_folder() {
       this.last_command = "create_folder('" + this.new_folder_name + "')\r";
+      this.ws.send(this.last_command);
+    },
+
+    del_folder(folder) {
+      this.last_command = "del_folder('" + folder + "')\r";
       this.ws.send(this.last_command);
     },
 
@@ -413,8 +448,11 @@ export default {
 
     get_code(dir = "", filename, is_dir) {
       if (!is_dir) {
-        if (this.last_command === "excute_script") {
-          this.last_command = "";
+        if (
+          this.last_command === "excute_script" ||
+          this.last_command.startsWith("del")
+        ) {
+          // do nothing
         } else {
           this.loading = true;
           this.opened_file = dir + "/" + filename;
@@ -442,6 +480,7 @@ export default {
 
     deploy() {
       var tools = `import os
+import os
 import json
 import gc
 
@@ -491,6 +530,18 @@ def create_folder(folder):
 
 def new_file(filename):
     update_code(filename, '')
+    tree()
+
+
+def del_folder(folder):
+    for i in os.listdir(folder):
+        os.remove(folder + '/' + i)
+    os.rmdir(folder)
+    tree()
+
+
+def del_file(filename):
+    os.remove(filename)
     tree()
 
 `;
@@ -675,11 +726,13 @@ def new_file(filename):
     last_command: function() {},
     ws_return: function() {
       if (this.ws_return.endsWith(">>> ")) {
-        console.log("raw:", this.ws_return);
+        // console.log("raw:", this.ws_return);
         if (
           this.ws_return.startsWith("tree") ||
           this.ws_return.startsWith("new_file") ||
-          this.ws_return.startsWith("create_folder")
+          this.ws_return.startsWith("create_folder") ||
+          this.ws_return.startsWith("del_folder") ||
+          this.ws_return.startsWith("del_file")
         ) {
           var root_files = this.ws_return
             .slice(0, this.ws_return.length - 5)
@@ -689,10 +742,17 @@ def new_file(filename):
             root_files = this.ws_return
               .replace(this.last_command + "\n", "")
               .slice(2, -5);
-            console.log("newfile return:", root_files);
+            // console.log("newfile return:", root_files);
           }
-
-          this.root_files = JSON.parse(root_files);
+          try {
+            // console.log("root files changed by ", this.last_command);
+            // console.log('root_files',root_files)
+            this.root_files = JSON.parse(root_files);
+          } catch (e) {
+            // console.log(e);
+            this.ws_return = "";
+            this.last_command = "";
+          }
 
           // console.log("tree obj:", this.root_files);
           this.ws_return = "";
@@ -722,15 +782,15 @@ def new_file(filename):
 /* 侧栏区域 */
 .ide-side-bar {
   background: #252526;
-  width: 15vw;
-  min-width: 250px;
+  width: 18vw;
+  min-width: 280px;
   height: 97vh;
   padding: 0;
 }
 
 .ide-panel {
-  width: 15vw;
-  min-width: 250px;
+  width: 18vw;
+  min-width: 280px;
   background: #252526 !important;
 }
 
@@ -750,15 +810,15 @@ def new_file(filename):
 
 .ide-list {
   background: #252526;
-  width: 16vw !important;
-  min-width: 260px;
+  width: 18vw !important;
+  min-width: 280px;
   padding: 0;
 }
 
 /* 顶栏区域 */
 .ide-top-bar {
   height: 97vh;
-  width: 85vw;
+  width: 82vw;
   background: #1e1e1e;
 }
 
@@ -769,7 +829,7 @@ def new_file(filename):
 
 .ide-editor {
   height: 97vh;
-  width: 85vw;
+  width: 82vw;
 }
 
 /* 底栏区域 */
@@ -782,12 +842,12 @@ def new_file(filename):
 }
 
 .ide-bottom-bar-left {
-  width: 15vw;
+  width: 18vw;
   padding-left: 8px;
 }
 
 .ide-bottom-bar-center {
-  width: 45vw;
+  width: 42vw;
   padding-left: 8px;
 }
 
@@ -817,10 +877,10 @@ def new_file(filename):
 
 /* Terminal */
 .ide-terminal-container {
-  width: 85vw;
+  width: 82vw;
   height: auto;
   position: fixed;
-  left: 15vw;
+  left: 18vw;
   bottom: 3vh;
   background: #1e1e1e;
 }
@@ -903,7 +963,7 @@ def new_file(filename):
   overflow-y: scroll;
 }
 .mu-appbar-title {
-  font-size: 16px !important;
+  font-size: 18px !important;
   color: #e0e0e0;
 }
 </style>

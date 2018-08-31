@@ -49,3 +49,15 @@ def create_folder(folder):
 def new_file(filename):
     update_code(filename, '')
     tree()
+
+
+def del_folder(folder):
+    for i in os.listdir(folder):
+        os.remove(folder + '/' + i)
+    os.rmdir(folder)
+    tree()
+
+
+def del_file(filename):
+    os.remove(filename)
+    tree()
