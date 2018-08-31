@@ -59,17 +59,17 @@
                           <mu-icon value="play_arrow" color="success"></mu-icon>
                         </mu-button>
                     
-                    <mu-tooltip placement="left-start">
+                    <!-- <mu-tooltip placement="left-start"> -->
                       <mu-icon v-if="i.children"
                         class="toggle-icon"
                         size="24"
                         color='grey'
                         value="keyboard_arrow_down"></mu-icon>
-                        <mu-button icon small @click="del_folder(i.name)"
+                        <!-- <mu-button icon small @click="del_folder(i.name)"
                            slot='content'>
                           <mu-icon value="delete" color="red300"></mu-icon>
-                        </mu-button>
-                    </mu-tooltip>
+                        </mu-button> -->
+                    <!-- </mu-tooltip> -->
                     <!-- 二级目录 -->
                     <mu-list-item v-for="j in i.children"
                       :key="j.name"
@@ -218,13 +218,13 @@
             :z-depth="0" 
             color="#252526"> 
             {{opened_file.split('/')[1]}}
-            <mu-button icon small slot="left" @click="update_code()">
+            <mu-button v-if='opened_file!==""' icon small slot="left" @click="update_code()">
               <mu-icon color="grey" value="save"></mu-icon>
             </mu-button>
           </mu-appbar>
           <!-- monaco编辑器 -->
           <m-monaco-editor class="ide-editor"
-            v-if="is_connected"
+            v-if='opened_file!==""'
             v-model="code"
             :mode="mode"
             :theme="theme"
@@ -985,7 +985,9 @@ def del_file(filename):
 /* Terminal */
 .ide-terminal-container {
   width: 82vw;
-  height: auto;
+  /* height: calc(97vh-48px); */
+  max-height: 65vh;
+  min-height: 65vh;
   position: fixed;
   left: 18vw;
   bottom: 3vh;
@@ -993,8 +995,9 @@ def del_file(filename):
 }
 
 .ide-terminal-appbar {
-  width: 100%;
+  width: 82vw;
   height: 48px;
+  /* position: fixed; */
   border-top: 1px solid #61616161;
 }
 
@@ -1031,6 +1034,8 @@ def del_file(filename):
 
 .terminal {
   float: left;
+  max-height: 60vh;
+  min-height: 60vh;
   border: #1e1e1e solid 8px;
   font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
   font-size: 16px;
