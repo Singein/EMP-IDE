@@ -917,8 +917,8 @@ def del_file(filename):
 
 .ide-list {
   background: #252526;
-  width: 18vw !important;
-  min-width: 280px;
+  width: 16vw !important;
+  min-width: 280px !important;
   padding: 0;
 }
 
@@ -931,7 +931,7 @@ def del_file(filename):
 
 .ide-top-bar-appbar {
   width: 100%;
-  height: 48px;
+  height: 48px !important;
 }
 
 .ide-editor {
