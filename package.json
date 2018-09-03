@@ -15,7 +15,8 @@
     "vue": "^2.5.2",
     "vue-m-monaco-editor": "^1.0.0",
     "vue-monaco": "^0.2.0",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "xterm": "^3.6.0"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

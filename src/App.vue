@@ -248,20 +248,23 @@
         <mu-flex class="ide-bottom-bar-center"
           justify-content="start"
           align-items="center">
-          <p id="file-status"
-            class="ide-bottom-bar-message"></p>
+          <!-- Terminal Icon -->
+          <mu-button small
+            flat
+            color="grey"
+            @click="showTermDialog">
+            <mu-icon value="keyboard_arrow_right"></mu-icon>
+            Terminal
+          </mu-button>
+          
         </mu-flex>
 
         <mu-flex class="ide-bottom-bar-right"
           justify-content="end"
           align-items="center">
-         <!-- Terminal Icon -->
-          <mu-button small
-            icon
-            color="grey"
-            @click="showTermDialog">
-            <mu-icon value="keyboard_arrow_right"></mu-icon>
-          </mu-button>
+          <!-- Message area  -->
+          <p id="file-status"
+            class="ide-bottom-bar-message"></p>
           <!-- Settings Icon -->
           <mu-button small
             icon
@@ -325,6 +328,7 @@
 
 <script>
 import Terminal from "../term.js";
+// import { Terminal } from "xterm";
 var put_file_data = null;
 var put_file_name = null;
 var get_file_name = null;
@@ -374,7 +378,7 @@ export default {
 
   mounted: function() {
     this.$nextTick(function() {
-      var size = [155, 20];
+      var size = [300, 20];
       // 初始化term对象,完成视图的渲染
       this.$refs.file_dialog.addEventListener(
         "change",
@@ -474,8 +478,10 @@ export default {
     },
 
     update_tree() {
-      this.last_command = "tree()\r";
-      this.ws.send(this.last_command);
+      if (this.root_files.length === 0) {
+        this.last_command = "tree()\r";
+        this.ws.send(this.last_command);
+      }
     },
 
     deploy() {
@@ -635,72 +641,6 @@ def del_file(filename):
                 }
                 this.binary_state = 0;
                 break;
-              case 21:
-                // first response for get
-                if (this.decode_resp(data) == 0) {
-                  this.binary_state = 22;
-                  var rec = new Uint8Array(1);
-                  rec[0] = 0;
-                  this.ws.send(rec);
-                }
-                break;
-              case 22: {
-                // file data
-                var sz = data[0] | (data[1] << 8);
-                if (data.length == 2 + sz) {
-                  // we assume that the data comes in single chunks
-                  if (sz == 0) {
-                    // end of file
-                    this.binary_state = 23;
-                  } else {
-                    // accumulate incoming data to get_file_data
-                    var new_buf = new Uint8Array(get_file_data.length + sz);
-                    new_buf.set(get_file_data);
-                    new_buf.set(data.slice(2), get_file_data.length);
-                    get_file_data = new_buf;
-                    this.update_file_status(
-                      "Getting " +
-                        get_file_name +
-                        ", " +
-                        get_file_data.length +
-                        " bytes"
-                    );
-
-                    var rec = new Uint8Array(1);
-                    rec[0] = 0;
-                    this.ws.send(rec);
-                  }
-                } else {
-                  this.binary_state = 0;
-                }
-                break;
-              }
-              case 23:
-                // final response
-                if (this.decode_resp(data) == 0) {
-                  this.update_file_status(
-                    "Got " +
-                      get_file_name +
-                      ", " +
-                      get_file_data.length +
-                      " bytes"
-                  );
-                  saveAs(
-                    new Blob([get_file_data], {
-                      type: "application/octet-stream"
-                    }),
-                    get_file_name
-                  );
-                } else {
-                  this.update_file_status("Failed getting " + get_file_name);
-                }
-                this.binary_state = 0;
-                break;
-              case 31:
-                // first (and last) response for GET_VER
-                console.log("GET_VER", data);
-                this.binary_state = 0;
-                break;
             }
           }
           this.term.write(event.data);
@@ -743,43 +683,8 @@ def del_file(filename):
 
     get_file() {
       this.last_command = "download_file";
-      // var src_fname = document.getElementById("get_filename").value;
-      var src_fname = this.opened_file;
-
-      // WEBREPL_FILE = "<2sBBQLH64s"
-      var rec = new Uint8Array(2 + 1 + 1 + 8 + 4 + 2 + 64);
-      rec[0] = "W".charCodeAt(0);
-      rec[1] = "A".charCodeAt(0);
-      rec[2] = 2; // get
-      rec[3] = 0;
-      rec[4] = 0;
-      rec[5] = 0;
-      rec[6] = 0;
-      rec[7] = 0;
-      rec[8] = 0;
-      rec[9] = 0;
-      rec[10] = 0;
-      rec[11] = 0;
-      rec[12] = 0;
-      rec[13] = 0;
-      rec[14] = 0;
-      rec[15] = 0;
-      rec[16] = src_fname.length & 0xff;
-      rec[17] = (src_fname.length >> 8) & 0xff;
-      for (var i = 0; i < 64; ++i) {
-        if (i < src_fname.length) {
-          rec[18 + i] = src_fname.charCodeAt(i);
-        } else {
-          rec[18 + i] = 0;
-        }
-      }
-
-      // initiate get
-      this.binary_state = 21;
-      get_file_name = src_fname;
-      get_file_data = new Uint8Array(0);
-      this.update_file_status("Getting " + get_file_name + "...");
-      this.ws.send(rec);
+      var blob = new Blob([this.code], { type: "text/plain;charset=utf-8" });
+      saveAs(blob, this.opened_file.replace("/", "_"));
     },
 
     put_file() {
@@ -878,6 +783,7 @@ def del_file(filename):
           this.last_command = "";
         } else {
           this.ws_return = "";
+          this.last_command = "";
         }
       }
     }
@@ -917,7 +823,7 @@ def del_file(filename):
 
 .ide-list {
   background: #252526;
-  width: 16vw !important;
+  width: 18vw !important;
   min-width: 280px !important;
   padding: 0;
 }
