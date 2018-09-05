@@ -355,7 +355,7 @@ export default {
       showTerm: false,
       // websocket对象
       ws: null,
-      url: "ws://192.168.2.189:8266/",
+      url: "ws://192.168.2.200:8266/",
       // ws是否连接
       is_connected: false,
       // terminal对像
