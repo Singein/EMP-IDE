@@ -214,7 +214,7 @@
         <mu-flex direction="column"
           class="ide-top-bar">
           <!-- 顶栏 -->
-          <mu-appbar class="ide-top-bar-appbar" 
+          <mu-appbar v-if="!showTerm && opened_file!==''" class="ide-top-bar-appbar" 
             :z-depth="0" 
             color="#252526"> 
             {{opened_file.split('/')[1]}}
@@ -338,6 +338,7 @@ export default {
   components: {},
   data() {
     return {
+      size: [document.body.clientWidth, document.body.clientHeight],
       code: "",
       mode: "python",
       theme: "vs-dark",
@@ -378,7 +379,7 @@ export default {
 
   mounted: function() {
     this.$nextTick(function() {
-      var size = [300, 20];
+      var _size = this.calculate_size();
       // 初始化term对象,完成视图的渲染
       this.$refs.file_dialog.addEventListener(
         "change",
@@ -386,13 +387,21 @@ export default {
         false
       );
       this.term = new Terminal({
-        cols: size[0],
-        rows: size[1],
+        cols: _size[0],
+        rows: _size[1],
         useStyle: true,
         screenKeys: true,
         cursorBlink: false
       });
       this.term.open(this.$refs.term);
+      const that = this;
+      window.onresize = () => {
+        return () => {
+          window.screenWidth = document.body.clientWidth;
+          window.screenHeight = document.body.clientHeight;
+          that.size = [window.screenWidth, window.screenHeight];
+        };
+      };
     });
   },
   methods: {
@@ -408,9 +417,11 @@ export default {
       this.panel = panel === this.panel ? "" : panel;
     },
 
-    calculate_size(win) {
-      var cols = win.innerWidth / 7;
-      var rows = win.innerHeight / 12;
+    calculate_size() {
+      var cols = Math.max(100, Math.min(200, (this.size[0] - 64) / 10)) | 0;
+      if (this.size[0] <= 1366)
+        var rows = Math.max(24, Math.min(26, (this.size[1] - 180) / 19)) | 0;
+      else var rows = Math.max(24, Math.min(35, (this.size[1] - 180) / 19)) | 0;
       return [cols, rows];
     },
 
@@ -736,6 +747,10 @@ def del_file(filename):
   },
   watch: {
     last_command: function() {},
+    size: function() {
+      var _size = calculate_size();
+      this.term.resize(_size[0], _size[1]);
+    },
     ws_return: function() {
       if (this.ws_return.endsWith(">>> ")) {
         // console.log("raw:", this.ws_return);
@@ -890,18 +905,21 @@ def del_file(filename):
 
 /* Terminal */
 .ide-terminal-container {
-  width: 82vw;
+  width: 100vw;
   /* height: calc(97vh-48px); */
-  max-height: 65vh;
-  min-height: 65vh;
+  /* max-height: 65vh;
+  min-height: 65vh; */
+  height: 97vh;
   position: fixed;
-  left: 18vw;
+  /* left: 18vw; */
+  /* bottom: 3vh; */
+  left: 0;
   bottom: 3vh;
-  background: #1e1e1e;
+  background: #1e1e1e77;
 }
 
 .ide-terminal-appbar {
-  width: 82vw;
+  width: 100%;
   height: 48px;
   /* position: fixed; */
   border-top: 1px solid #61616161;
@@ -922,7 +940,7 @@ def del_file(filename):
 
 .ide-terminal-term {
   width: 100%;
-  background: #1e1e1e;
+  background: #1e1e1e77;
 }
 
 /*覆盖样式 */
@@ -940,13 +958,12 @@ def del_file(filename):
 
 .terminal {
   float: left;
-  max-height: 60vh;
-  min-height: 60vh;
+  height: 90vh;
   border: #1e1e1e solid 8px;
   font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
   font-size: 16px;
   color: #f0f0f0;
-  background: #1e1e1e !important;
+  background: #1e1e1e77 !important;
 }
 
 .mu-expansion-panel__expand .mu-expansion-panel-header {

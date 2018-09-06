@@ -13,3 +13,4 @@ yarn-error.log*
 *.njsproj
 *.sln
 __pycache__/
+/server/MicroIDE/collectedstatic/

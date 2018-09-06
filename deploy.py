@@ -22,11 +22,11 @@ def copy_static_to_django(src_path=vue_static, des_path=django_path):
 
 
 def copy_html_to_django(src_path=vue_html, des_path=django_html_path):
-    os.system('cp -rp' + src_path + ' ' + des_path)
+    os.system('cp -rp ' + src_path + ' ' + des_path)
     print('index.html copy done')
 
 if __name__ == '__main__':
-    # npm_build()
+    npm_build()
     del_django_static()
     copy_html_to_django()
     copy_static_to_django()

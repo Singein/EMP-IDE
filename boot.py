@@ -42,3 +42,4 @@ if __name__ == '__main__':
     do_connect()
     import webrepl
     webrepl.start()
+    from microide import *
