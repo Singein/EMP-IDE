@@ -169,7 +169,7 @@
   }
   
   .mu-expansion-panel-content {
-    padding: 6px;
+    padding: 6px !important;
   }
   
   .monaco-editor,
