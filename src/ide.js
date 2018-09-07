@@ -1,9 +1,18 @@
+/*!
+ *
+ App.vue 的vue实例
+ *
+ 包含websocket的建立,文件上传下载,代码展示与编辑等核心功能
+ *
+ http://dev.1zlab.com/
+ */
+
+
 import Terminal from "../term.js";
-// import { Terminal } from "xterm";
+import { microide_codes } from "./microide.py.js"
 var put_file_data = null;
 var put_file_name = null;
-var get_file_name = null;
-var get_file_data = null;
+
 export default {
   name: "App",
   components: {},
@@ -48,8 +57,8 @@ export default {
     };
   },
 
-  mounted: function() {
-    this.$nextTick(function() {
+  mounted: function () {
+    this.$nextTick(function () {
       var _size = this.calculate_size();
       // 初始化term对象,完成视图的渲染
       this.$refs.file_dialog.addEventListener(
@@ -66,6 +75,7 @@ export default {
       });
       this.term.open(this.$refs.term);
       const that = this;
+      // 监听浏览器resize事件,完成对terminal 行列数的初始化
       window.onresize = () => {
         return () => {
           window.screenWidth = document.body.clientWidth;
@@ -75,6 +85,7 @@ export default {
       };
     });
   },
+
   methods: {
     showTermDialog() {
       this.showTerm = !this.showTerm;
@@ -89,6 +100,7 @@ export default {
     },
 
     calculate_size() {
+      // 计算terminal尺寸
       var cols = Math.max(100, Math.min(200, (this.size[0] - 64) / 10)) | 0;
       if (this.size[0] <= 1366)
         var rows = Math.max(24, Math.min(26, (this.size[1] - 180) / 19)) | 0;
@@ -97,11 +109,8 @@ export default {
     },
 
     handleChange(val) {
+      // 目录树的index值
       this.list_index = val;
-    },
-
-    help() {
-      location.href = "/doc";
     },
 
     new_file() {
@@ -167,73 +176,7 @@ export default {
     },
 
     deploy() {
-      var tools = `import os
-import os
-import json
-import gc
-
-
-def tree(path='/'):
-    root = dict(name=path, children=[])
-    index = 0
-    dirs = os.listdir(path)
-    for i in dirs:
-        try:
-            root['children'].append(
-                dict(name=i, children=[dict(name=j) for j in os.listdir(i)]))
-        except:
-            root['children'].append(dict(name=i))
-
-    for i in root['children']:
-        if not i.get('children', False):
-            i['index'] = index
-            index += 1
-        else:
-            for j in i['children']:
-                j['index'] = index
-                index += 1
-    print(json.dumps(root))
-    gc.collect()
-
-
-def get_code(filename):
-    gc.collect()
-    with open(filename, 'r') as f:
-        print(f.read())
-
-
-def update_code(filename, content):
-    gc.collect()
-    with open(filename, 'w') as f:
-        print(f.write(content))
-
-
-def create_folder(folder):
-    try:
-        os.mkdir(folder)
-    except:
-        pass
-    tree()
-
-
-def new_file(filename):
-    update_code(filename, '')
-    tree()
-
-
-def del_folder(folder):
-    for i in os.listdir(folder):
-        os.remove(folder + '/' + i)
-    os.rmdir(folder)
-    tree()
-
-
-def del_file(filename):
-    os.remove(filename)
-    tree()
-
-`;
-      var uint8array = new TextEncoder().encode(tools.replace(/\r\n/g, "\n"));
+      var uint8array = new TextEncoder().encode(microide_codes.replace(/\r\n/g, "\n"));
       put_file_name = "microide.py";
       put_file_data = uint8array;
       this.put_file();
@@ -265,11 +208,11 @@ def del_file(filename):
     connect() {
       this.ws = new WebSocket(this.url);
       this.ws.binaryType = "arraybuffer";
-      this.ws.onopen = function() {
+      this.ws.onopen = function () {
         this.term.removeAllListeners("data");
         this.term.on(
           "data",
-          function(data) {
+          function (data) {
             // Pasted data from clipboard will likely contain
             // LF as EOL chars.
             data = data.replace(/\n/g, "\r");
@@ -278,7 +221,7 @@ def del_file(filename):
           }.bind(this)
         );
 
-        this.term.on("title", function(title) {
+        this.term.on("title", function (title) {
           document.title = title;
         });
 
@@ -286,7 +229,7 @@ def del_file(filename):
         this.term.element.focus();
         this.term.write("\x1b[31mWelcome to 1ZLAB-MicroIDE!\x1b[m\r\n");
 
-        this.ws.onmessage = function(event) {
+        this.ws.onmessage = function (event) {
           if (event.data instanceof ArrayBuffer) {
             var data = new Uint8Array(event.data);
             switch (this.binary_state) {
@@ -295,9 +238,7 @@ def del_file(filename):
                 if (this.decode_resp(data) == 0) {
                   // send file data in chunks
                   for (
-                    var offset = 0;
-                    offset < put_file_data.length;
-                    offset += 1024
+                    var offset = 0; offset < put_file_data.length; offset += 1024
                   ) {
                     this.ws.send(put_file_data.slice(offset, offset + 1024));
                   }
@@ -309,10 +250,10 @@ def del_file(filename):
                 if (this.decode_resp(data) == 0) {
                   this.update_file_status(
                     "success! " +
-                      put_file_name +
-                      ", " +
-                      put_file_data.length +
-                      " bytes"
+                    put_file_name +
+                    ", " +
+                    put_file_data.length +
+                    " bytes"
                   );
                   if (put_file_name === "microide.py") {
                     this.ws.send("from microide import *\r");
@@ -331,7 +272,7 @@ def del_file(filename):
         }.bind(this);
       }.bind(this);
 
-      this.ws.onclose = function() {
+      this.ws.onclose = function () {
         this.is_connected = false;
         if (this.term) {
           this.term.write("\x1b[31mDisconnected\x1b[m\r\n");
@@ -353,7 +294,7 @@ def del_file(filename):
       var f = files[0];
       put_file_name = f.name;
       var reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = function (e) {
         // console.log("sdfs", e.target.result);
         put_file_data = new Uint8Array(e.target.result);
         // console.log("put file data", put_file_data);
@@ -365,7 +306,9 @@ def del_file(filename):
 
     get_file() {
       this.last_command = "download_file";
-      var blob = new Blob([this.code], { type: "text/plain;charset=utf-8" });
+      var blob = new Blob([this.code], {
+        type: "text/plain;charset=utf-8"
+      });
       saveAs(blob, this.opened_file.replace("/", "_"));
     },
 
@@ -417,14 +360,20 @@ def del_file(filename):
     }
   },
   watch: {
-    last_command: function() {},
-    size: function() {
+    last_command: function () {},
+
+    // 计算term尺寸
+    size: function () {
       var _size = calculate_size();
       this.term.resize(_size[0], _size[1]);
     },
-    ws_return: function() {
+
+    // 通过对websocket的数据监听来完成数据的获取
+    ws_return: function () {
       if (this.ws_return.endsWith(">>> ")) {
         // console.log("raw:", this.ws_return);
+
+        // ws_return的类别过滤,以下几种操作会导致目录树树的变化
         if (
           this.ws_return.startsWith("tree") ||
           this.ws_return.startsWith("new_file") ||
@@ -442,14 +391,16 @@ def del_file(filename):
               .slice(2, -5);
             // console.log("newfile return:", root_files);
           }
+
+          // try catch 用于捕获非正常流程导致的错误输出,例如没有import microide的情况下,tree()函数的输出报错
           try {
             // console.log("root files changed by ", this.last_command);
             // console.log('root_files',root_files)
             this.root_files = JSON.parse(root_files);
           } catch (e) {
             // console.log(e);
-            this.ws_return = "";
-            this.last_command = "";
+            // this.ws_return = "";
+            // this.last_command = "";
           }
 
           // console.log("tree obj:", this.root_files);
@@ -457,6 +408,7 @@ def del_file(filename):
           this.last_command = "";
         }
 
+        // 获取相应文件的代码
         if (this.ws_return.startsWith("get_code")) {
           var code = this.ws_return
             .slice(0, this.ws_return.length - 5)
