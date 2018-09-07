@@ -50,9 +50,9 @@
                         </mu-button>
                     
              
-                        <mu-button v-show="i.index===list_index&&!i.children" icon small @click="get_file">
+                        <!-- <mu-button v-show="i.index===list_index&&!i.children" icon small @click="get_file">
                           <mu-icon value="get_app" color="blue"></mu-icon>
-                        </mu-button>
+                        </mu-button> -->
                      
                                          
                         <mu-button v-show="i.index===list_index&&!i.children" icon small @click="excute_script">
@@ -89,9 +89,9 @@
                         </mu-button>
                      
                   
-                        <mu-button v-show="j.index===list_index" icon small @click="get_file">
+                        <!-- <mu-button v-show="j.index===list_index" icon small @click="get_file">
                           <mu-icon value="get_app" color="blue"></mu-icon>
-                        </mu-button>
+                        </mu-button> -->
                    
                 
                         <mu-button v-show="j.index===list_index" icon small @click="excute_script">
