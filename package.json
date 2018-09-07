@@ -12,6 +12,7 @@
   "dependencies": {
     "deformation": "^1.0.9",
     "muse-ui": "^3.0.0",
+    "muse-ui-toast": "^0.3.0",
     "vue": "^2.5.2",
     "vue-m-monaco-editor": "^1.0.0",
     "vue-monaco": "^0.2.0",

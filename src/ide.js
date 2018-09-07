@@ -7,9 +7,14 @@
  http://dev.1zlab.com/
  */
 
+/*
+    Problem: term.js 放到同级目录下,通过 import Terminal from "./term.js" 出错
+ */
+import Terminal from "../term.js"
+import {
+  microide_codes
+} from "./microide.py.js"
 
-import Terminal from "../term.js";
-import { microide_codes } from "./microide.py.js"
 var put_file_data = null;
 var put_file_name = null;
 
@@ -36,7 +41,7 @@ export default {
       showTerm: false,
       // websocket对象
       ws: null,
-      url: "ws://192.168.2.200:8266/",
+      url: "ws://192.168.2.189:8266/",
       // ws是否连接
       is_connected: false,
       // terminal对像
@@ -53,7 +58,8 @@ export default {
       // websocket 返回数据接受对象
       ws_return: "",
 
-      button_text: "connect"
+      button_text: "connect",
+
     };
   },
 
@@ -97,6 +103,10 @@ export default {
 
     toggle(panel) {
       this.panel = panel === this.panel ? "" : panel;
+    },
+
+    closeAlert() {
+      this.alert = false;
     },
 
     calculate_size() {
@@ -248,7 +258,7 @@ export default {
               case 12:
                 // final response for put
                 if (this.decode_resp(data) == 0) {
-                  this.update_file_status(
+                  this.show_message(
                     "success! " +
                     put_file_name +
                     ", " +
@@ -260,7 +270,7 @@ export default {
                   }
                   put_file_data = null;
                 } else {
-                  this.update_file_status("Failed sending " + put_file_name);
+                  this.show_message("Failed sending " + put_file_name);
                 }
                 this.binary_state = 0;
                 break;
@@ -281,8 +291,14 @@ export default {
       }.bind(this);
     },
 
-    update_file_status(s) {
+    show_message(s) {
       document.getElementById("file-status").innerHTML = s;
+      if (s.startsWith('Failed'))
+        this.$toast.error(s)
+      if (s.startsWith('Sending'))
+        this.$toast.info(s)
+      if (s.startsWith('success'))
+        this.$toast.success(s)
     },
 
     handle_put_file_select(evt) {
@@ -346,7 +362,7 @@ export default {
 
       // initiate put
       this.binary_state = 11;
-      this.update_file_status("Sending " + put_file_name + "...");
+      this.show_message("Sending " + put_file_name + "...");
       this.ws.send(rec);
     },
 

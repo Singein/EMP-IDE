@@ -1,3 +1,10 @@
+.ide-alert{
+    position: fixed;
+    left: 75vw;
+    width: 22vw;
+    margin: 16px;
+}
+
 /* 侧栏区域 */
 .ide-side-bar {
     background: #252526;
