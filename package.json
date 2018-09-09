@@ -7,12 +7,18 @@
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
-    "build": "node build/build.js"
+    "build": "node build/build.js",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
   },
   "dependencies": {
     "deformation": "^1.0.9",
+    "lodash": "^4.17.10",
+    "material-design-icons": "^3.0.1",
     "muse-ui": "^3.0.0",
     "muse-ui-toast": "^0.3.0",
+    "normalize.css": "^8.0.0",
+    "term.js": "0.0.7",
     "vue": "^2.5.2",
     "vue-m-monaco-editor": "^1.0.0",
     "vue-monaco": "^0.2.0",
@@ -51,6 +57,7 @@
     "vue-loader": "^13.3.0",
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.5.2",
+    "vuepress": "^0.14.2",
     "webpack": "^3.6.0",
     "webpack-bundle-analyzer": "^2.9.0",
     "webpack-dev-server": "^2.9.1",
