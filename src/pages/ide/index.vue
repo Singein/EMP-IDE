@@ -369,10 +369,8 @@
  http://dev.1zlab.com/
  */
 
-import Terminal from "term.js"
-import {
-  microide_codes
-} from "./microide.py.js"
+import Terminal from "term.js";
+import { microide_codes } from "./microide.py.js";
 
 var put_file_data = null;
 var put_file_name = null;
@@ -380,7 +378,7 @@ var put_file_name = null;
 export default {
   name: "App",
   components: {},
-  data () {
+  data() {
     return {
       size: [document.body.clientWidth, document.body.clientHeight],
       code: "",
@@ -417,13 +415,12 @@ export default {
       // websocket 返回数据接受对象
       ws_return: "",
 
-      button_text: "connect",
-
+      button_text: "connect"
     };
   },
 
-  mounted: function () {
-    this.$nextTick(function () {
+  mounted: function() {
+    this.$nextTick(function() {
       var _size = this.calculate_size();
       // 初始化term对象,完成视图的渲染
       this.$refs.file_dialog.addEventListener(
@@ -452,23 +449,23 @@ export default {
   },
 
   methods: {
-    showTermDialog () {
+    showTermDialog() {
       this.showTerm = !this.showTerm;
     },
 
-    closeFullscreenDialog () {
+    closeFullscreenDialog() {
       this.showTerm = false;
     },
 
-    toggle (panel) {
+    toggle(panel) {
       this.panel = panel === this.panel ? "" : panel;
     },
 
-    closeAlert () {
+    closeAlert() {
       this.alert = false;
     },
 
-    calculate_size () {
+    calculate_size() {
       // 计算terminal尺寸
       var cols = Math.max(100, Math.min(200, (this.size[0] - 64) / 10)) | 0;
       if (this.size[0] <= 1366)
@@ -477,39 +474,39 @@ export default {
       return [cols, rows];
     },
 
-    handleChange (val) {
+    handleChange(val) {
       // 目录树的index值
       this.list_index = val;
     },
 
-    new_file () {
+    new_file() {
       this.last_command = "new_file('" + this.new_file_name + "')\r";
       this.ws.send(this.last_command);
     },
 
-    del_file () {
+    del_file() {
       this.last_command = "del_file('" + this.opened_file + "')\r";
       this.ws.send(this.last_command);
     },
 
-    new_folder () {
+    new_folder() {
       this.last_command = "create_folder('" + this.new_folder_name + "')\r";
       this.ws.send(this.last_command);
     },
 
-    del_folder (folder) {
+    del_folder(folder) {
       this.last_command = "del_folder('" + folder + "')\r";
       this.ws.send(this.last_command);
     },
 
-    excute_script () {
+    excute_script() {
       this.last_command = "excute_script";
       this.ws.send(
         "exec(open('" + this.opened_file + "').read(), globals())\r"
       );
     },
 
-    get_code (dir = "", filename, is_dir) {
+    get_code(dir = "", filename, is_dir) {
       if (!is_dir) {
         if (
           this.last_command === "excute_script" ||
@@ -526,7 +523,7 @@ export default {
       }
     },
 
-    update_code () {
+    update_code() {
       var uint8array = new TextEncoder().encode(
         this.code.replace(/\r\n/g, "\n")
       );
@@ -537,34 +534,36 @@ export default {
       this.put_file();
     },
 
-    update_tree () {
+    update_tree() {
       if (this.root_files.length === 0) {
         this.last_command = "tree()\r";
         this.ws.send(this.last_command);
       }
     },
 
-    deploy () {
-      var uint8array = new TextEncoder().encode(microide_codes.replace(/\r\n/g, "\n"));
+    deploy() {
+      var uint8array = new TextEncoder().encode(
+        microide_codes.replace(/\r\n/g, "\n")
+      );
       put_file_name = "microide.py";
       put_file_data = uint8array;
       this.put_file();
     },
 
-    file_input () {
+    file_input() {
       this.$refs.file_dialog.click();
     },
 
-    send_button_clicked () {
+    send_button_clicked() {
       this.put_file();
     },
 
-    prepare_for_connect () {
+    prepare_for_connect() {
       this.is_connected = false;
       this.button_text = "Connect";
     },
 
-    connect_button_clicked () {
+    connect_button_clicked() {
       if (this.is_connected) {
         this.ws.close();
       } else {
@@ -574,14 +573,14 @@ export default {
       this.is_connected = !this.is_connected;
     },
 
-    connect () {
+    connect() {
       this.ws = new WebSocket(this.url);
       this.ws.binaryType = "arraybuffer";
-      this.ws.onopen = function () {
+      this.ws.onopen = function() {
         this.term.removeAllListeners("data");
         this.term.on(
           "data",
-          function (data) {
+          function(data) {
             // Pasted data from clipboard will likely contain
             // LF as EOL chars.
             data = data.replace(/\n/g, "\r");
@@ -590,7 +589,7 @@ export default {
           }.bind(this)
         );
 
-        this.term.on("title", function (title) {
+        this.term.on("title", function(title) {
           document.title = title;
         });
 
@@ -598,7 +597,7 @@ export default {
         this.term.element.focus();
         this.term.write("\x1b[31mWelcome to 1ZLAB-MicroIDE!\x1b[m\r\n");
 
-        this.ws.onmessage = function (event) {
+        this.ws.onmessage = function(event) {
           if (event.data instanceof ArrayBuffer) {
             var data = new Uint8Array(event.data);
             switch (this.binary_state) {
@@ -607,7 +606,9 @@ export default {
                 if (this.decode_resp(data) == 0) {
                   // send file data in chunks
                   for (
-                    var offset = 0; offset < put_file_data.length; offset += 1024
+                    var offset = 0;
+                    offset < put_file_data.length;
+                    offset += 1024
                   ) {
                     this.ws.send(put_file_data.slice(offset, offset + 1024));
                   }
@@ -619,10 +620,10 @@ export default {
                 if (this.decode_resp(data) == 0) {
                   this.show_message(
                     "success! " +
-                    put_file_name +
-                    ", " +
-                    put_file_data.length +
-                    " bytes"
+                      put_file_name +
+                      ", " +
+                      put_file_data.length +
+                      " bytes"
                   );
                   if (put_file_name === "microide.py") {
                     this.ws.send("from microide import *\r");
@@ -641,7 +642,7 @@ export default {
         }.bind(this);
       }.bind(this);
 
-      this.ws.onclose = function () {
+      this.ws.onclose = function() {
         this.is_connected = false;
         if (this.term) {
           this.term.write("\x1b[31mDisconnected\x1b[m\r\n");
@@ -650,17 +651,14 @@ export default {
       }.bind(this);
     },
 
-    show_message (s) {
+    show_message(s) {
       document.getElementById("file-status").innerHTML = s;
-      if (s.startsWith('Failed'))
-        this.$toast.error(s)
-      if (s.startsWith('Sending'))
-        this.$toast.info(s)
-      if (s.startsWith('success'))
-        this.$toast.success(s)
+      if (s.startsWith("Failed")) this.$toast.error(s);
+      if (s.startsWith("Sending")) this.$toast.info(s);
+      if (s.startsWith("success")) this.$toast.success(s);
     },
 
-    handle_put_file_select (evt) {
+    handle_put_file_select(evt) {
       // The event holds a FileList object which is a list of File objects,
       // but we only support single file selection at the moment.
       var files = evt.target.files;
@@ -669,7 +667,7 @@ export default {
       var f = files[0];
       put_file_name = f.name;
       var reader = new FileReader();
-      reader.onload = function (e) {
+      reader.onload = function(e) {
         // console.log("sdfs", e.target.result);
         put_file_data = new Uint8Array(e.target.result);
         // console.log("put file data", put_file_data);
@@ -679,7 +677,7 @@ export default {
       reader.readAsArrayBuffer(f);
     },
 
-    get_file () {
+    get_file() {
       this.last_command = "download_file";
       var blob = new Blob([this.code], {
         type: "text/plain;charset=utf-8"
@@ -687,7 +685,7 @@ export default {
       saveAs(blob, this.opened_file.replace("/", "_"));
     },
 
-    put_file () {
+    put_file() {
       var dest_fname = put_file_name;
       var dest_fsize = put_file_data.length;
 
@@ -725,7 +723,7 @@ export default {
       this.ws.send(rec);
     },
 
-    decode_resp (data) {
+    decode_resp(data) {
       if (data[0] == "W".charCodeAt(0) && data[1] == "B".charCodeAt(0)) {
         var code = data[2] | (data[3] << 8);
         return code;
@@ -735,16 +733,16 @@ export default {
     }
   },
   watch: {
-    last_command: function () { },
+    last_command: function() {},
 
     // 计算term尺寸
-    size: function () {
+    size: function() {
       var _size = calculate_size();
       this.term.resize(_size[0], _size[1]);
     },
 
     // 通过对websocket的数据监听来完成数据的获取
-    ws_return: function () {
+    ws_return: function() {
       if (this.ws_return.endsWith(">>> ")) {
         // console.log("raw:", this.ws_return);
 
@@ -804,7 +802,12 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+body {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
 .ide-alert {
   position: fixed;
   left: 75vw;
