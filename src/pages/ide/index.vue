@@ -334,11 +334,21 @@
             <mu-icon value="cloud_download"></mu-icon>
           </mu-button>
 
+          
+
           <mu-text-field class="ide-terminal-url"
             :disabled="is_connected"
             color="#61616161"
             v-model="url"
             placeholder="ws://192.168.xxx.xxx:8266/"></mu-text-field>
+
+          <mu-text-field class="ide-terminal-passwd"
+            :disabled="is_connected"
+            color="#61616161"
+            v-model="passwd"
+            placeholder="password"
+            type="password"></mu-text-field>
+
           <mu-button class="ide-terminal-button"
             color="secondary"
             small
@@ -399,6 +409,7 @@ export default {
       // websocket对象
       ws: null,
       url: "",
+      passwd: "",
       // ws是否连接
       is_connected: false,
       // terminal对像
@@ -423,8 +434,9 @@ export default {
   mounted: function() {
     this.$nextTick(function() {
       try {
-        console.log(this.$cookie.get("url"));
-        this.url = this.$cookie.get("url")
+        // console.log(this.$cookie.get("url"));
+        this.url = this.$cookie.get("url");
+        this.passwd = this.$cookie.get("passwd");
       } catch(e){
         //
       }
@@ -476,8 +488,8 @@ export default {
       // 计算terminal尺寸
       var cols = Math.max(100, Math.min(200, (this.size[0] - 64) / 10)) | 0;
       if (this.size[0] <= 1366)
-        var rows = Math.max(24, Math.min(26, (this.size[1] - 180) / 19)) | 0;
-      else var rows = Math.max(24, Math.min(35, (this.size[1] - 180) / 19)) | 0;
+        var rows = Math.max(24, Math.min(29, (this.size[1] - 180) / 19)) | 0;
+      else var rows = Math.max(24, Math.min(39, (this.size[1] - 180) / 19)) | 0;
       return [cols, rows];
     },
 
@@ -582,6 +594,7 @@ export default {
 
     connect() {
       this.$cookie.set("url", this.url, { expires: "1Y" });
+      this.$cookie.set("passwd", this.passwd, { expires: "1Y" });
       this.ws = new WebSocket(this.url);
       this.ws.binaryType = "arraybuffer";
       this.ws.onopen = function() {
@@ -950,6 +963,14 @@ body {
 .ide-terminal-url {
   height: 46px !important;
   margin: auto 6px !important;
+  max-width: 230px !important;
+  width: fit-content !important;
+}
+
+.ide-terminal-passwd {
+  height: 46px !important;
+  margin: auto 6px !important;
+  width: 100px !important;
 }
 
 .ide-terminal-button {
@@ -975,7 +996,8 @@ body {
 }
 
 .terminal {
-  float: left;
+  /* float: left; */
+  display: block;
   height: 90vh;
   border: #1e1e1e solid 8px;
   font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
