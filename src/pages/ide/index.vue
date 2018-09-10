@@ -207,7 +207,7 @@
               class="ide-panel-flex">
 
               <p id="filename"
-                style="color:#5c6bc0;font-size:14px;text-align:center">none selected. </p>
+                style="color:#5c6bc0;font-size:14px;text-align:center">{{send_file_name}} </p>
 
               <mu-flex style="width:100%;padding-top:6px"
                 align-items="center"
@@ -415,7 +415,8 @@ export default {
       // websocket 返回数据接受对象
       ws_return: "",
 
-      button_text: "connect"
+      button_text: "connect",
+      send_file_name: "none selected."
     };
   },
 
@@ -629,6 +630,8 @@ export default {
                     this.ws.send("from microide import *\r");
                   }
                   put_file_data = null;
+                  this.send_file_name = "none selected.";
+                  this.panel = "";
                 } else {
                   this.show_message("Failed sending " + put_file_name);
                 }
