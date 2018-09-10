@@ -290,6 +290,14 @@
             Terminal
           </mu-button>
 
+          <mu-button
+            flat
+            color="grey"
+            small
+            @click="connect_button_clicked()">
+            <mu-icon value="power"></mu-icon>
+            {{button_text}}</mu-button>
+            
         </mu-flex>
 
         <mu-flex class="ide-bottom-bar-right"
@@ -668,7 +676,7 @@ export default {
 
       this.ws.onclose = function() {
         this.is_connected = false;
-        this.$toast.error('Disconnected')
+        this.$toast.error("Disconnected");
         if (this.term) {
           this.term.write("\x1b[31mDisconnected\x1b[m\r\n");
         }
@@ -984,14 +992,14 @@ body {
 }
 
 .ide-terminal-url {
-  height: 46px !important;
+  height: 32px !important;
   margin: auto 6px !important;
   max-width: 230px !important;
   width: fit-content !important;
 }
 
 .ide-terminal-passwd {
-  height: 46px !important;
+  height: 32px !important;
   margin: auto 6px !important;
   width: 100px !important;
 }
