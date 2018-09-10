@@ -437,7 +437,7 @@ export default {
         // console.log(this.$cookie.get("url"));
         this.url = this.$cookie.get("url");
         this.passwd = this.$cookie.get("passwd");
-      } catch(e){
+      } catch (e) {
         //
       }
       var _size = this.calculate_size();
@@ -595,6 +595,7 @@ export default {
     connect() {
       this.$cookie.set("url", this.url, { expires: "1Y" });
       this.$cookie.set("passwd", this.passwd, { expires: "1Y" });
+      this.last_command = "connect";
       this.ws = new WebSocket(this.url);
       this.ws.binaryType = "arraybuffer";
       this.ws.onopen = function() {
@@ -667,6 +668,7 @@ export default {
 
       this.ws.onclose = function() {
         this.is_connected = false;
+        this.$toast.error('Disconnected')
         if (this.term) {
           this.term.write("\x1b[31mDisconnected\x1b[m\r\n");
         }
@@ -766,6 +768,27 @@ export default {
 
     // 通过对websocket的数据监听来完成数据的获取
     ws_return: function() {
+      // 自动连接
+      if (
+        this.ws_return.startsWith("Password: ") &&
+        this.last_command === "connect"
+      ) {
+        // console.log("raw ", this.ws_return);
+        this.ws.send(this.passwd + "\r");
+        this.ws_return = "";
+        this.last_command = "wait_for_connect";
+      }
+
+      // 判断连接状态,若成功
+      if (
+        this.ws_return.indexOf("WebREPL connected") &&
+        this.last_command === "wait_for_connect"
+      ) {
+        this.$toast.success("WebREPL connected");
+        this.last_command = "";
+        this.ws_return = "";
+      }
+
       if (this.ws_return.endsWith(">>> ")) {
         // console.log("raw:", this.ws_return);
 
