@@ -398,7 +398,7 @@ export default {
       showTerm: false,
       // websocket对象
       ws: null,
-      url: "ws://192.168.2.189:8266/",
+      url: "",
       // ws是否连接
       is_connected: false,
       // terminal对像
@@ -422,6 +422,12 @@ export default {
 
   mounted: function() {
     this.$nextTick(function() {
+      try {
+        console.log(this.$cookie.get("url"));
+        this.url = this.$cookie.get("url")
+      } catch(e){
+        //
+      }
       var _size = this.calculate_size();
       // 初始化term对象,完成视图的渲染
       this.$refs.file_dialog.addEventListener(
@@ -575,6 +581,7 @@ export default {
     },
 
     connect() {
+      this.$cookie.set("url", this.url, { expires: "1Y" });
       this.ws = new WebSocket(this.url);
       this.ws.binaryType = "arraybuffer";
       this.ws.onopen = function() {
