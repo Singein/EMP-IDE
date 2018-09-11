@@ -260,15 +260,15 @@
             :mode="mode"
             :theme="theme"
             :syncInput="true"
-            :fontSize="fontSize"></m-monaco-editor>
+            :fontSize="parseInt(fontSize)"></m-monaco-editor>
         </mu-flex>
       </mu-flex>
-
+  
       <!-- 底栏 -->
       <mu-flex class="ide-bottom-bar"
         justify-content="end"
         align-items="center">
-
+        
         <mu-flex class="ide-bottom-bar-left"
           justify-content="start"
           align-items="center">
@@ -298,7 +298,7 @@
             <mu-icon value="power"></mu-icon>
             {{button_text}}</mu-button>
 
-           <!-- 部署按钮 -->
+          <!-- 部署按钮 -->
           <mu-button small
             icon
             color="grey"
@@ -325,7 +325,7 @@
         </mu-flex>
 
       </mu-flex>
-
+    
       <!-- 设置窗口 -->
       <mu-dialog title="MicroIDE Settings"  
         width="400" max-width="80%" 
@@ -369,16 +369,15 @@
     <!-- terminal container -->
     <div v-show="showTerm"
       class="ide-terminal-container">
-      <!-- terminal -->
       <mu-flex ref="term_container"
         direction="row"
         class="ide-terminal-term">
         <div v-show="true"
-          ref="term"
-          style="width:100%"></div>
+            ref="term"
+            style="width:100%"></div>
       </mu-flex>
     </div>
-
+    
   </div>
 </template>
 
@@ -493,7 +492,7 @@ export default {
       this.openSetting = true;
     },
 
-    closeSettings(){
+    closeSettings() {
       this.openSetting = false;
       this.$cookie.set("fontsize", this.fontSize, { expires: "1Y" });
     },
@@ -506,8 +505,11 @@ export default {
       // 计算terminal尺寸
       var cols = Math.max(100, Math.min(200, (this.size[0] - 64) / 10)) | 0;
       if (this.size[0] <= 1366)
-        var rows = Math.max(24, Math.min(29, (this.size[1] - 180) / 19)) | 0;
-      else var rows = Math.max(24, Math.min(39, (this.size[1] - 180) / 19)) | 0;
+        var rows =
+          Math.max(12, Math.min(29, (this.size[1] * 0.4 - 180) / 19)) | 0;
+      else
+        var rows =
+          Math.max(16, Math.min(39, (this.size[1] * 0.4 - 180) / 19)) | 0;
       return [cols, rows];
     },
 
@@ -519,6 +521,7 @@ export default {
     new_file() {
       this.last_command = "new_file('" + this.new_file_name + "')\r";
       this.ws.send(this.last_command);
+      this.panel = "";
     },
 
     del_file() {
@@ -529,6 +532,7 @@ export default {
     new_folder() {
       this.last_command = "create_folder('" + this.new_folder_name + "')\r";
       this.ws.send(this.last_command);
+      this.panel = "";
     },
 
     del_folder(folder) {
@@ -977,17 +981,15 @@ body {
 
 /* Terminal */
 .ide-terminal-container {
-  width: 100vw;
-  /* height: calc(97vh-48px); */
-  /* max-height: 65vh;
-    min-height: 65vh; */
-  height: 97vh;
+  width: 100%;
+  height: 40%;
+  display: block;
   position: fixed;
-  /* left: 18vw; */
-  /* bottom: 3vh; */
-  left: 0;
-  bottom: 3vh;
+  clear: both;
+  left: 18vw !important;
+  bottom: 3vh !important;
   background: #1e1e1e77;
+  border-top: 1px solid #61616161;
 }
 
 .ide-terminal-appbar {
@@ -1020,6 +1022,7 @@ body {
 
 .ide-terminal-term {
   width: 100%;
+  height: auto;
   background: #1e1e1e77;
 }
 
@@ -1037,14 +1040,16 @@ body {
 }
 
 .terminal {
-  /* float: left; */
   display: block;
-  height: 90vh;
+  float: left;
+  /* clear: both; */
+  width: 100%;
+  height: auto;
   border: #1e1e1e solid 8px;
   font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
   font-size: 16px;
   color: #f0f0f0;
-  background: #1e1e1e77 !important;
+  background: #1e1e1e !important;
 }
 
 .mu-expansion-panel__expand .mu-expansion-panel-header {
