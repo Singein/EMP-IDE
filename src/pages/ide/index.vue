@@ -361,7 +361,7 @@
         </mu-flex>
         
        
-        <mu-button slot="actions" flat color="primary" @click="()=>openSetting=false">Close</mu-button>
+        <mu-button slot="actions" flat color="primary" @click="closeSettings()">Close</mu-button>
       </mu-dialog>
 
     </mu-flex>
@@ -369,47 +369,6 @@
     <!-- terminal container -->
     <div v-show="showTerm"
       class="ide-terminal-container">
-      <!-- <mu-appbar :z-depth="0"
-        class="ide-terminal-appbar"
-        color='#1e1e1e'
-        title="Title">
-        <mu-button slot="left"
-          icon
-          @click="closeFullscreenDialog">
-          <mu-icon value="keyboard_arrow_down"
-            color="grey"></mu-icon>
-        </mu-button>
-        <mu-flex class="ide-terminal-flex"
-          justify-content="end"
-          align-items="center">
-
-          <mu-button small
-            icon
-            color="grey"
-            @click="deploy()">
-            <mu-icon value="cloud_download"></mu-icon>
-          </mu-button>
-
-          <mu-text-field class="ide-terminal-url"
-            :disabled="is_connected"
-            color="#61616161"
-            v-model="url"
-            placeholder="ws://192.168.xxx.xxx:8266/"></mu-text-field>
-
-          <mu-text-field class="ide-terminal-passwd"
-            :disabled="is_connected"
-            color="#61616161"
-            v-model="passwd"
-            placeholder="password"
-            type="password"></mu-text-field>
-
-          <mu-button class="ide-terminal-button"
-            color="secondary"
-            small
-            @click="connect_button_clicked()">{{button_text}}</mu-button>
-
-        </mu-flex>
-      </mu-appbar> -->
       <!-- terminal -->
       <mu-flex ref="term_container"
         direction="row"
@@ -494,6 +453,7 @@ export default {
         // console.log(this.$cookie.get("url"));
         this.url = this.$cookie.get("url");
         this.passwd = this.$cookie.get("passwd");
+        this.fontSize = this.$cookie.get("fontsize");
       } catch (e) {
         //
       }
@@ -529,20 +489,17 @@ export default {
       this.showTerm = !this.showTerm;
     },
 
-    openSettings () {
+    openSettings() {
       this.openSetting = true;
     },
 
-    closeFullscreenDialog() {
-      this.showTerm = false;
+    closeSettings(){
+      this.openSetting = false;
+      this.$cookie.set("fontsize", this.fontSize, { expires: "1Y" });
     },
 
     toggle(panel) {
       this.panel = panel === this.panel ? "" : panel;
-    },
-
-    closeAlert() {
-      this.alert = false;
     },
 
     calculate_size() {
@@ -817,7 +774,7 @@ export default {
         return -1;
       }
     }
-  },  
+  },
   watch: {
     last_command: function() {},
 
@@ -1126,9 +1083,9 @@ body {
   color: #e0e0e0;
 }
 .mu-dialog {
-	background-color: #424242 !important;
+  background-color: #424242 !important;
 }
 .mu-dialog-title {
-	color: rgba(221, 207, 207, 0.67) !important;
+  color: rgba(221, 207, 207, 0.67) !important;
 }
 </style>
