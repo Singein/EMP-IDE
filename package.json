@@ -23,6 +23,7 @@
     "vue-cookie": "^1.1.4",
     "vue-m-monaco-editor": "^1.0.0",
     "vue-monaco": "^0.2.0",
+    "vue-multipane": "^0.9.5",
     "vue-router": "^3.0.1",
     "xterm": "^3.6.0"
   },

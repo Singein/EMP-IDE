@@ -2,11 +2,54 @@
   <div>
     <mu-linear-progress v-if="loading"
       color="secondary"></mu-linear-progress>
-    <mu-flex direction='column'>
-      <mu-flex direction='row'>
-        <!-- 左侧栏 -->
-        <mu-flex direction="column"
-          class="ide-side-bar">
+    <multipane class="vertical-panes" layout="vertical">
+       <div class="pane left-pane" :style="{ maxWidth: '72px',minWidth:'72px', padding:'0' }">
+         <mu-flex justify-content="start"
+              align-items="center"
+              direction="column"
+              style="height:100%">
+
+            <mu-flex justify-content="start"
+              align-items="center"
+              direction="column"
+              style="height:50%">
+              <mu-button class="icon-button" icon color="grey">
+                <mu-icon size="36" value="code"></mu-icon>
+              </mu-button>
+              <mu-button class="icon-button" icon color="grey">
+                <mu-icon size="36" value="search"></mu-icon>
+              </mu-button>
+              <mu-button class="icon-button" icon color="grey">
+                <mu-icon size="36" value="extension"></mu-icon>
+              </mu-button>
+              <mu-button class="icon-button" icon color="grey">
+                <mu-icon size="36" value="cloud_download"></mu-icon>
+              </mu-button>
+              <mu-button class="icon-button" icon color="grey">
+                <mu-icon size="36" value="book"></mu-icon>
+              </mu-button>
+            </mu-flex>
+
+            <mu-flex justify-content="end"
+              align-items="center"
+              direction="column"
+              style="height:50%">
+              
+              <mu-button class="icon-button" icon color="green">
+                <mu-icon size="36" value="play_arrow"></mu-icon>
+              </mu-button>
+              <mu-button class="icon-button" icon color="yellow">
+                <mu-icon size="36" value="power"></mu-icon>
+              </mu-button>
+            </mu-flex>
+
+         </mu-flex>
+      </div>
+      <div class="pane"  :style="{ minWidth: '280px', maxWidth: '300px',padding:'0' }">
+        <div>
+          <!-- <h6 class="title is-6">Tree</h6> -->
+          <mu-flex direction="column"
+            class="ide-side-bar">
           <!-- 文件结构 嵌套列表的方式 -->
           <mu-expansion-panel @change="update_tree()"
             class="ide-panel">
@@ -234,37 +277,60 @@
 
         </mu-flex>
         <!-- 左侧栏 结束 -->
+        </div>
+      </div>
+      <multipane-resizer ></multipane-resizer>
 
-        <!-- 编辑器区域 -->
-        <mu-flex direction="column"
-          class="ide-top-bar">
-          <!-- 顶栏 -->
-          <mu-appbar v-if="!showTerm && opened_file!==''"
-            class="ide-top-bar-appbar"
-            :z-depth="0"
-            color="#252526">
-            {{opened_file.split('/')[1]}}
-            <mu-button v-if='opened_file!==""'
-              icon
-              small
-              slot="left"
-              @click="update_code()">
-              <mu-icon color="grey"
-                value="save"></mu-icon>
-            </mu-button>
-          </mu-appbar>
-          <!-- monaco编辑器 -->
-          <m-monaco-editor class="ide-editor"
-            v-if='opened_file!==""'
-            v-model="code"
-            :mode="mode"
-            :theme="theme"
-            :syncInput="true"
-            :fontSize="parseInt(fontSize)"></m-monaco-editor>
-        </mu-flex>
-      </mu-flex>
+      <div class="pane" :style="{ minWidth:'calc(100%-372px)',width:'100%',maxWidth:'100%',padding:'0'}">
+        <!-- 编辑器 terminal区域  -->
+        <multipane class="horizontal-panes" layout="horizontal">
+              <div class="pane" :style="{ maxHeight: '48px', minHeight: '48px',padding:'0'}">
+                <div>
+                  <!-- <h6 class="title is-6">标签页</h6> -->
+                  <mu-appbar v-if="opened_file!==''"
+                    class="ide-top-bar-appbar"
+                    :z-depth="0"
+                    color="#252526">
+                    {{opened_file.split('/')[1]}}
+                    <mu-button v-if='opened_file!==""'
+                      icon
+                      small
+                      slot="left"
+                      @click="update_code()">
+                      <mu-icon color="grey"
+                        value="save"></mu-icon>
+                    </mu-button>
+                  </mu-appbar>
+                  
+                </div>
+              </div>
+
+              <!-- <multipane-resizer></multipane-resizer> -->
+              <!-- 编辑器 -->
+              <div class="pane" :style="{maxHeight:'100%', height: 'calc(100%-50px)', minHeight: '0' }">
+        
+                  <!-- <h6 class="title is-6">monaco</h6> -->
+                  <m-monaco-editor class="ide-editor"
+                    v-if='opened_file!==""'
+                    v-model="code"
+                    :mode="mode"
+                    :theme="theme"
+                    :syncInput="true"
+                    :fontSize="parseInt(fontSize)"></m-monaco-editor>
+        
+              </div>
+
+              <multipane-resizer></multipane-resizer>
+              <!-- terminal -->
+              <div v-show="showTerm" class="pane" :style="{ minHeight:'0',padding:'6px'}">
+                <div ref="term"></div>
+              </div>
+              
+        </multipane>
+      </div>
   
-      <!-- 底栏 -->
+    </multipane>
+     <!-- 底栏 -->
       <mu-flex class="ide-bottom-bar"
         justify-content="end"
         align-items="center">
@@ -363,21 +429,6 @@
        
         <mu-button slot="actions" flat color="primary" @click="closeSettings()">Close</mu-button>
       </mu-dialog>
-
-    </mu-flex>
-
-    <!-- terminal container -->
-    <div v-show="showTerm"
-      class="ide-terminal-container">
-      <mu-flex ref="term_container"
-        direction="row"
-        class="ide-terminal-term">
-        <div v-show="true"
-            ref="term"
-            style="width:100%"></div>
-      </mu-flex>
-    </div>
-    
   </div>
 </template>
 
@@ -390,7 +441,7 @@
  *
  http://dev.1zlab.com/
  */
-
+import { Multipane, MultipaneResizer } from "vue-multipane";
 import Terminal from "term.js";
 import { microide_codes } from "./microide.py.js";
 
@@ -399,7 +450,10 @@ var put_file_name = null;
 
 export default {
   name: "App",
-  components: {},
+  components: {
+    Multipane,
+    MultipaneResizer
+  },
   data() {
     return {
       size: [document.body.clientWidth, document.body.clientHeight],
@@ -486,6 +540,8 @@ export default {
   methods: {
     showTermDialog() {
       this.showTerm = !this.showTerm;
+      var a = $(".horizontal-panes").children("div")[1];
+      $(a).css("height", "100%");
     },
 
     openSettings() {
@@ -871,6 +927,40 @@ export default {
 </script>
 
 <style>
+.left-pane{
+  background: #333333 !important;
+}
+.icon-button{
+  margin: 8px;
+}
+
+.vertical-panes {
+  width: 100%;
+  height: 97vh;
+}
+.vertical-panes > .pane {
+  text-align: left;
+  /* padding: 15px; */
+  overflow: hidden;
+  background: #1e1e1e;
+}
+.vertical-panes > .pane ~ .pane {
+  border-top: 1px solid #61616161;
+}
+.horizontal-panes {
+  width: 100%;
+  height: 100%;
+}
+.horizontal-panes > .pane {
+  text-align: left;
+  /* padding: 15px; */
+  overflow: hidden;
+  background: #1e1e1e;
+}
+.horizontal-panes > .pane ~ .pane {
+  border-top: 1px solid #61616161;
+}
+
 body {
   overflow-x: hidden;
   overflow-y: hidden;
@@ -886,14 +976,14 @@ body {
 /* 侧栏区域 */
 .ide-side-bar {
   background: #252526;
-  width: 18vw;
+  width: 100%;
   min-width: 280px;
   height: 97vh;
   padding: 0;
 }
 
 .ide-panel {
-  width: 18vw;
+  width: 100%;
   min-width: 280px;
   background: #252526 !important;
 }
@@ -914,7 +1004,7 @@ body {
 
 .ide-list {
   background: #252526;
-  width: 18vw !important;
+  width: 100% !important;
   min-width: 280px !important;
   padding: 0;
 }
@@ -1050,6 +1140,7 @@ body {
   font-size: 16px;
   color: #f0f0f0;
   background: #1e1e1e !important;
+  /* border-top: 1px solid #61616161; */
 }
 
 .mu-expansion-panel__expand .mu-expansion-panel-header {
