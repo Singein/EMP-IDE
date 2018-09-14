@@ -3,141 +3,99 @@
     <mu-linear-progress v-if="loading"
       color="secondary"></mu-linear-progress>
     <multipane class="vertical-panes" layout="vertical">
-       <div class="pane left-pane" :style="{ maxWidth: '72px',minWidth:'72px', padding:'0' }">
-         <mu-flex justify-content="start"
-              align-items="center"
-              direction="column"
-              style="height:100%">
+      <!-- 最左侧导航栏 -->
+      <div class="pane left-pane" :style="{ maxWidth: '72px',minWidth:'72px', padding:'0' }">
+        <mu-flex justify-content="start"
+            align-items="center"
+            direction="column"
+            style="height:100%">
 
-            <mu-flex justify-content="start"
-              align-items="center"
-              direction="column"
-              style="height:50%">
-              <mu-button class="icon-button" icon color="grey">
-                <mu-icon size="36" value="code"></mu-icon>
-              </mu-button>
-              <mu-button class="icon-button" icon color="grey">
-                <mu-icon size="36" value="search"></mu-icon>
-              </mu-button>
-              <mu-button class="icon-button" icon color="grey">
-                <mu-icon size="36" value="extension"></mu-icon>
-              </mu-button>
-              <mu-button class="icon-button" icon color="grey">
-                <mu-icon size="36" value="cloud_download"></mu-icon>
-              </mu-button>
-              <mu-button class="icon-button" icon color="grey">
-                <mu-icon size="36" value="book"></mu-icon>
-              </mu-button>
-            </mu-flex>
+          <mu-flex justify-content="start"
+            align-items="center"
+            direction="column"
+            style="height:50%">
+            <mu-button class="icon-button" icon color="grey">
+              <mu-icon size="36" value="code"></mu-icon>
+            </mu-button>
+            <mu-button class="icon-button" icon color="grey">
+              <mu-icon size="36" value="search"></mu-icon>
+            </mu-button>
+            <mu-button class="icon-button" icon color="grey">
+              <mu-icon size="36" value="extension"></mu-icon>
+            </mu-button>
+            <mu-button class="icon-button" icon color="grey">
+              <mu-icon size="36" value="cloud_download"></mu-icon>
+            </mu-button>
+            <mu-button class="icon-button" icon color="grey">
+              <mu-icon size="36" value="book"></mu-icon>
+            </mu-button>
+          </mu-flex>
 
-            <mu-flex justify-content="end"
-              align-items="center"
-              direction="column"
-              style="height:50%">
-              
-              <mu-button class="icon-button" icon color="green">
-                <mu-icon size="36" value="play_arrow"></mu-icon>
-              </mu-button>
-              <mu-button class="icon-button" icon color="yellow">
-                <mu-icon size="36" value="power"></mu-icon>
-              </mu-button>
-            </mu-flex>
+          <mu-flex justify-content="end"
+            align-items="center"
+            direction="column"
+            style="height:50%">
+            
+            <mu-button class="icon-button" icon color="green">
+              <mu-icon size="36" value="play_arrow"></mu-icon>
+            </mu-button>
+            <mu-button class="icon-button" icon color="yellow">
+              <mu-icon size="36" value="power"></mu-icon>
+            </mu-button>
+          </mu-flex>
 
-         </mu-flex>
+        </mu-flex>
       </div>
+      <!-- 最左侧导航栏 结束 -->
+
+      <!-- 目录结构 -->
       <div class="pane"  :style="{ minWidth: '280px', maxWidth: '300px',padding:'0' }">
         <div>
-          <!-- <h6 class="title is-6">Tree</h6> -->
           <mu-flex direction="column"
             class="ide-side-bar">
-          <!-- 文件结构 嵌套列表的方式 -->
-          <mu-expansion-panel @change="update_tree()"
-            class="ide-panel">
-            <div slot="header"
-              class="ide-panel-header">
-              <mu-button flat
-                small
-                color="grey">
-                <mu-icon left
-                  value="folder"></mu-icon>
-                Root DIR
-              </mu-button>
-            </div>
-            <mu-divider class="ide-panel-divider"></mu-divider>
-            <!-- file List -->
-            <div class="outer-container">
-              <div class="inner-container">
+            <!-- 文件结构 嵌套列表的方式 -->
+            <mu-expansion-panel @change="update_tree()"
+              class="ide-panel">
+              <div slot="header"
+                class="ide-panel-header">
+                <mu-button flat
+                  small
+                  color="grey">
+                  <mu-icon left
+                    value="folder"></mu-icon>
+                  Root DIR
+                </mu-button>
+              </div>
+              <mu-divider class="ide-panel-divider"></mu-divider>
+              <!-- file List -->
+              <div class="outer-container">
+                <div class="inner-container">
 
-                <mu-list toggle-nested
-                  class="ide-list content"
-                  :value="list_index"
-                  @change="handleChange">
+                  <mu-list toggle-nested
+                    class="ide-list content"
+                    :value="list_index"
+                    @change="handleChange">
 
-                  <mu-list-item v-for="(i,index) in root_files.children"
-                    :key="index"
-                    :value="i.index"
-                    button
-                    :ripple="false"
-                    @click="get_code('',i.name,i.children)"
-                    nested>
-
-                    <mu-icon v-if="i.children"
-                      value="folder"
-                      style="padding:6px"
-                      color='blue'></mu-icon>
-                    <mu-icon v-if="!i.children"
-                      value="description"
-                      style="padding:6px"
-                      color='orange200'></mu-icon>
-
-                    <mu-list-item-title style="color:#fff">{{i.name}}</mu-list-item-title>
-
-                    <mu-button v-show="i.index===list_index&&!i.children"
-                      icon
-                      small
-                      @click="del_file">
-                      <mu-icon value="delete"
-                        color="red300"></mu-icon>
-                    </mu-button>
-
-                    <!-- <mu-button v-show="i.index===list_index&&!i.children" icon small @click="get_file">
-                          <mu-icon value="get_app" color="blue"></mu-icon>
-                        </mu-button> -->
-
-                    <mu-button v-show="i.index===list_index&&!i.children"
-                      icon
-                      small
-                      @click="excute_script">
-                      <mu-icon value="play_arrow"
-                        color="success"></mu-icon>
-                    </mu-button>
-
-                    <!-- <mu-tooltip placement="left-start"> -->
-                    <mu-icon v-if="i.children"
-                      class="toggle-icon"
-                      size="24"
-                      color='grey'
-                      value="keyboard_arrow_down"></mu-icon>
-                    <!-- <mu-button icon small @click="del_folder(i.name)"
-                           slot='content'>
-                          <mu-icon value="delete" color="red300"></mu-icon>
-                        </mu-button> -->
-                    <!-- </mu-tooltip> -->
-                    <!-- 二级目录 -->
-                    <mu-list-item v-for="j in i.children"
-                      :key="j.name"
+                    <mu-list-item v-for="(i,index) in root_files.children"
+                      :key="index"
+                      :value="i.index"
                       button
                       :ripple="false"
-                      @click="get_code(i.name,j.name,false)"
-                      slot="nested"
-                      :value="j.index">
-                      <mu-icon value="description"
+                      @click="get_code('',i.name,i.children)"
+                      nested>
+
+                      <mu-icon v-if="i.children"
+                        value="folder"
+                        style="padding:6px"
+                        color='blue'></mu-icon>
+                      <mu-icon v-if="!i.children"
+                        value="description"
                         style="padding:6px"
                         color='orange200'></mu-icon>
 
-                      <mu-list-item-title style="color:#fff">{{j.name}}</mu-list-item-title>
+                      <mu-list-item-title style="color:#fff">{{i.name}}</mu-list-item-title>
 
-                      <mu-button v-show="j.index===list_index"
+                      <mu-button v-show="i.index===list_index&&!i.children"
                         icon
                         small
                         @click="del_file">
@@ -145,11 +103,11 @@
                           color="red300"></mu-icon>
                       </mu-button>
 
-                      <!-- <mu-button v-show="j.index===list_index" icon small @click="get_file">
-                          <mu-icon value="get_app" color="blue"></mu-icon>
-                        </mu-button> -->
+                      <!-- <mu-button v-show="i.index===list_index&&!i.children" icon small @click="get_file">
+                            <mu-icon value="get_app" color="blue"></mu-icon>
+                          </mu-button> -->
 
-                      <mu-button v-show="j.index===list_index"
+                      <mu-button v-show="i.index===list_index&&!i.children"
                         icon
                         small
                         @click="excute_script">
@@ -157,278 +115,321 @@
                           color="success"></mu-icon>
                       </mu-button>
 
+                      <!-- <mu-tooltip placement="left-start"> -->
+                      <mu-icon v-if="i.children"
+                        class="toggle-icon"
+                        size="24"
+                        color='grey'
+                        value="keyboard_arrow_down"></mu-icon>
+                      <!-- <mu-button icon small @click="del_folder(i.name)"
+                            slot='content'>
+                            <mu-icon value="delete" color="red300"></mu-icon>
+                          </mu-button> -->
+                      <!-- </mu-tooltip> -->
+                      <!-- 二级目录 -->
+                      <mu-list-item v-for="j in i.children"
+                        :key="j.name"
+                        button
+                        :ripple="false"
+                        @click="get_code(i.name,j.name,false)"
+                        slot="nested"
+                        :value="j.index">
+                        <mu-icon value="description"
+                          style="padding:6px"
+                          color='orange200'></mu-icon>
+
+                        <mu-list-item-title style="color:#fff">{{j.name}}</mu-list-item-title>
+
+                        <mu-button v-show="j.index===list_index"
+                          icon
+                          small
+                          @click="del_file">
+                          <mu-icon value="delete"
+                            color="red300"></mu-icon>
+                        </mu-button>
+
+                        <!-- <mu-button v-show="j.index===list_index" icon small @click="get_file">
+                            <mu-icon value="get_app" color="blue"></mu-icon>
+                          </mu-button> -->
+
+                        <mu-button v-show="j.index===list_index"
+                          icon
+                          small
+                          @click="excute_script">
+                          <mu-icon value="play_arrow"
+                            color="success"></mu-icon>
+                        </mu-button>
+
+                      </mu-list-item>
                     </mu-list-item>
-                  </mu-list-item>
-                </mu-list>
+                  </mu-list>
 
-              </div>
-            </div>
-
-          </mu-expansion-panel>
-
-          <!-- 创建文件 -->
-          <mu-expansion-panel class="ide-panel"
-            :expand="panel === 'panel1'"
-            @change="toggle('panel1')">
-            <div slot="header"
-              class="ide-panel-header">
-              <mu-button flat
-                small
-                color="grey">
-                <mu-icon left
-                  value="note_add"></mu-icon>
-                New File
-              </mu-button>
-            </div>
-            <mu-flex justify-content="end"
-              align-items="center"
-              direction="column"
-              class="ide-panel-flex">
-              <mu-text-field style="width:100%"
-                v-model="new_file_name"
-                placeholder="file name"></mu-text-field>
-              <mu-flex style="width:100%"
-                align-items="center"
-                justify-content="end">
-                <mu-button small
-                  @click="new_file()"
-                  color="success">add</mu-button>
-              </mu-flex>
-            </mu-flex>
-          </mu-expansion-panel>
-
-          <!-- 创建文件夹 -->
-          <mu-expansion-panel class="ide-panel"
-            :expand="panel === 'panel2'"
-            color="grey"
-            @change="toggle('panel2')">
-            <div slot="header"
-              class="ide-panel-header">
-              <mu-button flat
-                small
-                color="grey">
-                <mu-icon left
-                  value="create_new_folder"></mu-icon>
-                New Folder
-              </mu-button>
-            </div>
-            <mu-flex justify-content="end"
-              align-items="center"
-              direction="column"
-              class="ide-panel-flex">
-              <mu-text-field style="width:100%"
-                v-model="new_folder_name"
-                placeholder="folder name"></mu-text-field>
-              <mu-flex style="width:100%"
-                align-items="center"
-                justify-content="end">
-                <mu-button small
-                  @click="new_folder()"
-                  color="success">add</mu-button>
-              </mu-flex>
-            </mu-flex>
-          </mu-expansion-panel>
-
-          <!-- 发送文件 -->
-          <mu-expansion-panel class="ide-panel"
-            :expand="panel === 'panel3'"
-            color="grey"
-            @change="toggle('panel3')">
-            <div slot="header"
-              class="ide-panel-header">
-              <mu-button flat
-                small
-                color="grey">
-                <mu-icon left
-                  value="send"></mu-icon>
-                Send File
-              </mu-button>
-            </div>
-            <mu-flex justify-content="end"
-              align-items="center"
-              direction="column"
-              class="ide-panel-flex">
-
-              <p id="filename"
-                style="color:#5c6bc0;font-size:14px;text-align:center">{{send_file_name}} </p>
-
-              <mu-flex style="width:100%;padding-top:6px"
-                align-items="center"
-                justify-content="end">
-                <mu-button small
-                  @click="file_input()"
-                  color="indigo400"
-                  style="margin:0 6px">
-                  Browser...
-                </mu-button>
-                <mu-button :disabled="!is_connected"
-                  color="blue"
-                  small
-                  @click="send_button_clicked()">SEND</mu-button>
-              </mu-flex>
-              <!-- <p id="file-status"
-                style="margin:12px 0;font-size:14px;color:#5c6bc0"></p> -->
-            </mu-flex>
-
-            <input type="file"
-              ref="file_dialog"
-              style="display:none">
-          </mu-expansion-panel>
-
-        </mu-flex>
-        <!-- 左侧栏 结束 -->
-        </div>
-      </div>
-      <multipane-resizer ></multipane-resizer>
-
-      <div class="pane" :style="{ minWidth:'calc(100%-372px)',width:'100%',maxWidth:'100%',padding:'0'}">
-        <!-- 编辑器 terminal区域  -->
-        <multipane class="horizontal-panes" layout="horizontal">
-              <div class="pane" :style="{ maxHeight: '48px', minHeight: '48px',padding:'0'}">
-                <div>
-                  <!-- <h6 class="title is-6">标签页</h6> -->
-                  <mu-appbar v-if="opened_file!==''"
-                    class="ide-top-bar-appbar"
-                    :z-depth="0"
-                    color="#252526">
-                    {{opened_file.split('/')[1]}}
-                    <mu-button v-if='opened_file!==""'
-                      icon
-                      small
-                      slot="left"
-                      @click="update_code()">
-                      <mu-icon color="grey"
-                        value="save"></mu-icon>
-                    </mu-button>
-                  </mu-appbar>
-                  
                 </div>
               </div>
 
-              <!-- <multipane-resizer></multipane-resizer> -->
-              <!-- 编辑器 -->
-              <div class="pane" :style="{maxHeight:'100%', height: 'calc(100%-50px)', minHeight: '0' }">
-        
-                  <!-- <h6 class="title is-6">monaco</h6> -->
-                  <m-monaco-editor class="ide-editor"
-                    v-if='opened_file!==""'
-                    v-model="code"
-                    :mode="mode"
-                    :theme="theme"
-                    :syncInput="true"
-                    :fontSize="parseInt(fontSize)"></m-monaco-editor>
-        
-              </div>
+            </mu-expansion-panel>
 
-              <multipane-resizer></multipane-resizer>
-              <!-- terminal -->
-              <div v-show="showTerm" class="pane" :style="{ minHeight:'0',padding:'6px'}">
-                <div ref="term"></div>
+            <!-- 创建文件 -->
+            <mu-expansion-panel class="ide-panel"
+              :expand="panel === 'panel1'"
+              @change="toggle('panel1')">
+              <div slot="header"
+                class="ide-panel-header">
+                <mu-button flat
+                  small
+                  color="grey">
+                  <mu-icon left
+                    value="note_add"></mu-icon>
+                  New File
+                </mu-button>
               </div>
+              <mu-flex justify-content="end"
+                align-items="center"
+                direction="column"
+                class="ide-panel-flex">
+                <mu-text-field style="width:100%"
+                  v-model="new_file_name"
+                  placeholder="file name"></mu-text-field>
+                <mu-flex style="width:100%"
+                  align-items="center"
+                  justify-content="end">
+                  <mu-button small
+                    @click="new_file()"
+                    color="success">add</mu-button>
+                </mu-flex>
+              </mu-flex>
+            </mu-expansion-panel>
+
+            <!-- 创建文件夹 -->
+            <mu-expansion-panel class="ide-panel"
+              :expand="panel === 'panel2'"
+              color="grey"
+              @change="toggle('panel2')">
+              <div slot="header"
+                class="ide-panel-header">
+                <mu-button flat
+                  small
+                  color="grey">
+                  <mu-icon left
+                    value="create_new_folder"></mu-icon>
+                  New Folder
+                </mu-button>
+              </div>
+              <mu-flex justify-content="end"
+                align-items="center"
+                direction="column"
+                class="ide-panel-flex">
+                <mu-text-field style="width:100%"
+                  v-model="new_folder_name"
+                  placeholder="folder name"></mu-text-field>
+                <mu-flex style="width:100%"
+                  align-items="center"
+                  justify-content="end">
+                  <mu-button small
+                    @click="new_folder()"
+                    color="success">add</mu-button>
+                </mu-flex>
+              </mu-flex>
+            </mu-expansion-panel>
+
+            <!-- 发送文件 -->
+            <mu-expansion-panel class="ide-panel"
+              :expand="panel === 'panel3'"
+              color="grey"
+              @change="toggle('panel3')">
+              <div slot="header"
+                class="ide-panel-header">
+                <mu-button flat
+                  small
+                  color="grey">
+                  <mu-icon left
+                    value="send"></mu-icon>
+                  Send File
+                </mu-button>
+              </div>
+              <mu-flex justify-content="end"
+                align-items="center"
+                direction="column"
+                class="ide-panel-flex">
+
+                <p id="filename"
+                  style="color:#5c6bc0;font-size:14px;text-align:center">{{send_file_name}} </p>
+
+                <mu-flex style="width:100%;padding-top:6px"
+                  align-items="center"
+                  justify-content="end">
+                  <mu-button small
+                    @click="file_input()"
+                    color="indigo400"
+                    style="margin:0 6px">
+                    Browser...
+                  </mu-button>
+                  <mu-button :disabled="!is_connected"
+                    color="blue"
+                    small
+                    @click="send_button_clicked()">SEND</mu-button>
+                </mu-flex>
+                <!-- <p id="file-status"
+                  style="margin:12px 0;font-size:14px;color:#5c6bc0"></p> -->
+              </mu-flex>
+
+              <input type="file"
+                ref="file_dialog"
+                style="display:none">
+            </mu-expansion-panel>
+
+          </mu-flex>
+        </div>
+      </div>
+      <!--目录结构 结束 -->
+
+      <multipane-resizer></multipane-resizer>
+
+      <!-- 编辑器 terminal区域  -->
+      <div class="pane" :style="{ minWidth:'calc(100%-372px)',width:'100%',maxWidth:'100%',padding:'0'}">
+        <multipane class="horizontal-panes" layout="horizontal">
+            <!-- 标签页 -->
+            <div class="pane" :style="{ maxHeight: '48px', minHeight: '48px',padding:'0'}">              
+              <mu-appbar v-if="opened_file!==''"
+                class="ide-top-bar-appbar"
+                :z-depth="0"
+                color="#252526">
+                {{opened_file.split('/')[1]}}
+                <mu-button v-if='opened_file!==""'
+                  icon
+                  small
+                  slot="left"
+                  @click="update_code()">
+                  <mu-icon color="grey"
+                    value="save"></mu-icon>
+                </mu-button>
+              </mu-appbar>              
+            </div>
+            <!-- 标签页 结束 -->
+
+            <!-- <multipane-resizer></multipane-resizer> -->
+            <!-- 编辑器 -->
+            <div class="pane" :style="{maxHeight:'100%', height: 'calc(100%-50px)', minHeight: '0' }">
+                <m-monaco-editor class="ide-editor"
+                  v-if='opened_file!==""'
+                  v-model="code"
+                  :mode="mode"
+                  :theme="theme"
+                  :syncInput="true"
+                  :fontSize="parseInt(fontSize)"></m-monaco-editor>
+            </div>
+            <!-- 编辑器 结束 -->
+
+            <multipane-resizer></multipane-resizer>
+            <!-- terminal -->
+            <div v-show="showTerm" id="term_div" class="pane" :style="{ minHeight:'0',padding:'0'}">
+              <div id="term"></div>
+            </div>
               
         </multipane>
       </div>
-  
+      <!-- 编辑器 terminal区域 结束  -->
     </multipane>
-     <!-- 底栏 -->
-      <mu-flex class="ide-bottom-bar"
+
+
+    <!-- 底栏 -->
+    <mu-flex class="ide-bottom-bar"
+      justify-content="end"
+      align-items="center">
+      <!-- 左侧logo help -->
+      <mu-flex class="ide-bottom-bar-left"
+        justify-content="start"
+        align-items="center">
+        <p class="ide-bottom-bar-author">MicroIDE@1ZLAB</p>
+        <a href="http://dev.1zlab.com/help"
+          class="ide-bottom-bar-help"
+          target="_blank">Help</a>
+      </mu-flex>
+      <!-- 中部 terminal 连接 -->
+      <mu-flex class="ide-bottom-bar-center"
+        justify-content="start"
+        align-items="center">
+        <!-- Terminal Icon -->
+        <mu-button small
+          flat
+          color="grey"
+          @click="showTermDialog">
+          <mu-icon value="keyboard_arrow_right"></mu-icon>
+          Terminal
+        </mu-button>
+
+        <mu-button
+          flat
+          color="grey"
+          small
+          @click="connect_button_clicked">
+          <mu-icon value="power"></mu-icon>
+          {{button_text}}</mu-button>
+
+        <!-- 部署按钮 -->
+        <mu-button small
+          icon
+          color="grey"
+          @click="deploy()">
+          <mu-icon value="cloud_download"></mu-icon>
+        </mu-button>
+
+          
+      </mu-flex>
+      <!-- 右侧设置按钮  -->
+      <mu-flex class="ide-bottom-bar-right"
         justify-content="end"
         align-items="center">
-        
-        <mu-flex class="ide-bottom-bar-left"
-          justify-content="start"
-          align-items="center">
-          <p class="ide-bottom-bar-author">MicroIDE@1ZLAB</p>
-          <a href="http://dev.1zlab.com/help"
-            class="ide-bottom-bar-help"
-            target="_blank">Help</a>
-        </mu-flex>
+        <!-- Message area  -->
+        <p id="file-status"
+          class="ide-bottom-bar-message"></p>
+        <!-- Settings Icon -->
+        <mu-button small
+          icon
+          @click="openSettings()"
+          color="grey">
+          <mu-icon value="settings"></mu-icon>
+        </mu-button>
+      </mu-flex>
+    </mu-flex>
+    <!-- 底栏结束 -->
 
-        <mu-flex class="ide-bottom-bar-center"
-          justify-content="start"
-          align-items="center">
-          <!-- Terminal Icon -->
-          <mu-button small
-            flat
-            color="grey"
-            @click="showTermDialog">
-            <mu-icon value="keyboard_arrow_right"></mu-icon>
-            Terminal
-          </mu-button>
+    <!-- 设置窗口 -->
+    <mu-dialog title="MicroIDE Settings"  
+      width="400" max-width="80%" 
+      :esc-press-close="false" 
+      :overlay-close="false" 
+      :open.sync="openSetting">
 
-          <mu-button
-            flat
-            color="grey"
-            small
-            @click="connect_button_clicked()">
-            <mu-icon value="power"></mu-icon>
-            {{button_text}}</mu-button>
+      <mu-flex direction='column'>
+        <mu-text-field 
+          label="Url"
+          :disabled="is_connected"
+          color="primary"
+          v-model="url"
+          full-width
+          placeholder="ws://192.168.xxx.xxx:8266/"></mu-text-field>
 
-          <!-- 部署按钮 -->
-          <mu-button small
-            icon
-            color="grey"
-            @click="deploy()">
-            <mu-icon value="cloud_download"></mu-icon>
-          </mu-button>
+        <mu-text-field 
+          label="Password"
+          :disabled="is_connected"
+          color="primary"
+          v-model="passwd"
+          full-width
+          placeholder="password"
+          type="password"></mu-text-field>
 
-            
-        </mu-flex>
-
-        <mu-flex class="ide-bottom-bar-right"
-          justify-content="end"
-          align-items="center">
-          <!-- Message area  -->
-          <p id="file-status"
-            class="ide-bottom-bar-message"></p>
-          <!-- Settings Icon -->
-          <mu-button small
-            icon
-            @click="openSettings()"
-            color="grey">
-            <mu-icon value="settings"></mu-icon>
-          </mu-button>
-        </mu-flex>
+        <mu-text-field 
+          label="Editor fontsize"
+          color="primary"
+          v-model="fontSize"
+          full-width
+          placeholder="editor fontsize"></mu-text-field>
 
       </mu-flex>
-    
-      <!-- 设置窗口 -->
-      <mu-dialog title="MicroIDE Settings"  
-        width="400" max-width="80%" 
-        :esc-press-close="false" 
-        :overlay-close="false" 
-        :open.sync="openSetting">
-
-        <mu-flex direction='column'>
-          <mu-text-field 
-            label="Url"
-            :disabled="is_connected"
-            color="primary"
-            v-model="url"
-            full-width
-            placeholder="ws://192.168.xxx.xxx:8266/"></mu-text-field>
-
-          <mu-text-field 
-            label="Password"
-            :disabled="is_connected"
-            color="primary"
-            v-model="passwd"
-            full-width
-            placeholder="password"
-            type="password"></mu-text-field>
-
-          <mu-text-field 
-            label="Editor fontsize"
-            color="primary"
-            v-model="fontSize"
-            full-width
-            placeholder="editor fontsize"></mu-text-field>
-
-        </mu-flex>
-        
-       
-        <mu-button slot="actions" flat color="primary" @click="closeSettings()">Close</mu-button>
-      </mu-dialog>
+      
+      <mu-button slot="actions" flat color="primary" @click="closeSettings()">Close</mu-button>
+    </mu-dialog>
   </div>
 </template>
 
@@ -443,8 +444,11 @@
  */
 import { Multipane, MultipaneResizer } from "vue-multipane";
 import Terminal from "term.js";
+// import { Terminal } from "xterm";
 import { microide_codes } from "./microide.py.js";
+// import * as fit from 'xterm/lib/addons/fit/fit';
 
+// Terminal.applyAddon(fit);
 var put_file_data = null;
 var put_file_name = null;
 
@@ -456,7 +460,6 @@ export default {
   },
   data() {
     return {
-      size: [document.body.clientWidth, document.body.clientHeight],
       code: "",
       fontSize: 16,
       mode: "python",
@@ -510,30 +513,23 @@ export default {
       } catch (e) {
         //
       }
-      var _size = this.calculate_size();
+
       // 初始化term对象,完成视图的渲染
       this.$refs.file_dialog.addEventListener(
         "change",
         this.handle_put_file_select,
         false
       );
+      const that = this;
       this.term = new Terminal({
-        cols: _size[0],
-        rows: _size[1],
+        // cols: that.calculate_size(terminal_container)[0],
+        // rows: that.calculate_size(terminal_container)[1],
         useStyle: true,
         screenKeys: true,
         cursorBlink: false
       });
-      this.term.open(this.$refs.term);
-      const that = this;
-      // 监听浏览器resize事件,完成对terminal 行列数的初始化
-      window.onresize = () => {
-        return () => {
-          window.screenWidth = document.body.clientWidth;
-          window.screenHeight = document.body.clientHeight;
-          that.size = [window.screenWidth, window.screenHeight];
-        };
-      };
+
+      this.term.open(document.getElementById("term"));
     });
   },
 
@@ -557,18 +553,23 @@ export default {
       this.panel = panel === this.panel ? "" : panel;
     },
 
-    calculate_size() {
-      // 计算terminal尺寸
-      var cols = Math.max(100, Math.min(200, (this.size[0] - 64) / 10)) | 0;
-      if (this.size[0] <= 1366)
-        var rows =
-          Math.max(12, Math.min(29, (this.size[1] * 0.4 - 180) / 19)) | 0;
-      else
-        var rows =
-          Math.max(16, Math.min(39, (this.size[1] * 0.4 - 180) / 19)) | 0;
-      return [cols, rows];
+    pane_resize(pane, container, size) {
+      console.log(pane.clientWidth,size);
+      var cols = pane.clientWidth / 10-5;
+      // if (parseInt(size[(0, size.length - 3)]) <= 300) var rows = 300 / 24 - 3;
+      var rows = ((window.innerHeight*0.97-48)- parseInt(size.slice(0, size.length - 2))) / 24-1;
+      console.log(cols, rows);
+      // return [cols, rows];
+      this.term.resize(cols, rows);
     },
 
+    calculate_size() {
+      // var cols = this.term_div.clientWidth / 7;
+      // if (this.term_div.clientHeight <= 300) var rows = 300 / 12 - 3;
+      // var rows = this.term_div.clientHeight / 12;
+      // console.log(cols, rows);
+      // return [cols, rows];
+    },
     handleChange(val) {
       // 目录树的index值
       this.list_index = val;
@@ -838,12 +839,6 @@ export default {
   watch: {
     last_command: function() {},
 
-    // 计算term尺寸
-    size: function() {
-      var _size = calculate_size();
-      this.term.resize(_size[0], _size[1]);
-    },
-
     // 通过对websocket的数据监听来完成数据的获取
     ws_return: function() {
       // 自动连接
@@ -927,10 +922,36 @@ export default {
 </script>
 
 <style>
-.left-pane{
+/* xterm */
+/* .xterm {
+	font-family: courier-new, courier, monospace;
+	font-feature-settings: "liga" 0;
+	position: relative;
+	user-select: none;
+	-ms-user-select: none;
+	-webkit-user-select: none;
+}
+
+.xterm {
+	cursor: text;
+}
+
+
+.xterm .xterm-viewport {
+	background-color: #000;
+	overflow-y: scroll;
+	cursor: default;
+	position: absolute;
+	right: 0;
+	left: 0;
+	top: 0;
+	bottom: 0;
+} */
+
+.left-pane {
   background: #333333 !important;
 }
-.icon-button{
+.icon-button {
   margin: 8px;
 }
 
@@ -958,7 +979,7 @@ export default {
   background: #1e1e1e;
 }
 .horizontal-panes > .pane ~ .pane {
-  border-top: 1px solid #61616161;
+  border-top: 0px solid #61616161;
 }
 
 body {
@@ -1110,11 +1131,11 @@ body {
   margin-right: 6px;
 }
 
-.ide-terminal-term {
+/* .ide-terminal-term {
   width: 100%;
   height: auto;
   background: #1e1e1e77;
-}
+} */
 
 /*覆盖样式 */
 .mu-expansion-toggle-btn.mu-button {
@@ -1131,8 +1152,8 @@ body {
 
 .terminal {
   display: block;
-  float: left;
-  /* clear: both; */
+  /* float: left; */
+  clear: both;
   width: 100%;
   height: auto;
   border: #1e1e1e solid 8px;
@@ -1140,7 +1161,8 @@ body {
   font-size: 16px;
   color: #f0f0f0;
   background: #1e1e1e !important;
-  /* border-top: 1px solid #61616161; */
+  border-top: 4px solid #61616161;
+  /* overflow-y: auto; */
 }
 
 .mu-expansion-panel__expand .mu-expansion-panel-header {
