@@ -23,7 +23,7 @@
             <mu-button class="icon-button" icon color="grey">
               <mu-icon size="36" value="extension"></mu-icon>
             </mu-button>
-            <mu-button class="icon-button" icon color="grey">
+            <mu-button class="icon-button" icon color="grey" @click="deploy">
               <mu-icon size="36" value="cloud_download"></mu-icon>
             </mu-button>
             <mu-button class="icon-button" icon color="grey">
@@ -36,10 +36,10 @@
             direction="column"
             style="height:50%">
             
-            <mu-button class="icon-button" icon color="green">
+            <mu-button class="icon-button" icon color="green" @click="excute_script">
               <mu-icon size="36" value="play_arrow"></mu-icon>
             </mu-button>
-            <mu-button class="icon-button" icon color="yellow">
+            <mu-button class="icon-button" icon color="yellow" @click="connect_button_clicked">
               <mu-icon size="36" value="power"></mu-icon>
             </mu-button>
           </mu-flex>
@@ -49,7 +49,7 @@
       <!-- 最左侧导航栏 结束 -->
 
       <!-- 目录结构 -->
-      <div class="pane"  :style="{ minWidth: '280px', maxWidth: '300px',padding:'0' }">
+      <div class="pane"  :style="{ minWidth: '280px', maxWidth: '280px',padding:'0' }">
         <div>
           <mu-flex direction="column"
             class="ide-side-bar">
@@ -194,6 +194,7 @@
                   align-items="center"
                   justify-content="end">
                   <mu-button small
+                  :disabled="!is_connected"
                     @click="new_file()"
                     color="success">add</mu-button>
                 </mu-flex>
@@ -226,6 +227,7 @@
                   align-items="center"
                   justify-content="end">
                   <mu-button small
+                    :disabled="!is_connected"
                     @click="new_folder()"
                     color="success">add</mu-button>
                 </mu-flex>
@@ -259,6 +261,7 @@
                   align-items="center"
                   justify-content="end">
                   <mu-button small
+                    :disabled="!is_connected"
                     @click="file_input()"
                     color="indigo400"
                     style="margin:0 6px">
@@ -366,15 +369,6 @@
           @click="connect_button_clicked">
           <mu-icon value="power"></mu-icon>
           {{button_text}}</mu-button>
-
-        <!-- 部署按钮 -->
-        <mu-button small
-          icon
-          color="grey"
-          @click="deploy()">
-          <mu-icon value="cloud_download"></mu-icon>
-        </mu-button>
-
           
       </mu-flex>
       <!-- 右侧设置按钮  -->
@@ -447,7 +441,7 @@ export default {
   name: "App",
   components: {
     Multipane,
-    MultipaneResizer,
+    MultipaneResizer
     // 'repl': Repl
   },
   data() {
@@ -546,25 +540,37 @@ export default {
     },
 
     pane_resize(pane, container, size) {
-      console.log(pane.clientWidth,size);
-      var cols = pane.clientWidth / 10-5;
+      console.log(pane.clientWidth, size);
+      var cols = pane.clientWidth / 10 - 5;
       // if (parseInt(size[(0, size.length - 3)]) <= 300) var rows = 300 / 24 - 3;
-      var rows = ((window.innerHeight*0.97-48)- parseInt(size.slice(0, size.length - 2))) / 24-1;
+      var rows =
+        (window.innerHeight * 0.97 -
+          48 -
+          parseInt(size.slice(0, size.length - 2))) /
+          24 -
+        1;
       console.log(cols, rows);
       // return [cols, rows];
       this.term.resize(cols, rows);
     },
 
-  
     handleChange(val) {
       // 目录树的index值
       this.list_index = val;
     },
 
     new_file() {
-      this.last_command = "new_file('" + this.new_file_name + "')\r";
-      this.ws.send(this.last_command);
-      this.panel = "";
+      if (this.is_connected) {
+        if (this.new_file_name.length > 0) {
+          this.last_command = "new_file('" + this.new_file_name + "')\r";
+          this.ws.send(this.last_command);
+          this.panel = "";
+        } else {
+          this.$toast.error("file name is empty!");
+        }
+      } else {
+        this.$toast.error("connection error!");
+      }
     },
 
     del_file() {
@@ -573,9 +579,17 @@ export default {
     },
 
     new_folder() {
-      this.last_command = "create_folder('" + this.new_folder_name + "')\r";
-      this.ws.send(this.last_command);
-      this.panel = "";
+      if (this.is_connected) {
+        if (this.new_folder_name.length > 0) {
+          this.last_command = "create_folder('" + this.new_folder_name + "')\r";
+          this.ws.send(this.last_command);
+          this.panel = "";
+        } else {
+          this.$toast.error("folder name is empty!");
+        }
+      } else {
+        this.$toast.error("connection error!");
+      }
     },
 
     del_folder(folder) {
@@ -584,10 +598,19 @@ export default {
     },
 
     excute_script() {
-      this.last_command = "excute_script";
-      this.ws.send(
-        "exec(open('" + this.opened_file + "').read(), globals())\r"
-      );
+      if (this.is_connected) {
+        if (this.opened_file.length > 0) {
+          this.last_command = "excute_script";
+          this.ws.send(
+            "exec(open('" + this.opened_file + "').read(), globals())\r"
+          );
+          this.showTerm = true;
+        } else {
+          this.$toast.error("please select a file first!");
+        }
+      } else {
+        this.$toast.error("connection error!");
+      }
     },
 
     get_code(dir = "", filename, is_dir) {
@@ -619,19 +642,21 @@ export default {
     },
 
     update_tree() {
-      if (this.root_files.length === 0) {
+      if (this.is_connected) {
         this.last_command = "tree()\r";
         this.ws.send(this.last_command);
       }
     },
 
     deploy() {
-      var uint8array = new TextEncoder().encode(
-        microide_codes.replace(/\r\n/g, "\n")
-      );
-      put_file_name = "microide.py";
-      put_file_data = uint8array;
-      this.put_file();
+      if (this.is_connected) {
+        var uint8array = new TextEncoder().encode(
+          microide_codes.replace(/\r\n/g, "\n")
+        );
+        put_file_name = "microide.py";
+        put_file_data = uint8array;
+        this.put_file();
+      }
     },
 
     file_input() {
@@ -639,7 +664,11 @@ export default {
     },
 
     send_button_clicked() {
-      this.put_file();
+      if (this.is_connected) {
+        this.put_file();
+      } else {
+        this.$toast.error("connection error!");
+      }
     },
 
     prepare_for_connect() {
@@ -908,32 +937,7 @@ export default {
 </script>
 
 <style>
-/* xterm */
-/* .xterm {
-	font-family: courier-new, courier, monospace;
-	font-feature-settings: "liga" 0;
-	position: relative;
-	user-select: none;
-	-ms-user-select: none;
-	-webkit-user-select: none;
-}
-
-.xterm {
-	cursor: text;
-}
-
-
-.xterm .xterm-viewport {
-	background-color: #000;
-	overflow-y: scroll;
-	cursor: default;
-	position: absolute;
-	right: 0;
-	left: 0;
-	top: 0;
-	bottom: 0;
-} */
-
+/* layout */
 .left-pane {
   background: #333333 !important;
 }
@@ -971,13 +975,6 @@ export default {
 body {
   overflow-x: hidden;
   overflow-y: hidden;
-}
-
-.ide-alert {
-  position: fixed;
-  left: 75vw;
-  width: 22vw;
-  margin: 16px;
 }
 
 /* 侧栏区域 */
