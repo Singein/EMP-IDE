@@ -324,6 +324,7 @@
             <!-- terminal -->
             <div v-show="showTerm" id="term_div" class="pane" :style="{ minHeight:'0',padding:'0'}">
               <div id="term"></div>
+              <!-- <repl></repl> -->
             </div>
               
         </multipane>
@@ -434,21 +435,11 @@
 </template>
 
 <script>
-/*!
- *
- App.vue 的vue实例
- *
- 包含websocket的建立,文件上传下载,代码展示与编辑等核心功能
- *
- http://dev.1zlab.com/
- */
 import { Multipane, MultipaneResizer } from "vue-multipane";
 import Terminal from "term.js";
 // import { Terminal } from "xterm";
 import { microide_codes } from "./microide.py.js";
-// import * as fit from 'xterm/lib/addons/fit/fit';
 
-// Terminal.applyAddon(fit);
 var put_file_data = null;
 var put_file_name = null;
 
@@ -456,7 +447,8 @@ export default {
   name: "App",
   components: {
     Multipane,
-    MultipaneResizer
+    MultipaneResizer,
+    // 'repl': Repl
   },
   data() {
     return {
@@ -563,13 +555,7 @@ export default {
       this.term.resize(cols, rows);
     },
 
-    calculate_size() {
-      // var cols = this.term_div.clientWidth / 7;
-      // if (this.term_div.clientHeight <= 300) var rows = 300 / 12 - 3;
-      // var rows = this.term_div.clientHeight / 12;
-      // console.log(cols, rows);
-      // return [cols, rows];
-    },
+  
     handleChange(val) {
       // 目录树的index值
       this.list_index = val;
