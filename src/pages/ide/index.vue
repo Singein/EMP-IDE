@@ -35,7 +35,7 @@
             align-items="center"
             direction="column"
             style="height:50%">
-            
+
             <mu-button class="icon-button" icon color="green" @click="excute_script">
               <mu-icon size="36" value="play_arrow"></mu-icon>
             </mu-button>
@@ -278,7 +278,9 @@
 
               <input type="file"
                 ref="file_dialog"
-                style="display:none">
+                style="display:none"
+                @change="handle_put_file_select"
+                >
             </mu-expansion-panel>
 
           </mu-flex>
@@ -290,9 +292,10 @@
 
       <!-- 编辑器 terminal区域  -->
       <div class="pane" :style="{ minWidth:'calc(100%-372px)',width:'100%',maxWidth:'100%',padding:'0'}">
-        <multipane class="horizontal-panes" layout="horizontal">
+        <multipane class="horizontal-panes"
+          layout="horizontal">
             <!-- 标签页 -->
-            <div class="pane" :style="{ maxHeight: '48px', minHeight: '48px',padding:'0'}">              
+            <div class="pane ide-file-tabs">
               <mu-appbar v-if="opened_file!==''"
                 class="ide-top-bar-appbar"
                 :z-depth="0"
@@ -306,13 +309,13 @@
                   <mu-icon color="grey"
                     value="save"></mu-icon>
                 </mu-button>
-              </mu-appbar>              
+              </mu-appbar>
             </div>
             <!-- 标签页 结束 -->
 
             <!-- <multipane-resizer></multipane-resizer> -->
             <!-- 编辑器 -->
-            <div class="pane" :style="{maxHeight:'100%', height: 'calc(100%-50px)', minHeight: '0' }">
+            <div class="pane ide-file-body">
                 <m-monaco-editor class="ide-editor"
                   v-if='opened_file!==""'
                   v-model="code"
@@ -323,13 +326,12 @@
             </div>
             <!-- 编辑器 结束 -->
 
-            <multipane-resizer></multipane-resizer>
+            <!-- <multipane-resizer /> -->
             <!-- terminal -->
-            <div v-show="showTerm" id="term_div" class="pane" :style="{ minHeight:'0',padding:'0'}">
-              <div id="term"></div>
-              <!-- <repl></repl> -->
-            </div>
-              
+
+            <div v-show="termVisible"
+              ref="terminal"
+              class="pane terminal-container"></div>
         </multipane>
       </div>
       <!-- 编辑器 terminal区域 结束  -->
@@ -357,7 +359,7 @@
         <mu-button small
           flat
           color="grey"
-          @click="showTermDialog">
+          @click="toggleTermVisible">
           <mu-icon value="keyboard_arrow_right"></mu-icon>
           Terminal
         </mu-button>
@@ -369,7 +371,7 @@
           @click="connect_button_clicked">
           <mu-icon value="power"></mu-icon>
           {{button_text}}</mu-button>
-          
+
       </mu-flex>
       <!-- 右侧设置按钮  -->
       <mu-flex class="ide-bottom-bar-right"
@@ -390,14 +392,14 @@
     <!-- 底栏结束 -->
 
     <!-- 设置窗口 -->
-    <mu-dialog title="MicroIDE Settings"  
-      width="400" max-width="80%" 
-      :esc-press-close="false" 
-      :overlay-close="false" 
+    <mu-dialog title="MicroIDE Settings"
+      width="400" max-width="80%"
+      :esc-press-close="false"
+      :overlay-close="false"
       :open.sync="openSetting">
 
       <mu-flex direction='column'>
-        <mu-text-field 
+        <mu-text-field
           label="Url"
           :disabled="is_connected"
           color="primary"
@@ -405,7 +407,7 @@
           full-width
           placeholder="ws://192.168.xxx.xxx:8266/"></mu-text-field>
 
-        <mu-text-field 
+        <mu-text-field
           label="Password"
           :disabled="is_connected"
           color="primary"
@@ -414,7 +416,7 @@
           placeholder="password"
           type="password"></mu-text-field>
 
-        <mu-text-field 
+        <mu-text-field
           label="Editor fontsize"
           color="primary"
           v-model="fontSize"
@@ -422,7 +424,7 @@
           placeholder="editor fontsize"></mu-text-field>
 
       </mu-flex>
-      
+
       <mu-button slot="actions" flat color="primary" @click="closeSettings()">Close</mu-button>
     </mu-dialog>
   </div>
@@ -430,15 +432,20 @@
 
 <script>
 import { Multipane, MultipaneResizer } from "vue-multipane";
-import Terminal from "term.js";
-// import { Terminal } from "xterm";
+import { Terminal } from "xterm";
+import * as fit from 'xterm/lib/addons/fit/fit';
+import * as attach from 'xterm/lib/addons/attach/attach';
+import 'xterm/dist/xterm.css'
 import { microide_codes } from "./microide.py.js";
+
+Terminal.applyAddon(fit);
+Terminal.applyAddon(attach);
 
 var put_file_data = null;
 var put_file_name = null;
 
 export default {
-  name: "App",
+  name: 'mirco-ide',
   components: {
     Multipane,
     MultipaneResizer
@@ -460,8 +467,6 @@ export default {
       panel: "",
       // 进度条
       loading: false,
-      // 显示终端
-      showTerm: false,
       // 设置窗口
       openSetting: false,
       // websocket对象
@@ -472,6 +477,18 @@ export default {
       is_connected: false,
       // terminal对像
       term: null,
+      termVisible: false,
+      termDirty: false,
+      termOptions: {
+        rows: 5,
+        fontSize: 16,
+        lineHeight: 1,
+        padding: 10,
+        allowTransparency: true,
+        theme: {
+          background: '#141301'
+        }
+      },
 
       // 字节流标志
       binary_state: 0,
@@ -489,41 +506,42 @@ export default {
     };
   },
 
-  mounted: function() {
-    this.$nextTick(function() {
-      try {
-        // console.log(this.$cookie.get("url"));
-        this.url = this.$cookie.get("url");
-        this.passwd = this.$cookie.get("passwd");
-        this.fontSize = this.$cookie.get("fontsize");
-      } catch (e) {
-        //
-      }
+  mounted () {
+    window.addEventListener('resize', this.resizeTerm)
+    this.url = this.$cookie.get("url");
+    this.passwd = this.$cookie.get("passwd");
+    this.fontSize = this.$cookie.get("fontsize");
+    this.initTerm()
+  },
 
-      // 初始化term对象,完成视图的渲染
-      this.$refs.file_dialog.addEventListener(
-        "change",
-        this.handle_put_file_select,
-        false
-      );
-      const that = this;
-      this.term = new Terminal({
-        // cols: that.calculate_size(terminal_container)[0],
-        // rows: that.calculate_size(terminal_container)[1],
-        useStyle: true,
-        screenKeys: true,
-        cursorBlink: false
-      });
-
-      this.term.open(document.getElementById("term"));
-    });
+  beforeDestroy () {
+    window.removeEventListener('resize', this.resizeTerm)
+    if (this.is_connected) {
+      this.term.detach(this.ws)
+      this.ws.close()
+    }
+    this.term.destroy()
   },
 
   methods: {
-    showTermDialog() {
-      this.showTerm = !this.showTerm;
-      var a = $(".horizontal-panes").children("div")[1];
-      $(a).css("height", "100%");
+    initTerm() {
+      this.term = new Terminal(this.termOptions);
+    },
+
+    toggleTermVisible() {
+      this.termVisible = !this.termVisible;
+      if (this.termVisible && !this.termDirty) {
+        this.termDirty = true
+        let $terminal = this.$refs['terminal']
+        this.$nextTick(() => {
+          this.term.open($terminal)
+          this.resizeTerm()
+        })
+      }
+    },
+
+    resizeTerm() {
+      this.term.fit()
     },
 
     openSettings() {
@@ -537,21 +555,6 @@ export default {
 
     toggle(panel) {
       this.panel = panel === this.panel ? "" : panel;
-    },
-
-    pane_resize(pane, container, size) {
-      console.log(pane.clientWidth, size);
-      var cols = pane.clientWidth / 10 - 5;
-      // if (parseInt(size[(0, size.length - 3)]) <= 300) var rows = 300 / 24 - 3;
-      var rows =
-        (window.innerHeight * 0.97 -
-          48 -
-          parseInt(size.slice(0, size.length - 2))) /
-          24 -
-        1;
-      console.log(cols, rows);
-      // return [cols, rows];
-      this.term.resize(cols, rows);
     },
 
     handleChange(val) {
@@ -692,26 +695,27 @@ export default {
       this.last_command = "connect";
       this.ws = new WebSocket(this.url);
       this.ws.binaryType = "arraybuffer";
-      this.ws.onopen = function() {
-        this.term.removeAllListeners("data");
-        this.term.on(
-          "data",
-          function(data) {
-            // Pasted data from clipboard will likely contain
-            // LF as EOL chars.
-            data = data.replace(/\n/g, "\r");
-            this.ws.send(data);
-            // this.last_command += data;
-          }.bind(this)
-        );
 
-        this.term.on("title", function(title) {
-          document.title = title;
-        });
+      this.term.attach(this.ws, true, true);
+      this.ws.onopen = function() {
+        // this.term.off("data");
+        // this.term.on(
+        //   "data",
+        //   function(data) {
+        //     // Pasted data from clipboard will likely contain
+        //     // LF as EOL chars.
+        //     data = data.replace(/\n/g, "\r");
+        //     this.ws.send(data);
+        //     // this.last_command += data;
+        //   }.bind(this)
+        // );
+
+        // this.term.on("title", function(title) {
+        //   document.title = title;
+        // });
 
         this.term.focus();
-        this.term.element.focus();
-        this.term.write("\x1b[31mWelcome to 1ZLAB-MicroIDE!\x1b[m\r\n");
+        this.term.write("\x1b[32;2mWelcome to 1ZLAB-MicroIDE!\x1b[m\r\n")
 
         this.ws.onmessage = function(event) {
           if (event.data instanceof ArrayBuffer) {
@@ -754,7 +758,7 @@ export default {
                 break;
             }
           }
-          this.term.write(event.data);
+          // this.term.write(event.data);
 
           if (this.last_command !== "") this.ws_return += event.data;
         }.bind(this);
@@ -764,7 +768,7 @@ export default {
         this.is_connected = false;
         this.$toast.error("Disconnected");
         if (this.term) {
-          this.term.write("\x1b[31mDisconnected\x1b[m\r\n");
+          this.term.write("\r\n\x1b[31mDisconnected\x1b[m\r\n");
         }
         this.prepare_for_connect();
       }.bind(this);
@@ -968,9 +972,6 @@ export default {
   overflow: hidden;
   background: #1e1e1e;
 }
-.horizontal-panes > .pane ~ .pane {
-  border-top: 0px solid #61616161;
-}
 
 body {
   overflow-x: hidden;
@@ -1074,7 +1075,7 @@ body {
 }
 
 /* Terminal */
-.ide-terminal-container {
+/* .ide-terminal-container {
   width: 100%;
   height: 40%;
   display: block;
@@ -1089,7 +1090,6 @@ body {
 .ide-terminal-appbar {
   width: 100%;
   height: 48px;
-  /* position: fixed; */
   border-top: 1px solid #61616161;
 }
 
@@ -1112,13 +1112,8 @@ body {
 
 .ide-terminal-button {
   margin-right: 6px;
-}
-
-/* .ide-terminal-term {
-  width: 100%;
-  height: auto;
-  background: #1e1e1e77;
 } */
+
 
 /*覆盖样式 */
 .mu-expansion-toggle-btn.mu-button {
@@ -1131,21 +1126,6 @@ body {
 
 .mu-text-field-input {
   color: rgba(221, 207, 207, 0.67) !important;
-}
-
-.terminal {
-  display: block;
-  /* float: left; */
-  clear: both;
-  width: 100%;
-  height: auto;
-  border: #1e1e1e solid 8px;
-  font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
-  font-size: 16px;
-  color: #f0f0f0;
-  background: #1e1e1e !important;
-  border-top: 4px solid #61616161;
-  /* overflow-y: auto; */
 }
 
 .mu-expansion-panel__expand .mu-expansion-panel-header {
@@ -1190,3 +1170,26 @@ body {
   color: rgba(221, 207, 207, 0.67) !important;
 }
 </style>
+
+<style scoped>
+.terminal-container {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  border-top: 2px solid #61616161;
+}
+.ide-file-tabs {
+  height: 48px;
+}
+.ide-file-body {
+  height: calc(100% - 50px);
+}
+</style>
+
+<style>
+.terminal-container .terminal.xterm {
+  padding :0 10px;
+}
+</style>
+
+
