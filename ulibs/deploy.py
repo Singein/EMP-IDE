@@ -5,9 +5,9 @@
 src_path = './microide.py'
 des_path = '../src/pages/ide/microide.py.js'
 codes = ''
-js_codes = 'var microide_codes=`{0}`;\nexport {\n  microide_codes\n}'
+js_codes = """var microide_codes=`%s`;\nexport {\n  microide_codes\n}"""
 with open(src_path, 'r') as f:
     codes = f.read()
 
 with open(des_path, 'w') as f:
-    f.write(js_codes.format(codes))
+    f.write(js_codes % codes)
