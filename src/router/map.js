@@ -2,7 +2,7 @@ const routerMap = [
   {
     path: '/',
     name: 'home',
-    redirect: { name: 'ide' }
+    // component: '/entry/Entry'
   },
   {
     path: '/ide',
