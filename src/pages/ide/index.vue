@@ -13,7 +13,7 @@
 
       <div class="terminal-container">
         <div class="terminal">
-
+          <cli ref='cli'></cli>
         </div>
       </div>
 
@@ -25,6 +25,7 @@
 <script>
 import FileList from "./components/FileList";
 import Editor from "./components/Editor";
+import Cli from "./components/Cli";
 import { Multipane, MultipaneResizer } from "./components/Multipane";
 
 export default {
@@ -32,7 +33,8 @@ export default {
     FileList,
     Editor,
     Multipane,
-    MultipaneResizer
+    MultipaneResizer,
+    Cli
   },
   data() {
     return {
@@ -40,11 +42,17 @@ export default {
     };
   },
 
-  mounted() {},
+  mounted() {
+    
+  },
 
   beforeDestroy() {},
 
-  methods: {},
+  methods: {
+    connect(){
+      this.$refs['cli'].connect('ws://192.168.2.189:8266','0909')
+    }
+  },
   watch: {}
 };
 </script>

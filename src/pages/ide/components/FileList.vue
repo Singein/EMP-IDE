@@ -3,7 +3,7 @@
     <mu-flex direction="column" class="file-list">
       <div class="outer-container">
         <div class="inner-container">
-          <el-tree :data="root_files" :props="defaultProps" :highlight-current="true" class="tree" :render-content="renderContent" v-on:node-contextmenu="renderMenu"></el-tree>
+          <el-tree ref='tree' :data="data" :props="defaultProps" :highlight-current="true" class="tree" :render-content="renderContent" v-on:node-contextmenu="renderMenu"></el-tree>
         </div>
       </div>
     </mu-flex>
@@ -16,60 +16,33 @@ export default {
   data() {
     return {
       panel: "",
-      root_files: [
-        {
-          name: "/",
-          children: [
-            { name: "boot.py", index: 0 },
-            {
-              name: "lib",
-              children: [
-                { name: "emp_boot.py", index: 1 },
-                { name: "emp_dev.py", index: 2 },
-                { name: "emp_utils.py", index: 3 },
-                { name: "emp_wifi.py", index: 4 }
-              ]
-            },
-            { name: "config", children: [{ name: "emp_wifi.json", index: 5 }] },
-            { name: "webrepl_cfg.py", index: 6 },
-            { name: "config", children: [{ name: "emp_wifi.json", index: 5 }] },
-            { name: "webrepl_cfg.py", index: 6 },
-            { name: "config", children: [{ name: "emp_wifi.json", index: 5 }] },
-            { name: "webrepl_cfg.py", index: 6 },
-            { name: "config", children: [{ name: "emp_wifi.json", index: 5 }] },
-            { name: "webrepl_cfg.py", index: 6 },
-            { name: "config", children: [{ name: "emp_wifi.json", index: 5 }] },
-            { name: "webrepl_cfg.py", index: 6 },
-            {
-              name: "lib",
-              children: [
-                { name: "emp_boot.py", index: 1 },
-                { name: "emp_dev.py", index: 2 },
-                { name: "emp_utils.py", index: 3 },
-                { name: "emp_wifi.py", index: 4 }
-              ]
-            },
-            {
-              name: "lib",
-              children: [
-                { name: "emp_boot.py", index: 1 },
-                { name: "emp_dev.py", index: 2 },
-                { name: "emp_utils.py", index: 3 },
-                { name: "emp_wifi.py", index: 4 }
-              ]
-            }
-          ]
-        }
-      ],
+      // data: null,
       defaultProps: {
         children: "children",
         label: "name"
       }
     };
   },
-  mounted: function() {
-    this.$nextTick(function() {});
+  computed: {
+    data() {
+      return this.$store.tree.data
+    }
   },
+  mounted: function() {
+    this.$nextTick(function() {
+      console.log("file list mounted");
+      console.log(this.$route.path);
+      // this.$refs['tree'].setCurrentNode(this.$store.tree.node)
+      // console.log(this.$store.tree.node)
+    });
+  },
+
+  updated: function() {
+    this.$nextTick(function() {
+      console.log("file list updated");
+    });
+  },
+
   methods: {
     togglePanel(panel) {
       this.panel = panel === this.panel ? "" : panel;
@@ -81,8 +54,10 @@ export default {
     },
 
     nodeClicked(data, node, self) {
-      if (data.children) {
-      }
+      // this.$store.commit({
+      //   type: "currentNodeChanged",
+      //   node: node
+      // });
     },
 
     renderMenu(event, data, node, self) {

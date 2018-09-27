@@ -8,6 +8,7 @@
 <script>
 // import SideBar from './pages/components'
 import Entry from './pages/entry/Entry'
+
 export default {
   name: 'app',
   components:{

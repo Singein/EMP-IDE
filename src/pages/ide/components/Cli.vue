@@ -21,7 +21,7 @@ export default {
       lastCmd: null,
       recData: null,
       passwd: null,
-      termVisible: false,
+      termVisible: true,
       termDirty: false,
       termOptions: {
         rows: 20,
