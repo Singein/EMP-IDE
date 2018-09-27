@@ -1,7 +1,7 @@
 <template>
   <multipane class="pane-layout" layout="vertical">
     <div class="tree">
-
+      <file-list></file-list>
     </div>
     <multipane-resizer></multipane-resizer>
 
@@ -23,13 +23,13 @@
 </template>
 
 <script>
-import Tree from "./components/Tree";
+import FileList from "./components/FileList";
 import Editor from "./components/Editor";
 import { Multipane, MultipaneResizer } from "./components/Multipane";
 
 export default {
   components: {
-    Tree,
+    FileList,
     Editor,
     Multipane,
     MultipaneResizer
@@ -79,9 +79,9 @@ export default {
   padding: 0;
   overflow: hidden;
   background: #1e1e1e;
-  min-height: 0px;
+  min-height: 48px;
   height: 60%;
-  max-height: 100%;
+  max-height: calc(100%-48px);
 }
 
 .terminal-container {

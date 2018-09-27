@@ -3,21 +3,22 @@
     <mu-flex class="ide-bottom-bar" justify-content="end" align-items="center">
       <!-- 左侧logo help -->
       <mu-flex class="ide-bottom-bar-left" justify-content="start" align-items="center">
-        <p class="ide-bottom-bar-author">MicroIDE@1ZLAB</p>
-        <a href="http://dev.1zlab.com/help" class="ide-bottom-bar-help" target="_blank">Help</a>
+        <!-- <p class="ide-bottom-bar-author">MicroIDE@1ZLAB</p>
+        <a href="http://dev.1zlab.com/help" class="ide-bottom-bar-help" target="_blank">Help</a> -->
+        
       </mu-flex>
       <!-- 中部 terminal 连接 -->
       <mu-flex class="ide-bottom-bar-center" justify-content="start" align-items="center">
         <!-- Terminal Icon -->
-        <mu-button small flat color="grey">
+        <!-- <mu-button small flat color="grey">
           <mu-icon value="keyboard_arrow_right"></mu-icon>
           Terminal
-        </mu-button>
+        </mu-button> -->
 
-        <mu-button flat color="grey" small>
+        <!-- <mu-button flat color="grey" small>
           <mu-icon value="power"></mu-icon>
-          <!-- {{button_text}} -->
-        </mu-button>
+          {{button_text}}
+        </mu-button> -->
 
       </mu-flex>
       <!-- 右侧设置按钮  -->
