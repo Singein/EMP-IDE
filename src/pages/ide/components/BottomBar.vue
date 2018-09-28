@@ -5,7 +5,7 @@
       <mu-flex class="ide-bottom-bar-left" justify-content="start" align-items="center">
         <!-- <p class="ide-bottom-bar-author">MicroIDE@1ZLAB</p>
         <a href="http://dev.1zlab.com/help" class="ide-bottom-bar-help" target="_blank">Help</a> -->
-        
+
       </mu-flex>
       <!-- 中部 terminal 连接 -->
       <mu-flex class="ide-bottom-bar-center" justify-content="start" align-items="center">
@@ -26,7 +26,7 @@
         <!-- Message area  -->
         <p id="file-status" class="ide-bottom-bar-message"></p>
         <!-- Settings Icon -->
-        <mu-button small icon color="grey">
+        <mu-button small icon color="grey" @click="toggleSettings">
           <mu-icon value="settings"></mu-icon>
         </mu-button>
       </mu-flex>
@@ -35,22 +35,29 @@
 </template>
 
 <script>
-
-
 export default {
   props: [],
   data() {
     return {
-      
+      showSetting: false
     };
   },
   mounted: function() {
-    this.$nextTick(function() {
- 
-      
-    });
+    this.$nextTick(function() {});
   },
   methods: {
+    toggleSettings() {
+      this.showSetting = !this.showSetting;
+      let signal = {
+        event: "openset",
+
+        kwargs: {
+          show: this.showSetting
+        }
+      };
+
+      this.$send(this, signal, "parent", "slotToggleSettings");
+    }
   }
 };
 </script>

@@ -1,19 +1,12 @@
 <template>
   <div id="app">
-    <!-- <router-view></router-view> -->
-    <entry></entry>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-// import SideBar from './pages/components'
-import Entry from './pages/entry/Entry'
-
 export default {
   name: 'app',
-  components:{
-    Entry
-  }
 }
 </script>
 

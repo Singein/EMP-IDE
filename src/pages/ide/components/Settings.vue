@@ -1,31 +1,70 @@
 <template>
   <div>
-    <mu-dialog title="MicroIDE Settings" width="400" max-width="80%" :esc-press-close="false" :overlay-close="false" :open.sync="openSetting">
+    <mu-dialog title="MicroIDE Settings" width="400" max-width="80%" :esc-press-close="false" :overlay-close="false" :open.sync="show">
 
       <mu-flex direction='column'>
-        <mu-text-field label="Url" :disabled="is_connected" color="primary" v-model="url" full-width placeholder="ws://192.168.xxx.xxx:8266/"></mu-text-field>
+        <mu-text-field label="Url" color="primary" v-model="url" full-width placeholder="ws://192.168.xxx.xxx:8266/"></mu-text-field>
 
-        <mu-text-field label="Password" :disabled="is_connected" color="primary" v-model="passwd" full-width placeholder="password" type="password"></mu-text-field>
+        <mu-text-field label="Password" color="primary" v-model="passwd" full-width placeholder="password" type="password"></mu-text-field>
 
         <mu-text-field label="Editor fontsize" color="primary" v-model="fontSize" full-width placeholder="editor fontsize"></mu-text-field>
 
       </mu-flex>
 
-      <mu-button slot="actions" flat color="primary" @click="closeSettings()">Close</mu-button>
+      <mu-button slot="actions" flat color="primary" @click="settingsChanged()">Close</mu-button>
     </mu-dialog>
   </div>
 </template>
 
 <script>
 export default {
-  props: [],
+  props: ['show'],
   data() {
-    return {};
+    return {
+      url: "",
+      passwd: "",
+      fontSize: 16
+    };
   },
   mounted: function() {
-    this.$nextTick(function() {});
+    this.$nextTick(function() {
+      this.getCookies();
+      console.log('settings mounted')
+    });
   },
-  methods: {}
+
+  methods: {
+    settingsChanged() {
+      this.setCookies()
+      let signal = {
+        event: "changed",
+        kwargs: {
+          url: this.url,
+          passwd: this.passwd,
+          fontSize: this.fontSize
+        }
+      };
+      this.$send(this, signal,'parent', 'slotToggleSettings')
+    },
+
+    getCookies() {
+      this.url = this.$cookie.get("url");
+      this.passwd = this.$cookie.get("passwd");
+      this.fontSize = this.$cookie.get("fontsize");
+    },
+
+    setCookies() {
+      this.$cookie.set("url", this.url, {
+        expires: "1Y"
+      });
+      this.$cookie.set("passwd", this.passwd, {
+        expires: "1Y"
+      });
+      this.$cookie.set("fontsize", this.fontSize, {
+        expires: "1Y"
+      });
+    }
+  }
 };
 </script>
 

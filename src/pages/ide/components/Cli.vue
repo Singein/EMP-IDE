@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <div ref="terminal" v-show="termVisible" class="terminal-container"></div>
-  </div>
+  <div ref="terminal" v-show="termVisible" class="term"></div>
 </template>
 
 <script>
@@ -13,7 +11,7 @@ Terminal.applyAddon(fit);
 Terminal.applyAddon(attach);
 
 export default {
-
+  props:[],
   data() {
     return {
       ws: null,
@@ -24,7 +22,7 @@ export default {
       termVisible: true,
       termDirty: false,
       termOptions: {
-        rows: 20,
+        rows: 5,
         fontSize: 18,
         lineHeight: 1,
         padding: 10,
@@ -39,25 +37,19 @@ export default {
     window.addEventListener("resize", this.resizeTerm);
     this.$nextTick(function() {
       this.initTerm();
-      // this.initConnection();
     });
   },
   methods: {
     initTerm() {
       this.term = new Terminal(this.termOptions);
       let $terminal = this.$refs["terminal"];
-      this.term.open($terminal);
+      this.$nextTick(() => {
+        this.term.open($terminal);
+        this.resizeTerm();
+      });
     },
     toggleTermVisible() {
       this.termVisible = !this.termVisible;
-      if (this.termVisible && !this.termDirty) {
-        this.termDirty = true;
-        let $terminal = this.$refs["terminal"];
-        this.$nextTick(() => {
-          this.term.open($terminal);
-          this.resizeTerm();
-        });
-      }
     },
     connect(url, passwd) {
       this.passwd = passwd;
@@ -134,6 +126,7 @@ export default {
     resizeTerm() {
       this.term.fit();
     },
+
     decode_resp(data) {
       if (data[0] == "W".charCodeAt(0) && data[1] == "B".charCodeAt(0)) {
         var code = data[2] | (data[3] << 8);
@@ -148,10 +141,11 @@ export default {
 </script>
 
 <style scoped>
-.terminal-container {
+.term {
   position: relative;
   width: 100%;
-  height: 400px;
-  border-top: 2px solid #61616161;
+  height: 100%;
+  padding: 15px;
+  /* border-top: 2px solid #61616161; */
 }
 </style>

@@ -33,7 +33,7 @@
                     <mu-button class="icon-button" icon color="green">
                         <mu-icon size="36" value="memory"></mu-icon>
                     </mu-button>
-                    <mu-button class="icon-button" icon color="yellow">
+                    <mu-button class="icon-button" icon color="yellow" @click="$connect">
                         <mu-icon size="36" value="power"></mu-icon>
                     </mu-button>
                 </mu-flex>
@@ -45,23 +45,18 @@
 
 <script>
 export default {
-  props: [],
+    props:[],
   data() {
     return {
       index: -1,
       selectStyle: [
         { background: "#4CAF5099" },
-        { background: "#66442266" },
-        { background: "#34778866" },
-        { background: "#E91E6366" },
         { background: "#fff0" }
       ],
       routeMap:[
           '/ide',
-          '/search',
-          '/addon',
-          '/wiki',
-      ]
+      ],
+      connected: false
     };
   },
   mounted: function() {
@@ -70,11 +65,15 @@ export default {
   methods: {
     changePage(index) {
       this.index = index;
-      this.$router.push(this.routeMap[index])
+    //   this.$router.push(this.routeMap[index])
     },
     changeStyle(index) {
-      if (this.index === index) return this.selectStyle[index];
+      if (this.index === index) return this.selectStyle[0];
       return this.selectStyle[-1];
+    },
+    connect(){
+        // this.connected = !this.connected
+        this.$emit('connect',this.connected)
     }
   },
   watch: {
