@@ -45,42 +45,42 @@
 
 <script>
 export default {
-    props:[],
+  name: "sideBar",
+  props: [],
   data() {
     return {
       index: -1,
-      selectStyle: [
-        { background: "#4CAF5099" },
-        { background: "#fff0" }
-      ],
-      routeMap:[
-          '/ide',
-      ],
+      selectStyle: [{ background: "#4CAF5099" }, { background: "#fff0" }],
+      routeMap: ["/ide"],
       connected: false
     };
   },
   mounted: function() {
-    this.$nextTick(function() {});
+    this.$nextTick(function() {
+        
+        console.log("sider-bar-name:",this.$options.name)
+        // console.log("sider-bar-name:",this.$options.ref)
+    });
   },
   methods: {
     changePage(index) {
       this.index = index;
-    //   this.$router.push(this.routeMap[index])
+      //   this.$router.push(this.routeMap[index])
     },
     changeStyle(index) {
       if (this.index === index) return this.selectStyle[0];
       return this.selectStyle[-1];
     },
-    connect(){
-        // this.connected = !this.connected
-        this.$emit('connect',this.connected)
+    connect() {
+      // this.connected = !this.connected
+      this.$emit("connect", this.connected);
     }
   },
   watch: {
-      $route(){
-        //   console.log(this.$route.path)
-        this.index = this.routeMap.indexOf(this.$route.path)
-      }
+    $route() {
+      //   console.log(this.$route.path)
+      this.index = this.routeMap.indexOf(this.$route.path);
+    }
   }
 };
 </script>

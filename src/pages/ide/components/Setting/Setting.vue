@@ -17,8 +17,11 @@
 </template>
 
 <script>
+import signals from "./signals.js";
 export default {
-  props: ['show'],
+  name: "setting",
+  mixins: [signals],
+  props: ["show"],
   data() {
     return {
       url: "",
@@ -29,22 +32,16 @@ export default {
   mounted: function() {
     this.$nextTick(function() {
       this.getCookies();
-      console.log('settings mounted')
+      // console.log("settings mounted");
+      this.$send(this.SIGNAL_APPLAY_SETTINGS(this));
     });
   },
 
   methods: {
     settingsChanged() {
-      this.setCookies()
-      let signal = {
-        event: "changed",
-        kwargs: {
-          url: this.url,
-          passwd: this.passwd,
-          fontSize: this.fontSize
-        }
-      };
-      this.$send(this, signal,'parent', 'slotToggleSettings')
+      this.setCookies();
+      this.$send(this.SIGNAL_TOGGLE_SETTINGS(this));
+      this.$send(this.SIGNAL_APPLAY_SETTINGS(this));
     },
 
     getCookies() {

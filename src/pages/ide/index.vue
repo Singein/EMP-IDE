@@ -5,7 +5,7 @@
       <side-bar @connect="connect()"></side-bar>
       <multipane class="pane-layout" layout="vertical" @paneResize="resizeTerm">
         <div class="tree">
-          <file-list></file-list>
+          <folder-tree ref="folderTree"></folder-tree>
         </div>
         <multipane-resizer></multipane-resizer>
         <multipane class="subpane-layout" layout="horizontal" @paneResizeStop="resizeTerm">
@@ -20,45 +20,46 @@
         </multipane>
       </multipane>
     </mu-flex>
-    <settings ref='settings' @events="$connect" :show="showSettings"></settings>
-    <bottom-bar ref='bottom_bar' @events="$connect"></bottom-bar>
+    <setting ref='setting' @events="$connect" :show="showSettings"></setting>
+    <bottom-bar ref='bottomBar' @events="$connect"></bottom-bar>
   </div>
-
 </template>
 
 <script>
 import BottomBar from "./components/BottomBar";
 import SideBar from "./components/SideBar";
 import { Multipane, MultipaneResizer } from "./components/Multipane";
-import FileList from "./components/FileList";
+import FolderTree from "./components/FolderTree";
 import Editor from "./components/Editor";
 import Cli from "./components/Cli";
-import Settings from "./components/Settings";
+import Setting from "./components/Setting";
 
 export default {
   components: {
     BottomBar,
     SideBar,
-    FileList,
+    FolderTree,
     Editor,
     Multipane,
     MultipaneResizer,
     Cli,
-    Settings
+    Setting
   },
 
   data() {
     return {
       loading: false,
       showSettings: false,
-      parent: this
+      is_parent: true,
+      settings: null
     };
   },
 
-  mounted() {},
-
   beforeDestroy() {},
-
+  mounted(){
+    console.log(this)
+    console.log(this.$parent)
+  },
   methods: {
     connect() {
       this.vconnect();
@@ -69,17 +70,15 @@ export default {
     },
 
     resizeTerm(pane, container, size) {
-      console.log(pane);
       this.$refs["cli"].resizeTerm();
     },
 
-    slotToggleSettings(signal) {
+    slotToggleSettings() {
       this.showSettings = !this.showSettings;
     },
-    // slotApplySettings(signal){
-    //   this.slotToggleSettings(signal)
-
-    // }
+    slotApplySettings(kwargs) {
+      this.settings = kwargs;
+    }
   },
   watch: {}
 };

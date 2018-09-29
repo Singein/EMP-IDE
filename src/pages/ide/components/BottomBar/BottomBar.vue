@@ -35,7 +35,14 @@
 </template>
 
 <script>
+import signals from "./signals.js";
+
+import listener from "../../plugins/mixinEventsListener.js";
+import onEvent from "../../plugins/mixinOnEvents.js";
+// import signalProp from
 export default {
+  name: "bottomBar",
+  mixins: [signals, listener, onEvent],
   props: [],
   data() {
     return {
@@ -56,7 +63,7 @@ export default {
         }
       };
 
-      this.$send(this, signal, "parent", "slotToggleSettings");
+      this.$send(this.SIGNAL_OPENSET(this));
     }
   }
 };

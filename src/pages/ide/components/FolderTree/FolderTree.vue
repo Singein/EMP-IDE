@@ -12,6 +12,8 @@
 
 <script>
 export default {
+  name: "folderTree",
+
   props: [],
   data() {
     return {
@@ -32,16 +34,14 @@ export default {
             }
           ]
         }
-      ], 
+      ],
       defaultProps: {
         children: "children",
         label: "name"
       }
     };
   },
-  computed: {
-    
-  },
+  computed: {},
   mounted: function() {
     this.$nextTick(function() {
       console.log("file list mounted");
@@ -70,6 +70,8 @@ export default {
     nodeClicked(data, node, self) {
       // this.$store.commit({
       //   type: "currentNodeChanged",
+      //   node: node
+      // });      //   type: "currentNodeChanged",
       //   node: node
       // });
     },

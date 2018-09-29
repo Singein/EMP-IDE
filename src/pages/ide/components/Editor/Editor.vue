@@ -16,6 +16,7 @@
 
 <script>
 export default {
+  name: 'editor',
   props: ["code", "mode", "theme", "fontSize"],
   data() {
     return {

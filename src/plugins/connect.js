@@ -9,15 +9,18 @@ Connect.install = function (Vue, options) {
    * @param {String} receiver 接受者,是vue控件的ref,如果是传递给父组件的信息,则recevier === 'parent'(我规定就是这么传参的)
    * @param {String} slot 槽函数, 规范: 以slot开头 接受者需要执行的函数名字
    */
-  Vue.prototype.$connect = function (sender, signal, receiver, slot) {
-
-    // console.log('sender', sender, '\n', 'signal', signal, '\n', 'receiver', receiver, '\n', 'slot', slot)
+  Vue.prototype.$connect = function (signal) {
+    var sender = signal.sender
+    var receiver = signal.receiver
+    var slot = signal.slot
+    var kwargs = signal.kwargs
+    // console.log('sender', sender, '\n', 'kwargs', kwargs, '\n', 'receiver', receiver, '\n', 'slot', slot)
     if (receiver === 'parent') {
-      sender.$parent[slot](signal)
+      sender.$parent[slot](kwargs)
     }
     else{
         try{
-            sender.$parent.$refs[receiver][slot](signal)
+            sender.$parent.$refs[receiver][slot](kwargs)
         }catch(e){
             console.log(e)
         }
@@ -25,10 +28,10 @@ Connect.install = function (Vue, options) {
     
   }
 
-  Vue.prototype.$send = function (sender, signal, receiver, slot) {
+  Vue.prototype.$send = function (signal) {
 
     // console.log('sender', sender, '\n', 'signal', signal, '\n', 'receiver', receiver, '\n', 'slot', slot)
-    sender.$emit('events', sender, signal, receiver, slot)
+    signal.sender.$emit('events', signal)
   }
 
 }

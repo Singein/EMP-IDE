@@ -11,6 +11,7 @@ Terminal.applyAddon(fit);
 Terminal.applyAddon(attach);
 
 export default {
+  name: 'cli',
   props:[],
   data() {
     return {
