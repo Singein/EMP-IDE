@@ -44,8 +44,13 @@
 </template>
 
 <script>
+import signals from "./signals.js";
+import slots from "./slots.js";
+import listener from "../../plugins/mixinEventsListener.js";
+import onEvent from "../../plugins/mixinOnEvents.js";
 export default {
   name: "sideBar",
+  mixins: [signals, slots, listener, onEvent],
   props: [],
   data() {
     return {
@@ -57,9 +62,8 @@ export default {
   },
   mounted: function() {
     this.$nextTick(function() {
-        
-        console.log("sider-bar-name:",this.$options.name)
-        // console.log("sider-bar-name:",this.$options.ref)
+      console.log("sider-bar-name:", this.$options.name);
+      // console.log("sider-bar-name:",this.$options.ref)
     });
   },
   methods: {

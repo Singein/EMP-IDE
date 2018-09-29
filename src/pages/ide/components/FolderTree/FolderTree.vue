@@ -11,9 +11,13 @@
 </template>
 
 <script>
+import signals from "./signals.js";
+import slots from "./slots.js";
+import listener from "../../plugins/mixinEventsListener.js";
+import onEvent from "../../plugins/mixinOnEvents.js";
 export default {
   name: "folderTree",
-
+  mixins: [signals, slots, listener, onEvent],
   props: [],
   data() {
     return {

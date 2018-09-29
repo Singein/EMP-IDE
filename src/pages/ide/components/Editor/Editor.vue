@@ -15,8 +15,13 @@
 </template>
 
 <script>
+import signals from "./signals.js";
+import slots from "./slots.js";
+import listener from "../../plugins/mixinEventsListener.js";
+import onEvent from "../../plugins/mixinOnEvents.js";
 export default {
-  name: 'editor',
+  name: "editor",
+  mixins: [signals, slots, listener, onEvent],
   props: ["code", "mode", "theme", "fontSize"],
   data() {
     return {

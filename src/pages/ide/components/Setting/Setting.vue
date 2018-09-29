@@ -18,9 +18,12 @@
 
 <script>
 import signals from "./signals.js";
+import slots from "./slots.js";
+import listener from "../../plugins/mixinEventsListener.js";
+import onEvent from "../../plugins/mixinOnEvents.js";
 export default {
   name: "setting",
-  mixins: [signals],
+  mixins: [signals, slots, listener, onEvent],
   props: ["show"],
   data() {
     return {

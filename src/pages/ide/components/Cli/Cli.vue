@@ -3,6 +3,10 @@
 </template>
 
 <script>
+import signals from "./signals.js";
+import slots from "./slots.js";
+import listener from "../../plugins/mixinEventsListener.js";
+import onEvent from "../../plugins/mixinOnEvents.js";
 import { Terminal } from "xterm";
 import * as fit from "xterm/lib/addons/fit/fit";
 import * as attach from "xterm/lib/addons/attach/attach";
@@ -11,8 +15,9 @@ Terminal.applyAddon(fit);
 Terminal.applyAddon(attach);
 
 export default {
-  name: 'cli',
-  props:[],
+  name: "cli",
+  mixins: [signals, slots, listener, onEvent],
+  props: [],
   data() {
     return {
       ws: null,
