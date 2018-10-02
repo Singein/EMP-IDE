@@ -14,18 +14,20 @@ Connect.install = function (Vue, options) {
     var receiver = signal.receiver
     var slot = signal.slot
     var kwargs = signal.kwargs
-    // console.log('sender', sender, '\n', 'kwargs', kwargs, '\n', 'receiver', receiver, '\n', 'slot', slot)
-    if (receiver === 'parent') {
-      sender.$parent[slot](kwargs)
-    }
-    else{
-        try{
-            sender.$parent.$refs[receiver][slot](kwargs)
-        }catch(e){
-            console.log(e)
-        }
-    }
-    
+
+
+    var parent = sender.$parent;
+    try {
+      while (!parent.isParent) {
+        parent = parent.$parent
+      }
+      if (receiver === 'parent') {
+        parent[slot](kwargs)
+      } else
+        parent.$refs[receiver][slot](kwargs)
+    } catch (e) {}
+
+
   }
 
   Vue.prototype.$send = function (signal) {

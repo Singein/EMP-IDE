@@ -1,16 +1,15 @@
 var signals = {
   methods: {
     //打开设置窗口,点击设置按钮时触发
-    SIGNAL_APPLAY_SETTINGS(sender, receiver = 'parent', slot = 'slotApplySettings') {
+    SIGNAL_CONNECT_TO_DEVICE(sender, receiver = 'cli', slot = 'slotConnectToDevice') {
       return {
-        event: "applySettings",
+        event: "connectToDevice",
         sender: sender,
         receiver: receiver,
         slot: slot,
         kwargs: {
           url: this.url,
           passwd: this.passwd,
-          fontSize: this.fontSize
         }
       }
     },

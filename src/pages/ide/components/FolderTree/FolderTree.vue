@@ -22,23 +22,7 @@ export default {
   data() {
     return {
       panel: "",
-      data: [
-        {
-          name: "/",
-          children: [
-            { name: "boot.py", index: 0 },
-            {
-              name: "lib",
-              children: [
-                { name: "emp_boot.py", index: 1 },
-                { name: "emp_dev.py", index: 2 },
-                { name: "emp_utils.py", index: 3 },
-                { name: "emp_wifi.py", index: 4 }
-              ]
-            }
-          ]
-        }
-      ],
+      data: [],
       defaultProps: {
         children: "children",
         label: "name"
@@ -48,8 +32,8 @@ export default {
   computed: {},
   mounted: function() {
     this.$nextTick(function() {
-      console.log("file list mounted");
-      console.log(this.$route.path);
+      // console.log("file list mounted");
+      // console.log(this.$route.path);
       // this.$refs['tree'].setCurrentNode(this.$store.tree.node)
       // console.log(this.$store.tree.node)
     });
@@ -57,7 +41,7 @@ export default {
 
   updated: function() {
     this.$nextTick(function() {
-      console.log("file list updated");
+      // console.log("file list updated");
     });
   },
 

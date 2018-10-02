@@ -33,7 +33,7 @@
                     <mu-button class="icon-button" icon color="green">
                         <mu-icon size="36" value="memory"></mu-icon>
                     </mu-button>
-                    <mu-button class="icon-button" icon color="yellow" @click="$connect">
+                    <mu-button class="icon-button" icon color="yellow" @click="startConnect()">
                         <mu-icon size="36" value="power"></mu-icon>
                     </mu-button>
                 </mu-flex>
@@ -62,29 +62,23 @@ export default {
   },
   mounted: function() {
     this.$nextTick(function() {
-      console.log("sider-bar-name:", this.$options.name);
-      // console.log("sider-bar-name:",this.$options.ref)
+ 
     });
   },
   methods: {
     changePage(index) {
       this.index = index;
-      //   this.$router.push(this.routeMap[index])
     },
     changeStyle(index) {
       if (this.index === index) return this.selectStyle[0];
       return this.selectStyle[-1];
     },
-    connect() {
-      // this.connected = !this.connected
-      this.$emit("connect", this.connected);
+    startConnect() {
+      this.$send(this.SIGNAL_OPENSET(this))
     }
   },
   watch: {
-    $route() {
-      //   console.log(this.$route.path)
-      this.index = this.routeMap.indexOf(this.$route.path);
-    }
+    
   }
 };
 </script>

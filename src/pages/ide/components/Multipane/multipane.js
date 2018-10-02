@@ -1,9 +1,10 @@
 const LAYOUT_HORIZONTAL = 'horizontal';
 const LAYOUT_VERTICAL = 'vertical';
 
+import signals from "./signals"
 export default {
+  mixins: [signals],
   name: 'multipane',
-
   props: {
     layout: {
       type: String,
@@ -88,14 +89,18 @@ export default {
                     : resize(initialPaneHeight));
 
         // Trigger paneResizeStart event
-        self.$emit('paneResizeStart', pane, resizer, size);
+        // self.$emit('paneResizeStart', pane, resizer, size);
+        // self.$emit('')
+        self.$send(self.RESIZE_START(self))
 
         const onMouseMove = function({ pageX, pageY }) {
           let size = (layout == LAYOUT_VERTICAL
               ? resize(initialPaneWidth, pageX - initialPageX)
               : resize(initialPaneHeight, pageY - initialPageY));
 
-          self.$emit('paneResize', pane, resizer, size);
+          // self.$emit('paneResize', pane, resizer, size);
+          // console.log(self)
+          self.$send(self.RESIZING(self))
         };
 
         const onMouseUp = function() {

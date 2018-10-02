@@ -2,26 +2,26 @@
   <div>
     <mu-linear-progress v-if="loading" color="secondary"></mu-linear-progress>
     <mu-flex class="bg" direction='row' justify-content="start">
-      <side-bar @connect="connect()"></side-bar>
-      <multipane class="pane-layout" layout="vertical" @paneResize="resizeTerm">
+      <side-bar :listener="signals" @events="$connect"></side-bar>
+      <multipane class="pane-layout" layout="vertical" @events="$connect">
         <div class="tree">
-          <folder-tree ref="folderTree"></folder-tree>
+          <folder-tree ref="folderTree" :listener="signals" @events="$connect"></folder-tree>
         </div>
         <multipane-resizer></multipane-resizer>
-        <multipane class="subpane-layout" layout="horizontal" @paneResizeStop="resizeTerm">
+        <multipane class="subpane-layout" layout="horizontal" @events="$connect">
           <div class="editor">
           </div>
           <multipane-resizer></multipane-resizer>
           <div class="terminal-container">
             <div class="terminal">
-              <cli ref='cli'></cli>
+              <cli ref='cli' :listener="signals" @events="$connect"></cli>
             </div>
           </div>
         </multipane>
       </multipane>
     </mu-flex>
-    <setting ref='setting' @events="$connect" :show="showSettings"></setting>
-    <bottom-bar ref='bottomBar' @events="$connect"></bottom-bar>
+    <setting ref='setting' :listener="signals" @events="$connect" :show="showSettings"></setting>
+    <bottom-bar ref='bottomBar' :listener="signals" @events="$connect"></bottom-bar>
   </div>
 </template>
 
@@ -33,8 +33,13 @@ import FolderTree from "./components/FolderTree";
 import Editor from "./components/Editor";
 import Cli from "./components/Cli";
 import Setting from "./components/Setting";
+import slots from "./slots";
+import signals from "./signals";
+import mixinData from "./props";
 
 export default {
+  mixins: [signals, slots, mixinData
+  ],
   components: {
     BottomBar,
     SideBar,
@@ -50,35 +55,15 @@ export default {
     return {
       loading: false,
       showSettings: false,
-      is_parent: true,
       settings: null
     };
   },
 
   beforeDestroy() {},
-  mounted(){
-    console.log(this)
-    console.log(this.$parent)
-  },
+  mounted() {},
   methods: {
-    connect() {
-      this.vconnect();
-      this.$refs["cli"].connect(
-        "ws://192.168.0.121:8266",
-        "0909"
-      );
-    },
-
-    resizeTerm(pane, container, size) {
-      this.$refs["cli"].resizeTerm();
-    },
-
-    slotToggleSettings() {
-      this.showSettings = !this.showSettings;
-    },
-    slotApplySettings(kwargs) {
-      this.settings = kwargs;
-    }
+   
+   
   },
   watch: {}
 };

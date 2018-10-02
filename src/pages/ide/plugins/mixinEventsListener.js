@@ -1,6 +1,5 @@
 var listener = {
-    props: ['listener']
-  }
-  
-  export default listener
-  
+  props: ['listener']
+}
+
+export default listener
