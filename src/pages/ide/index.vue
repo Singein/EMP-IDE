@@ -195,8 +195,13 @@
           <!-- <multipane-resizer></multipane-resizer> -->
           <!-- 编辑器 -->
           <div class="pane ide-file-body">
-            <m-monaco-editor class="ide-editor" v-if='opened_file!==""' v-model="code" :mode="mode"
-              :theme="theme" :syncInput="true" :fontSize="parseInt(fontSize)"></m-monaco-editor>
+            <editor v-if='opened_file!==""'
+              ref="editor"
+              v-model="code"
+              :mode="mode"
+              :theme="theme"
+              :syncInput="true"
+              :fontSize="parseInt(fontSize)" />
           </div>
           <!-- 编辑器 结束 -->
 
@@ -277,6 +282,8 @@
   import {
     microide_codes
   } from "./microide.py.js";
+  import debounce from 'lodash/debounce'
+  import Editor from '@/pages/components/editor'
 
   Terminal.applyAddon(fit);
   Terminal.applyAddon(attach);
@@ -288,7 +295,8 @@
     name: "mirco-ide",
     components: {
       Multipane,
-      MultipaneResizer
+      MultipaneResizer,
+      Editor
       // 'repl': Repl
     },
     data() {
@@ -347,15 +355,19 @@
     },
 
     mounted() {
-      window.addEventListener("resize", this.resizeTerm);
+      window.addEventListener("resize", this.handleWindowResize);
       this.url = this.$cookie.get("url");
       this.passwd = this.$cookie.get("passwd");
-      this.fontSize = this.$cookie.get("fontsize");
+      let fontSize = this.$cookie.get("fontsize");
+      if (isNaN(fontSize)) {
+        fontSize = 16
+      }
+      this.fontSize = fontSize
       this.initTerm();
     },
 
     beforeDestroy() {
-      window.removeEventListener("resize", this.resizeTerm);
+      window.removeEventListener("resize", this.handleWindowResize);
       if (this.is_connected) {
         this.term.detach(this.ws);
         this.ws.close();
@@ -380,9 +392,21 @@
         }
       },
 
+      handleWindowResize () {
+        this.resizeTerm()
+        this.resizeEditor()
+      },
+
       resizeTerm() {
         this.term.fit();
       },
+
+      resizeEditor: debounce(function () {
+        let $editor = this.$refs['editor']
+        if ($editor) {
+          $editor.layout()
+        }
+      }, 200),
 
       openSettings() {
         this.openSetting = true;
@@ -879,11 +903,6 @@
     height: 48px !important;
   }
 
-  .ide-editor {
-    height: 97vh;
-    width: 82vw;
-  }
-
   /* 底栏区域 */
   .ide-bottom-bar {
     width: 100vw;
@@ -986,14 +1005,6 @@
 
   .mu-expansion-panel-content {
     padding: 6px !important;
-  }
-
-  .monaco-editor,
-  .monaco-editor-background,
-  .monaco-editor .inputarea.ime-input {
-    background-color: #1e1e1e;
-    height: calc(97vh-48px) !important;
-    width: 85vw !important;
   }
 
   .outer-container,
