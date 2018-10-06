@@ -4,22 +4,29 @@ var slots = {
       this.termVisible = !this.termVisible;
     },
     slotResizeTerm() {
+      // this.term.resize(20,1);
       this.term.fit();
     },
+    slotClearTerm(){
+      // setTimeout(1000,()=>this.term.clear());
+      this.term.clear();
+      this.term.clear();
+    },
+
     slotConnectToDevice(kwargs) {
       this.passwd = kwargs.passwd;
       var url = kwargs.url;
       this.lastCmd = "connect";
       this.ws = new WebSocket(url);
       this.ws.binaryType = "arraybuffer";
-      this.term.attach(this.ws, true, false);
+      this.term.attach(this.ws, true, true);
      
       this.ws.onopen = this.onOpen;
       this.ws.onclose = this.onClose;
     },
 
-    slotSendCommands(cmd) {
-      this.ws.write(cmd);
+    slotSendCommands(kwargs) {
+      this.ws.send(kwargs.command);
     },
 
     slotPutFile() {

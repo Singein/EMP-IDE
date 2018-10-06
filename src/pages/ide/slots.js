@@ -10,7 +10,10 @@ var slots = {
       if (kwargs.message.startsWith("Sending")) this.$toast.info(kwargs.message);
       if (kwargs.message.startsWith("success")) this.$toast.success(kwargs.message);
     },
-
+    slotShowCode(kwargs) {
+      this.code = kwargs.code
+      setTimeout(() => this.$send(this.SIGNAL_CLEAR(this)), 300);
+    },
   }
 }
 

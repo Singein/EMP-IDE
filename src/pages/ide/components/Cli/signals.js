@@ -33,6 +33,18 @@ var signals = {
         }
       }
     },
+    SIGNAL_SHOW_CODES(sender,data=null,receiver='parent',slot="slotShowCode"){
+      return {
+        event: "showCode",
+        sender: sender,
+        receiver: receiver,
+        slot: slot,
+        kwargs: {
+          code: data,
+          // filename: data.filename
+        }
+      }
+    },
 
   }
 }

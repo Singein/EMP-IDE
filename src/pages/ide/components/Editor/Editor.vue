@@ -1,51 +1,118 @@
 <template>
-  <div>
-    <div class="pane ide-file-tabs">
-      <mu-appbar v-if="opened_file!==''" class="ide-top-bar-appbar" :z-depth="0" color="#252526">
-        {{opened_file.split('/')[1]}}
-        <mu-button v-if='opened_file!==""' icon small slot="left" @click="update_code()">
-          <mu-icon color="grey" value="save"></mu-icon>
-        </mu-button>
-      </mu-appbar>
-    </div>
-    <div class="ide-file-body">
-      <m-monaco-editor class="ide-editor" v-if='opened_file!==""' v-model="code" :mode="mode" :theme="theme" :syncInput="true" :fontSize="parseInt(fontSize)"></m-monaco-editor>
-    </div>
+  <div ref="monaco-editor-container" class="monaco-editor-container">
   </div>
 </template>
 
 <script>
+import * as monaco from "monaco-editor";
+// import debounce from "lodash/debounce";
 import signals from "./signals.js";
 import slots from "./slots.js";
 import listener from "../../plugins/mixinEventsListener.js";
 import onEvent from "../../plugins/mixinOnEvents.js";
+
+self.MonacoEnvironment = {
+  getWorkerUrl: function(moduleId, label) {
+    if (label === "json") {
+      return "./json.worker.bundle.js";
+    }
+    if (label === "css") {
+      return "./css.worker.bundle.js";
+    }
+    if (label === "html") {
+      return "./html.worker.bundle.js";
+    }
+    if (label === "typescript" || label === "javascript") {
+      return "./ts.worker.bundle.js";
+    }
+    return "./editor.worker.bundle.js";
+  }
+};
+
 export default {
-  name: "editor",
+  name: "Editor",
   mixins: [signals, slots, listener, onEvent],
-  props: ["code", "mode", "theme", "fontSize"],
+  props: {
+    value: {
+      type: String,
+      default: ""
+    },
+    theme: {
+      type: String,
+      default: "vs-dark"
+    },
+    showMinimap: {
+      type: Boolean,
+      default: true
+    },
+    mode: {
+      type: String,
+      default: "python"
+    },
+    syncInput: Boolean,
+    fontSize: {
+      type: Number,
+      default: 16
+    }
+  },
   data() {
     return {
-      code: "",
-      fontSize: 16,
-      mode: "python",
-      theme: "vs-dark",
-      // 当前文件
-      opened_file: ""
+      editor: null,
+      monaco: null,
+      buffer: ""
     };
   },
-  mounted: function() {
-    this.$nextTick(function() {});
+  watch: {
+    value(val, old) {
+      if (this.buffer.length !== val.length || this.buffer !== val) {
+        this.buffer = val;
+        this.editor.setValue(val);
+      }
+    }
   },
-  methods: {}
+  mounted() {
+    this.initEditor();
+  },
+  beforeDestroy() {
+    this.$refs["monaco-editor-container"].innerHTML = "";
+  },
+  methods: {
+    initEditor() {
+      var $editorContainer = this.$refs["monaco-editor-container"];
+      this.monaco = window.monaco;
+      this.editor = monaco.editor.create($editorContainer, {
+        value: this.value,
+        language: this.mode,
+        fontSize: this.fontSize,
+        minimap: {
+          enabled: this.showMinimap
+        }
+      });
+      this.setTheme(this.theme);
+      this.listen();
+    },
+    listen() {
+      let that = this;
+      if (this.syncInput) {
+        this.editor.onDidChangeModelContent(function() {
+          that.buffer = that.editor.getValue();
+        });
+      }
+    },
+    setTheme(theme) {
+      this.monaco.editor.setTheme(theme);
+    },
+    layout() {
+      this.editor.layout();
+    }
+  }
 };
 </script>
 
 <style scoped>
-.ide-file-tabs {
-  height: 48px;
-}
-
-.ide-file-body {
-  height: calc(100% - 50px);
+.monaco-editor-container {
+  min-height: 350px;
+  height: 100%;
+  width: 98%;
 }
 </style>

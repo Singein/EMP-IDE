@@ -31,7 +31,7 @@ export default {
       passwd: null,
       termVisible: true,
       termOptions: {
-        rows: 5,
+        rows: 15,
         fontSize: 18,
         lineHeight: 1,
         padding: 10,

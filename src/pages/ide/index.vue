@@ -4,12 +4,16 @@
     <mu-flex class="bg" direction='row' justify-content="start">
       <side-bar :listener="signals" @events="$connect"></side-bar>
       <multipane class="pane-layout" layout="vertical" @events="$connect">
-        <div class="tree">
+        <div class="left-pane">
           <folder-tree ref="folderTree" :listener="signals" @events="$connect"></folder-tree>
         </div>
         <multipane-resizer></multipane-resizer>
         <multipane class="subpane-layout" layout="horizontal" @events="$connect">
+          <div class="editor-bar-container">
+            <mu-appbar class="editor-bar" color="#252526"></mu-appbar>
+          </div>
           <div class="editor">
+            <editor :value="code" ref='editor' style="height:100%;width:100%"></editor>
           </div>
           <multipane-resizer></multipane-resizer>
           <div class="terminal-container">
@@ -38,8 +42,7 @@ import signals from "./signals";
 import mixinData from "./props";
 
 export default {
-  mixins: [signals, slots, mixinData
-  ],
+  mixins: [signals, slots, mixinData],
   components: {
     BottomBar,
     SideBar,
@@ -55,16 +58,14 @@ export default {
     return {
       loading: false,
       showSettings: false,
-      settings: null
+      settings: null,
+      code: '',
     };
   },
 
   beforeDestroy() {},
   mounted() {},
-  methods: {
-   
-   
-  },
+  methods: {},
   watch: {}
 };
 </script>
@@ -72,28 +73,41 @@ export default {
 <style scoped>
 .bg {
   background: #1e1e1e;
+  width: 100%;
 }
 
 .pane-layout {
-  width: 100%;
+  width: calc(100% - 68px);
+  max-width: calc(100% - 68px);
   height: 97vh;
 }
 
-.tree {
+.left-pane {
   padding: 0;
   overflow: hidden;
-  background: #252526;
+  background: #252526 !important;
   min-width: 0;
   width: 20%;
   max-width: 40%;
+  height: 100%;
 }
 
 .subpane-layout {
-  max-width: 100%;
-  min-width: 40%;
+  width: 80%;
+  min-width: 60%;
   height: 100%;
   flex-grow: 1;
   border-left: 2px solid #61616161;
+}
+
+.editor-tab-container {
+  height: 32px;
+  width: 100%;
+}
+
+.editor-tab {
+  height: 32px;
+  width: 100%;
 }
 
 .editor {
@@ -101,7 +115,7 @@ export default {
   overflow: hidden;
   background: #1e1e1e;
   width: 100%;
-  height: 100%;
+  max-height: calc(100% - 48px);
   min-height: 48px;
 }
 
@@ -115,6 +129,9 @@ export default {
 
 .terminal {
   height: 100%;
-  /* flex-grow: 1; */
+}
+
+.mu-appbar {
+  height: 36px;
 }
 </style>

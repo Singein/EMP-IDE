@@ -1,12 +1,12 @@
 <template>
   <div>
-    <mu-flex direction="column" class="file-list">
+    <!-- <mu-flex direction="column" class="file-list">
       <div class="outer-container">
-        <div class="inner-container">
-          <el-tree ref='tree' :data="data" :props="defaultProps" :highlight-current="true" class="tree" :render-content="renderContent" v-on:node-contextmenu="renderMenu"></el-tree>
-        </div>
+        <div class="inner-container"> -->
+    <el-tree ref='tree' node-key="id" :empty-text="''" class="tree" :data="data" :props="defaultProps" :highlight-current="true" :render-content="renderContent" v-on:node-contextmenu="renderMenu" @node-click="nodeClicked"></el-tree>
+    <!-- </div>
       </div>
-    </mu-flex>
+    </mu-flex> -->
   </div>
 </template>
 
@@ -31,18 +31,11 @@ export default {
   },
   computed: {},
   mounted: function() {
-    this.$nextTick(function() {
-      // console.log("file list mounted");
-      // console.log(this.$route.path);
-      // this.$refs['tree'].setCurrentNode(this.$store.tree.node)
-      // console.log(this.$store.tree.node)
-    });
+    this.$nextTick(function() {});
   },
 
   updated: function() {
-    this.$nextTick(function() {
-      // console.log("file list updated");
-    });
+    this.$nextTick(function() {});
   },
 
   methods: {
@@ -56,12 +49,8 @@ export default {
     },
 
     nodeClicked(data, node, self) {
-      // this.$store.commit({
-      //   type: "currentNodeChanged",
-      //   node: node
-      // });      //   type: "currentNodeChanged",
-      //   node: node
-      // });
+      console.log(data.name);
+      this.$send(this.SIGNAL_GET_CODE(this, data.name));
     },
 
     renderMenu(event, data, node, self) {
@@ -90,7 +79,7 @@ export default {
 
 <style>
 .file-list {
-  background: #252526;
+  background: #252526 !important;
   width: 100%;
   height: 100%;
   padding: 0;
@@ -98,6 +87,7 @@ export default {
 
 .tree {
   width: 100%;
+  height: 100%;
 }
 
 .tree-node-label {
@@ -112,6 +102,7 @@ export default {
 
 .outer-container {
   width: 100%;
+  height: 100%;
   position: relative;
   overflow: hidden;
 }
@@ -152,7 +143,7 @@ export default {
 }
 
 .el-tree-node__content:hover {
-  background-color: #37373d;
+  background-color: #37373d !important;
 }
 
 .el-tree-node:focus > .el-tree-node__content {

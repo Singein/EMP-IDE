@@ -28,7 +28,7 @@ export default {
   props: ["show"],
   data() {
     return {
-      url: "",
+      url: "ws://192.168.xxx.xxx:8266/",
       passwd: ""
     };
   },

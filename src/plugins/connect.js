@@ -25,15 +25,19 @@ Connect.install = function (Vue, options) {
         parent[slot](kwargs)
       } else
         parent.$refs[receiver][slot](kwargs)
-    } catch (e) {}
+    } catch (e) {
+      console.log(e)
+    }
 
 
   }
 
   Vue.prototype.$send = function (signal) {
-
-    // console.log('sender', sender, '\n', 'signal', signal, '\n', 'receiver', receiver, '\n', 'slot', slot)
-    signal.sender.$emit('events', signal)
+    if (signal.sender.isParent) {
+      this.$refs[signal.receiver][signal.slot](signal.kwargs)
+    } else {
+      signal.sender.$emit('events', signal)
+    }
   }
 
 }

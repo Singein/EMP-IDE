@@ -30,7 +30,7 @@
                     <mu-button class="icon-button" icon color="green">
                         <mu-icon size="36" value="play_arrow"></mu-icon>
                     </mu-button>
-                    <mu-button class="icon-button" icon color="green">
+                    <mu-button class="icon-button" icon color="green" @click="clearTerm()">
                         <mu-icon size="36" value="memory"></mu-icon>
                     </mu-button>
                     <mu-button class="icon-button" icon color="yellow" @click="startConnect()">
@@ -61,9 +61,7 @@ export default {
     };
   },
   mounted: function() {
-    this.$nextTick(function() {
- 
-    });
+    this.$nextTick(function() {});
   },
   methods: {
     changePage(index) {
@@ -74,12 +72,13 @@ export default {
       return this.selectStyle[-1];
     },
     startConnect() {
-      this.$send(this.SIGNAL_OPENSET(this))
+      this.$send(this.SIGNAL_OPENSET(this));
+    },
+    clearTerm() {
+      this.$send(this.SIGNAL_CLEAR(this));
     }
   },
-  watch: {
-    
-  }
+  watch: {}
 };
 </script>
 

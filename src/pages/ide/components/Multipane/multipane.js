@@ -91,7 +91,7 @@ export default {
         // Trigger paneResizeStart event
         // self.$emit('paneResizeStart', pane, resizer, size);
         // self.$emit('')
-        self.$send(self.RESIZE_START(self))
+        self.$send(self.SIGNAL_RESIZE_START(self))
 
         const onMouseMove = function({ pageX, pageY }) {
           let size = (layout == LAYOUT_VERTICAL
@@ -100,7 +100,10 @@ export default {
 
           // self.$emit('paneResize', pane, resizer, size);
           // console.log(self)
-          self.$send(self.RESIZING(self))
+          self.$send(self.SIGNAL_RESIZING(self));
+          self.$send(self.SIGNAL_RESIZE_EDITOR(self));
+
+          
         };
 
         const onMouseUp = function() {
@@ -116,6 +119,7 @@ export default {
           removeEventListener('mouseup', onMouseUp);
 
           self.$emit('paneResizeStop', pane, resizer, size);
+          self.$send(self.SIGNAL_RESIZE_EDITOR(self))
         };
 
         addEventListener('mousemove', onMouseMove);

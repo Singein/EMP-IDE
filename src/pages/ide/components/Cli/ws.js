@@ -9,30 +9,15 @@ var handleConnection = {
 
   methods: {
     onOpen: function () {
-      this.term.off("data");
-      this.term.on(
-        "data",
-        function(data) {
-          // Pasted data from clipboard will likely contain
-          // LF as EOL chars.
-          data = data.replace(/\n/g, "\r");
-          // this.ws.send(data);
-          this.term.writeln(data);
-        }.bind(this)
-      );
-
-      // this.term.on("title", function(title) {
-      //   this.term.write(title)
-      // });
-
-
       this.term.focus();
       this.term.write("\x1b[34;2mWelcome to 1ZLAB-EMPIDE!\x1b[m\r\n");
 
       this.ws.onmessage = this.onMessage
       this.ws.send(this.passwd + '\r')
+      this.ws.send("tree()\r")
 
     },
+
     onMessage: function (event) {
       if (event.data instanceof ArrayBuffer) {
         var data = new Uint8Array(event.data);
@@ -72,10 +57,10 @@ var handleConnection = {
 
       try {
         this.recData = JSON.parse(event.data);
-        console.log(this.recData.func);
-
         if (this.recData.func === 'tree')
           this.$send(this.SIGNAL_UPDATE_TREE(this, [this.recData.data]));
+        if (this.recData.func === 'get_code')
+          this.$send(this.SIGNAL_SHOW_CODES(this, this.recData.data));
 
       } catch (e) {
 
@@ -142,30 +127,6 @@ var handleConnection = {
 
     }
   },
-  watch: {
-    replPrint: function () {
-      // 自动连接
-      if (
-        this.replPrint.startsWith("Password: ") &&
-        this.lastCmd === "connect"
-      ) {
-        // console.log("raw ", this.replPrint);
-        this.ws.send(this.passwd + "\r");
-        this.replPrint = "";
-        this.lastCmd = "wait_for_connect";
-      }
-
-      // 判断连接状态,若成功
-      if (
-        this.replPrint.indexOf("WebREPL connected") &&
-        this.lastCmd === "wait_for_connect"
-      ) {
-        this.$toast.success("WebREPL connected");
-        this.lastCmd = "";
-        this.replPrint = "";
-      }
-    }
-  }
 
 }
 
