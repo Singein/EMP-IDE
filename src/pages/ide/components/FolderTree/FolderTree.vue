@@ -43,14 +43,11 @@ export default {
       this.panel = panel === this.panel ? "" : panel;
     },
 
-    handleChange(val) {
-      // 目录树的index值
-      this.list_index = val;
-    },
-
     nodeClicked(data, node, self) {
-      console.log(data.name);
-      this.$send(this.SIGNAL_GET_CODE(this, data.name));
+      // console.log(data.name);
+      // console.log(node.childNodes);
+      if (node.childNodes.length === 0)
+        this.$send(this.SIGNAL_GET_CODE(this, data.name));
     },
 
     renderMenu(event, data, node, self) {

@@ -9,11 +9,8 @@
         </div>
         <multipane-resizer></multipane-resizer>
         <multipane class="subpane-layout" layout="horizontal" @events="$connect">
-          <div class="editor-bar-container">
-            <mu-appbar class="editor-bar" color="#252526"></mu-appbar>
-          </div>
           <div class="editor">
-            <editor :value="code" ref='editor' style="height:100%;width:100%"></editor>
+            <editor :value="code" :opened-file="openedFile" ref='editor' style="height:100%;width:100%"></editor>
           </div>
           <multipane-resizer></multipane-resizer>
           <div class="terminal-container">
@@ -59,7 +56,8 @@ export default {
       loading: false,
       showSettings: false,
       settings: null,
-      code: '',
+      code: "",
+      openedFile: "",
     };
   },
 
@@ -77,8 +75,8 @@ export default {
 }
 
 .pane-layout {
-  width: calc(100% - 68px);
-  max-width: calc(100% - 68px);
+  width: calc(100% - 70px);
+  max-width: calc(100% - 70px);
   height: 97vh;
 }
 
@@ -100,15 +98,6 @@ export default {
   border-left: 2px solid #61616161;
 }
 
-.editor-tab-container {
-  height: 32px;
-  width: 100%;
-}
-
-.editor-tab {
-  height: 32px;
-  width: 100%;
-}
 
 .editor {
   padding: 0;
@@ -129,9 +118,5 @@ export default {
 
 .terminal {
   height: 100%;
-}
-
-.mu-appbar {
-  height: 36px;
 }
 </style>

@@ -773,7 +773,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 /* layout */
 .left-pane {
   background: #333333 !important;

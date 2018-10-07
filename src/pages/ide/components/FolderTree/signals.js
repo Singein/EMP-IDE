@@ -17,7 +17,7 @@ var signals = {
         receiver: receiver,
         slot: slot,
         kwargs: {
-          // filename: filename,
+          filename: filename,
           command: 'get_code(\'' + filename + '\')\r'
         }
       }

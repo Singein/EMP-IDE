@@ -11,7 +11,8 @@ var slots = {
       if (kwargs.message.startsWith("success")) this.$toast.success(kwargs.message);
     },
     slotShowCode(kwargs) {
-      this.code = kwargs.code
+      this.code = kwargs.code;
+      this.openedFile = kwargs.filename;
       setTimeout(() => this.$send(this.SIGNAL_CLEAR(this)), 300);
     },
   }

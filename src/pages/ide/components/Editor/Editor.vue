@@ -1,5 +1,24 @@
 <template>
-  <div ref="monaco-editor-container" class="monaco-editor-container">
+  <div class="monaco-editor-container">
+    <mu-flex direction="column" class="monaco-editor-container">
+      <mu-flex class="editor-tabs" justify-content="start" align-items="center">
+
+        <mu-flex justify-content="start" align-items="center" class="editor-tabs-flex">
+          <mu-icon value="description" color='grey'></mu-icon>
+          <p class="editor-tabs-title">{{openedFile}}</p>
+        </mu-flex>
+        <mu-flex justify-content="end" align-items="center" class="editor-tabs-flex">
+          <mu-button icon color="primary">
+            <mu-icon value="save"></mu-icon>
+          </mu-button>
+          <mu-button icon color="primary">
+            <mu-icon value="close"></mu-icon>
+          </mu-button>
+        </mu-flex>
+      </mu-flex>
+      <!-- <mu-flex class="editor-tabs" color="white"></mu-flex> -->
+      <div ref="monaco-editor-container" class="monaco-editor"></div>
+    </mu-flex>
   </div>
 </template>
 
@@ -34,6 +53,10 @@ export default {
   mixins: [signals, slots, listener, onEvent],
   props: {
     value: {
+      type: String,
+      default: ""
+    },
+    openedFile: {
       type: String,
       default: ""
     },
@@ -113,6 +136,31 @@ export default {
 .monaco-editor-container {
   min-height: 350px;
   height: 100%;
-  width: 98%;
+  width: 100%;
+}
+.monaco-editor {
+  min-height: 350px;
+  height: 100%;
+  width: 100%;
+  /* padding-top: 6px; */
+}
+.editor-tabs {
+  height: 48px;
+  width: 100%;
+  background: #252526;
+  /* position: fixed; */
+  line-height: 48px;
+  padding: 0 12px;
+}
+
+.editor-tabs-flex {
+  width: 50%;
+  height: 100%;
+}
+
+.editor-tabs-title {
+  font-size: 16px !important;
+  color: #e0e0e0;
+  margin-left: 6px;
 }
 </style>

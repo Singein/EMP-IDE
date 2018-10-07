@@ -40,8 +40,8 @@ var signals = {
         receiver: receiver,
         slot: slot,
         kwargs: {
-          code: data,
-          // filename: data.filename
+          code: data.code,
+          filename: data.filename
         }
       }
     },
