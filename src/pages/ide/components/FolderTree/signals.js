@@ -23,6 +23,18 @@ var signals = {
       }
     },
 
+    SIGNAL_GET_FILE(sender, filename = null, receiver = 'cli', slot = "slotGetFile") {
+      return {
+        event: "getCode",
+        sender: sender,
+        receiver: receiver,
+        slot: slot,
+        kwargs: {
+          filename: filename,
+        }
+      }
+    },
+
   }
 }
 

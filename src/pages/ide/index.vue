@@ -5,12 +5,13 @@
       <side-bar :listener="signals" @events="$connect"></side-bar>
       <multipane class="pane-layout" layout="vertical" @events="$connect">
         <div class="left-pane">
-          <folder-tree ref="folderTree" :listener="signals" @events="$connect"></folder-tree>
+          <folder-tree v-show="showFolderTree" ref="folderTree" :listener="signals" @events="$connect"></folder-tree>
+          <uploader v-show="showUploader" :listener="signals" @events="$connect"></uploader>
         </div>
         <multipane-resizer></multipane-resizer>
         <multipane class="subpane-layout" layout="horizontal" @events="$connect">
           <div class="editor">
-            <editor :value="code" :opened-file="openedFile" ref='editor' :listener="signals" @events="$connect" style="height:100%;width:100%"></editor>
+            <editor ref='editor' :listener="signals" @events="$connect" style="height:100%;width:100%"></editor>
           </div>
           <multipane-resizer></multipane-resizer>
           <div class="terminal-container">
@@ -34,9 +35,11 @@ import FolderTree from "./components/FolderTree";
 import Editor from "./components/Editor";
 import Cli from "./components/Cli";
 import Setting from "./components/Setting";
+import Uploader from "./components/Uploader"
 import slots from "./slots";
 import signals from "./signals";
 import mixinData from "./props";
+
 
 export default {
   mixins: [signals, slots, mixinData],
@@ -48,7 +51,17 @@ export default {
     Multipane,
     MultipaneResizer,
     Cli,
-    Setting
+    Setting,
+    Uploader
+  },
+
+  computed:{
+    showFolderTree:function(){
+      return this.switcher === 0;
+    },
+    showUploader: function(){
+      return this.switcher === 1;
+    }
   },
 
   data() {
@@ -56,9 +69,7 @@ export default {
       loading: false,
       showSettings: false,
       settings: null,
-      code: "",
-      openedFile: "",
-      termVisiable: true
+      switcher: -1,
     };
   },
 

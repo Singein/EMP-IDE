@@ -7,10 +7,7 @@ var slots = {
       // this.term.resize(20,1);
       this.term.fit();
     },
-    slotClearTerm(kwargs){
-      // setTimeout(1000,()=>this.term.clear());
-      console.log(kwargs.who)
-      this.term.clear();
+    slotClearTerm() {
       this.term.clear();
     },
 
@@ -21,7 +18,7 @@ var slots = {
       this.ws = new WebSocket(url);
       this.ws.binaryType = "arraybuffer";
       this.term.attach(this.ws, true, true);
-     
+
       this.ws.onopen = this.onOpen;
       this.ws.onclose = this.onClose;
     },
@@ -30,9 +27,11 @@ var slots = {
       this.ws.send(kwargs.command);
     },
 
-    slotPutFile() {
-      var dest_fname = put_file_name;
-      var dest_fsize = put_file_data.length;
+    slotPutFile(kwargs) {
+      this.putFileData = kwargs.fileData;
+      // console.log(this.putFileData);
+      var dest_fname = kwargs.filename;
+      var dest_fsize = kwargs.fileData.length;
 
       // WEBREPL_FILE = "<2sBBQLH64s"
       var rec = new Uint8Array(2 + 1 + 1 + 8 + 4 + 2 + 64);
@@ -63,10 +62,49 @@ var slots = {
       }
 
       // initiate put
-      this.binary_state = 11;
-      this.show_message("Sending " + put_file_name + "...");
+      this.binaryState = 11;
+      // this.show_message("Sending " + put_file_name + "...");
+      this.$toast.info("Sending " + kwargs.filename + "...");
       this.ws.send(rec);
     },
+
+    slotGetFile(kwargs) {
+      var src_fname = kwargs.filename;
+      // WEBREPL_FILE = "<2sBBQLH64s"
+      var rec = new Uint8Array(2 + 1 + 1 + 8 + 4 + 2 + 64);
+      rec[0] = 'W'.charCodeAt(0);
+      rec[1] = 'A'.charCodeAt(0);
+      rec[2] = 2; // get
+      rec[3] = 0;
+      rec[4] = 0;
+      rec[5] = 0;
+      rec[6] = 0;
+      rec[7] = 0;
+      rec[8] = 0;
+      rec[9] = 0;
+      rec[10] = 0;
+      rec[11] = 0;
+      rec[12] = 0;
+      rec[13] = 0;
+      rec[14] = 0;
+      rec[15] = 0;
+      rec[16] = src_fname.length & 0xff;
+      rec[17] = (src_fname.length >> 8) & 0xff;
+      for (var i = 0; i < 64; ++i) {
+        if (i < src_fname.length) {
+          rec[18 + i] = src_fname.charCodeAt(i);
+        } else {
+          rec[18 + i] = 0;
+        }
+      }
+      // initiate get
+      this.binaryState = 21;
+      this.getFilename = src_fname;
+      this.getFileData = new Uint8Array(0);
+      this.$toast.info('Getting ' + this.getFilename + '...');
+      this.ws.send(rec);
+    },
+
   }
 }
 

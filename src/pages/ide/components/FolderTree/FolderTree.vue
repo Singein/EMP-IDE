@@ -1,7 +1,16 @@
 <template>
   <div class="outer-container">
     <div class="inner-container">
-      <el-tree ref='tree' node-key="id" :empty-text="''" class="tree" :data="data" :props="defaultProps" :highlight-current="true" :render-content="renderContent" v-on:node-contextmenu="renderMenu" @node-click="nodeClicked"></el-tree>
+      <el-tree ref='tree' class="tree"
+        node-key="id" 
+        :empty-text="''" 
+        :data="data" 
+        :props="defaultProps" 
+        :highlight-current="true" 
+        :render-content="renderContent" 
+        v-on:node-contextmenu="renderMenu" 
+        @node-click="nodeClicked">
+      </el-tree>
     </div>
   </div>
 </template>
@@ -41,7 +50,7 @@ export default {
 
     nodeClicked(data, node, self) {
       if (node.childNodes.length === 0)
-        this.$send(this.SIGNAL_GET_CODE(this, this.getRealPath(node)));
+        this.$send(this.SIGNAL_GET_FILE(this, this.getRealPath(node)));
     },
 
     getRealPath(node) {
@@ -58,15 +67,15 @@ export default {
       if (data.children) {
         if (node.label === "/") {
           return (
-            <mu-flex align-items="center">
-              <mu-icon value="folder" size="20" />
+            <mu-flex align-items="center" class="tree-node">
+              <mu-icon value="folder" size="22" />
               <span class="tree-node-label">{node.label}</span>
             </mu-flex>
           );
         }
         return (
-          <mu-flex align-items="center">
-            <mu-icon value="folder" size="20" />
+          <mu-flex align-items="center" class="tree-node">
+            <mu-icon value="folder" size="22" />
             <span class="tree-node-label">
               {node.label.split("/")[node.label.split("/").length - 1]}
             </span>
@@ -75,7 +84,7 @@ export default {
       } else {
         return (
           <mu-flex align-items="center">
-            <mu-icon value="description" size="20" />
+            <mu-icon value="description" size="22" />
             <span class="tree-node-label">{node.label}</span>
           </mu-flex>
         );
@@ -100,7 +109,19 @@ export default {
 
 .tree-node-label {
   margin-left: 6px;
-  font-size: 16px;
+  font-size: 18px;
+  color: #e0e0e0;
+}
+.tree-node{
+  width: 100%;
+  height: 24px;
+}
+.tree-node-left{
+  width: 20%;
+}
+
+.tree-node-right{
+  width: 75%;
 }
 
 .outer-container,

@@ -2,8 +2,10 @@ var handleConnection = {
   data() {
     return {
       binaryState: 0,
-      putFileName: null,
+      putFilename: null,
       putFileData: null,
+      getFilename: null,
+      getFileData: null
     }
   },
 
@@ -12,9 +14,10 @@ var handleConnection = {
       this.term.focus();
       this.term.write("\x1b[34;2mWelcome to 1ZLAB-EMPIDE!\x1b[m\r\n");
 
-      this.ws.onmessage = this.onMessage
-      this.ws.send(this.passwd + '\r')
-      this.ws.send("tree()\r")
+      this.ws.onmessage = this.onMessage;
+      this.ws.send(this.passwd + '\r');
+      this.ws.send("tree()\r");
+      this.$toast.success("WebREPL connected!");
 
     },
 
@@ -33,11 +36,12 @@ var handleConnection = {
               }
               this.binaryState = 12;
             }
+
             break;
           case 12:
             // final response for put
             if (this.decodeResp(data) == 0) {
-              this.show_message(
+              this.$toast.success(
                 "success! " +
                 this.putFileName +
                 ", " +
@@ -45,12 +49,69 @@ var handleConnection = {
                 " bytes"
               );
               this.putFileData = null;
-              this.send_file_name = "none selected.";
-              this.panel = "";
+              this.putFileName = "";
             } else {
-              this.show_message("Failed sending " + this.putFileName);
+              this.$toast.error("Failed sending " + this.putFileName);
             }
             this.binaryState = 0;
+            this.ws.send('\r\r');
+            setTimeout(() => this.slotClearTerm(), 300);
+
+            break;
+
+          case 21:
+            // first response for get
+            if (this.decodeResp(data) == 0) {
+              this.binaryState = 22;
+              var rec = new Uint8Array(1);
+              rec[0] = 0;
+              this.ws.send(rec);
+            }
+            break;
+
+          case 22:
+            {
+              // file data
+              var sz = data[0] | (data[1] << 8);
+              if (data.length == 2 + sz) {
+                // we assume that the data comes in single chunks
+                if (sz == 0) {
+                  // end of file
+                  this.binaryState = 23;
+                } else {
+                  // accumulate incoming data to this.getFileData
+                  var new_buf = new Uint8Array(this.getFileData.length + sz);
+                  new_buf.set(this.getFileData);
+                  new_buf.set(data.slice(2), this.getFileData.length);
+                  this.getFileData = new_buf;
+                  this.$toast.info('Getting ' + this.getFilename + ', ' + this.getFileData.length + ' bytes');
+                  var rec = new Uint8Array(1);
+                  rec[0] = 0;
+                  this.ws.send(rec);
+                }
+              } else {
+                this.binaryState = 0;
+              }
+              break;
+            }
+          case 23:
+            // final response
+            if (this.decodeResp(data) == 0) {
+              this.$toast.success('Got ' + this.getFilename + ', ' + this.getFileData.length + ' bytes');
+              // saveAs(new Blob([this.getFileData], {
+              //   type: "application/octet-stream"
+              // }), this.getFilename);
+              var code = new TextDecoder("utf-8").decode(this.getFileData);
+              this.$send(this.SIGNAL_SHOW_CODES(this, code));
+
+            } else {
+              this.$toast.error('Failed getting ' + this.getFilename);
+            }
+            this.getFileData = null;
+            this.getFilename = null;
+            this.binaryState = 0;
+            this.ws.send('\r\r');
+            setTimeout(() => this.slotClearTerm(), 300);
             break;
         }
       }
@@ -76,43 +137,6 @@ var handleConnection = {
       this.prepare();
     },
 
-    putFile: function () {
-      var dest_fname = this.putFileName;
-      var dest_fsize = this.putFileData.length;
-
-      // WEBREPL_FILE = "<2sBBQLH64s"
-      var rec = new Uint8Array(2 + 1 + 1 + 8 + 4 + 2 + 64);
-      rec[0] = "W".charCodeAt(0);
-      rec[1] = "A".charCodeAt(0);
-      rec[2] = 1; // put
-      rec[3] = 0;
-      rec[4] = 0;
-      rec[5] = 0;
-      rec[6] = 0;
-      rec[7] = 0;
-      rec[8] = 0;
-      rec[9] = 0;
-      rec[10] = 0;
-      rec[11] = 0;
-      rec[12] = dest_fsize & 0xff;
-      rec[13] = (dest_fsize >> 8) & 0xff;
-      rec[14] = (dest_fsize >> 16) & 0xff;
-      rec[15] = (dest_fsize >> 24) & 0xff;
-      rec[16] = dest_fname.length & 0xff;
-      rec[17] = (dest_fname.length >> 8) & 0xff;
-      for (var i = 0; i < 64; ++i) {
-        if (i < dest_fname.length) {
-          rec[18 + i] = dest_fname.charCodeAt(i);
-        } else {
-          rec[18 + i] = 0;
-        }
-      }
-
-      // initiate put
-      this.binaryState = 11;
-      this.show_message("Sending " + this.putFileName + "...");
-      this.ws.send(rec);
-    },
 
     decodeResp(data) {
       if (data[0] == "W".charCodeAt(0) && data[1] == "B".charCodeAt(0)) {

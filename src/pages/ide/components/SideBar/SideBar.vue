@@ -11,16 +11,21 @@
                     </div>
                     <div :style="changeStyle(1)">
                         <mu-button class="icon-button" icon color="grey" :ripple="false" @click="changePage(1)">
-                            <mu-icon size="36" value="search"></mu-icon>
+                            <mu-icon size="36" value="get_app"></mu-icon>
                         </mu-button>
                     </div>
                     <div :style="changeStyle(2)">
                         <mu-button class="icon-button" icon color="grey" :ripple="false" @click="changePage(2)">
-                            <mu-icon size="36" value="extension"></mu-icon>
+                            <mu-icon size="36" value="search"></mu-icon>
                         </mu-button>
                     </div>
                     <div :style="changeStyle(3)">
                         <mu-button class="icon-button" icon color="grey" :ripple="false" @click="changePage(3)">
+                            <mu-icon size="36" value="extension"></mu-icon>
+                        </mu-button>
+                    </div>
+                    <div :style="changeStyle(4)">
+                        <mu-button class="icon-button" icon color="grey" :ripple="false" @click="changePage(4)">
                             <mu-icon size="36" value="book"></mu-icon>
                         </mu-button>
                     </div>
@@ -54,7 +59,7 @@ export default {
   props: [],
   data() {
     return {
-      index: -1,
+      index: 4,
       selectStyle: [{ background: "#4CAF5099" }, { background: "#fff0" }],
       routeMap: ["/ide"],
       connected: false
@@ -66,6 +71,7 @@ export default {
   methods: {
     changePage(index) {
       this.index = index;
+      this.$send(this.SIGNAL_SWITCH(this));
     },
     changeStyle(index) {
       if (this.index === index) return this.selectStyle[0];

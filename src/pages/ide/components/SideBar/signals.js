@@ -18,7 +18,19 @@ var signals = {
         slot: slot,
         kwargs: {}
       }
-    }
+    },
+
+    SIGNAL_SWITCH(sender, receiver = 'parent', slot = 'slotSwitch') {
+      return {
+        event: "switch",
+        sender: sender,
+        receiver: receiver,
+        slot: slot,
+        kwargs: {
+          index: this.index
+        }
+      }
+    },
   }
 }
 
