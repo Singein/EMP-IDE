@@ -33,7 +33,7 @@ var signals = {
         }
       }
     },
-    SIGNAL_SHOW_CODES(sender,data=null,receiver='parent',slot="slotShowCode"){
+    SIGNAL_SHOW_CODES(sender,data=null,receiver='editor',slot="slotShowCode"){
       return {
         event: "showCode",
         sender: sender,

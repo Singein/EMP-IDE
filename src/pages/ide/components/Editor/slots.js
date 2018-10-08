@@ -5,14 +5,17 @@ var slots = {
 
     slotResizeEditor() {
       // debounce(function () {
-      this.layout();
-      
+      this.$refs["editor"].layout();
+
       // }, 200);
     },
 
-    slotShowCode(kwargs){
-      this.value= kwargs.code
-    }
+    slotShowCode(kwargs) {
+      this.code = kwargs.code;
+      this.openedFile = kwargs.filename;
+      setTimeout(() => this.$send(this.SIGNAL_CLEAR_TERM(this)), 300);
+      // this.$send(this.SIGNAL_CLEAR_TERM(this));
+    },
 
 
   }

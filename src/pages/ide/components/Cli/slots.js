@@ -7,8 +7,9 @@ var slots = {
       // this.term.resize(20,1);
       this.term.fit();
     },
-    slotClearTerm(){
+    slotClearTerm(kwargs){
       // setTimeout(1000,()=>this.term.clear());
+      console.log(kwargs.who)
       this.term.clear();
       this.term.clear();
     },

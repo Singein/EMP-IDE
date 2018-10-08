@@ -10,7 +10,7 @@
         <multipane-resizer></multipane-resizer>
         <multipane class="subpane-layout" layout="horizontal" @events="$connect">
           <div class="editor">
-            <editor :value="code" :opened-file="openedFile" ref='editor' style="height:100%;width:100%"></editor>
+            <editor :value="code" :opened-file="openedFile" ref='editor' :listener="signals" @events="$connect" style="height:100%;width:100%"></editor>
           </div>
           <multipane-resizer></multipane-resizer>
           <div class="terminal-container">
@@ -58,6 +58,7 @@ export default {
       settings: null,
       code: "",
       openedFile: "",
+      termVisiable: true
     };
   },
 
@@ -112,6 +113,7 @@ export default {
   border-top: 2px solid #61616161;
   flex-grow: 1;
   /* height: 100%; */
+  min-height: 0;
   overflow: hidden;
   background: #1e1e1e;
 }

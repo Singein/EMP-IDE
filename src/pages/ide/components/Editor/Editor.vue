@@ -1,133 +1,38 @@
 <template>
-  <div class="monaco-editor-container">
-    <mu-flex direction="column" class="monaco-editor-container">
-      <mu-flex class="editor-tabs" justify-content="start" align-items="center">
-
-        <mu-flex justify-content="start" align-items="center" class="editor-tabs-flex">
-          <mu-icon value="description" color='grey'></mu-icon>
-          <p class="editor-tabs-title">{{openedFile}}</p>
+    <div class="monaco-editor-container">
+        <mu-flex direction="column" class="monaco-editor-container">
+            <mu-flex class="editor-tabs" justify-content="start" align-items="center">
+                <mu-flex justify-content="start" align-items="center" class="editor-tabs-flex">
+                    <mu-button icon color="white">
+                        <mu-icon value="save"></mu-icon>
+                    </mu-button>
+                    <p class="editor-tabs-title">{{openedFile.split('/')[openedFile.split('/').length-1]}}</p>
+                </mu-flex>
+                <mu-flex justify-content="end" align-items="center" class="editor-tabs-flex">
+                </mu-flex>
+            </mu-flex>
+            <monaco-editor ref="editor" :value="code"></monaco-editor>
         </mu-flex>
-        <mu-flex justify-content="end" align-items="center" class="editor-tabs-flex">
-          <mu-button icon color="primary">
-            <mu-icon value="save"></mu-icon>
-          </mu-button>
-          <mu-button icon color="primary">
-            <mu-icon value="close"></mu-icon>
-          </mu-button>
-        </mu-flex>
-      </mu-flex>
-      <!-- <mu-flex class="editor-tabs" color="white"></mu-flex> -->
-      <div ref="monaco-editor-container" class="monaco-editor"></div>
-    </mu-flex>
-  </div>
+    </div>
 </template>
 
+
 <script>
-import * as monaco from "monaco-editor";
-// import debounce from "lodash/debounce";
+import MonacoEditor from "./MonacoEditor.vue";
 import signals from "./signals.js";
 import slots from "./slots.js";
 import listener from "../../plugins/mixinEventsListener.js";
 import onEvent from "../../plugins/mixinOnEvents.js";
-
-self.MonacoEnvironment = {
-  getWorkerUrl: function(moduleId, label) {
-    if (label === "json") {
-      return "./json.worker.bundle.js";
-    }
-    if (label === "css") {
-      return "./css.worker.bundle.js";
-    }
-    if (label === "html") {
-      return "./html.worker.bundle.js";
-    }
-    if (label === "typescript" || label === "javascript") {
-      return "./ts.worker.bundle.js";
-    }
-    return "./editor.worker.bundle.js";
-  }
-};
-
 export default {
-  name: "Editor",
   mixins: [signals, slots, listener, onEvent],
-  props: {
-    value: {
-      type: String,
-      default: ""
-    },
-    openedFile: {
-      type: String,
-      default: ""
-    },
-    theme: {
-      type: String,
-      default: "vs-dark"
-    },
-    showMinimap: {
-      type: Boolean,
-      default: true
-    },
-    mode: {
-      type: String,
-      default: "python"
-    },
-    syncInput: Boolean,
-    fontSize: {
-      type: Number,
-      default: 16
-    }
+  components: {
+    MonacoEditor
   },
   data() {
     return {
-      editor: null,
-      monaco: null,
-      buffer: ""
+      code: "",
+      openedFile: ""
     };
-  },
-  watch: {
-    value(val, old) {
-      if (this.buffer.length !== val.length || this.buffer !== val) {
-        this.buffer = val;
-        this.editor.setValue(val);
-      }
-    }
-  },
-  mounted() {
-    this.initEditor();
-  },
-  beforeDestroy() {
-    this.$refs["monaco-editor-container"].innerHTML = "";
-  },
-  methods: {
-    initEditor() {
-      var $editorContainer = this.$refs["monaco-editor-container"];
-      this.monaco = window.monaco;
-      this.editor = monaco.editor.create($editorContainer, {
-        value: this.value,
-        language: this.mode,
-        fontSize: this.fontSize,
-        minimap: {
-          enabled: this.showMinimap
-        }
-      });
-      this.setTheme(this.theme);
-      this.listen();
-    },
-    listen() {
-      let that = this;
-      if (this.syncInput) {
-        this.editor.onDidChangeModelContent(function() {
-          that.buffer = that.editor.getValue();
-        });
-      }
-    },
-    setTheme(theme) {
-      this.monaco.editor.setTheme(theme);
-    },
-    layout() {
-      this.editor.layout();
-    }
   }
 };
 </script>
@@ -137,12 +42,6 @@ export default {
   min-height: 350px;
   height: 100%;
   width: 100%;
-}
-.monaco-editor {
-  min-height: 350px;
-  height: 100%;
-  width: 100%;
-  /* padding-top: 6px; */
 }
 .editor-tabs {
   height: 48px;
@@ -157,6 +56,14 @@ export default {
   width: 50%;
   height: 100%;
 }
+
+.monaco-editor {
+  min-height: 350px;
+  height: 100%;
+  width: 100%;
+  /* padding-top: 6px; */
+}
+
 
 .editor-tabs-title {
   font-size: 16px !important;

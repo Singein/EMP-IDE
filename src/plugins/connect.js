@@ -10,33 +10,33 @@ Connect.install = function (Vue, options) {
    * @param {String} slot 槽函数, 规范: 以slot开头 接受者需要执行的函数名字
    */
   Vue.prototype.$connect = function (signal) {
-    var sender = signal.sender
-    var receiver = signal.receiver
-    var slot = signal.slot
-    var kwargs = signal.kwargs
+    var sender = signal.sender;
+    var receiver = signal.receiver;
+    var slot = signal.slot;
+    var kwargs = signal.kwargs;
 
 
     var parent = sender.$parent;
     try {
       while (!parent.isParent) {
-        parent = parent.$parent
+        parent = parent.$parent;
       }
       if (receiver === 'parent') {
-        parent[slot](kwargs)
+        parent[slot](kwargs);
       } else
-        parent.$refs[receiver][slot](kwargs)
+        parent.$refs[receiver][slot](kwargs);
     } catch (e) {
       console.log(e)
     }
-
 
   }
 
   Vue.prototype.$send = function (signal) {
     if (signal.sender.isParent) {
-      this.$refs[signal.receiver][signal.slot](signal.kwargs)
+      this.$refs[signal.receiver][signal.slot](signal.kwargs);
     } else {
-      signal.sender.$emit('events', signal)
+      signal.sender.$emit('events', signal);
+      // console.log(signal.sender);
     }
   }
 

@@ -1,12 +1,8 @@
 <template>
-  <div>
-    <!-- <mu-flex direction="column" class="file-list">
-      <div class="outer-container">
-        <div class="inner-container"> -->
-    <el-tree ref='tree' node-key="id" :empty-text="''" class="tree" :data="data" :props="defaultProps" :highlight-current="true" :render-content="renderContent" v-on:node-contextmenu="renderMenu" @node-click="nodeClicked"></el-tree>
-    <!-- </div>
-      </div>
-    </mu-flex> -->
+  <div class="outer-container">
+    <div class="inner-container">
+      <el-tree ref='tree' node-key="id" :empty-text="''" class="tree" :data="data" :props="defaultProps" :highlight-current="true" :render-content="renderContent" v-on:node-contextmenu="renderMenu" @node-click="nodeClicked"></el-tree>
+    </div>
   </div>
 </template>
 
@@ -44,10 +40,14 @@ export default {
     },
 
     nodeClicked(data, node, self) {
-      // console.log(data.name);
-      // console.log(node.childNodes);
       if (node.childNodes.length === 0)
-        this.$send(this.SIGNAL_GET_CODE(this, data.name));
+        this.$send(this.SIGNAL_GET_CODE(this, this.getRealPath(node)));
+    },
+
+    getRealPath(node) {
+      var realPath = node.data.name;
+      realPath = node.parent.data.name + "/" + realPath;
+      return realPath;
     },
 
     renderMenu(event, data, node, self) {
@@ -55,20 +55,31 @@ export default {
     },
 
     renderContent(h, { node, data, store }) {
-      if (data.children)
+      if (data.children) {
+        if (node.label === "/") {
+          return (
+            <mu-flex align-items="center">
+              <mu-icon value="folder" size="20" />
+              <span class="tree-node-label">{node.label}</span>
+            </mu-flex>
+          );
+        }
         return (
           <mu-flex align-items="center">
             <mu-icon value="folder" size="20" />
-            <span class="tree-node-label">{node.label}</span>
+            <span class="tree-node-label">
+              {node.label.split("/")[node.label.split("/").length - 1]}
+            </span>
           </mu-flex>
         );
-      else
+      } else {
         return (
           <mu-flex align-items="center">
             <mu-icon value="description" size="20" />
             <span class="tree-node-label">{node.label}</span>
           </mu-flex>
         );
+      }
     }
   }
 };
@@ -89,6 +100,7 @@ export default {
 
 .tree-node-label {
   margin-left: 6px;
+  font-size: 16px;
 }
 
 .outer-container,
