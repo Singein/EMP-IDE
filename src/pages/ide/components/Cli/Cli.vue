@@ -20,7 +20,7 @@ var put_file_name = null;
 export default {
   name: "cli",
   mixins: [signals, slots, handleConnection, listener, onEvent],
-  props: [],
+  props: ['tasklock'],
   data() {
     return {
       ws: null,

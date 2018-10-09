@@ -24,7 +24,14 @@ var slots = {
     },
 
     slotSendCommands(kwargs) {
-      this.ws.send(kwargs.command);
+      if (!this.tasklock) {
+        this.ws.send(kwargs.command);
+        if (kwargs.command.startsWith('depends_on_memory')) {
+          this.$send(this.SIGNAL_LOCK(this));
+        }
+      }
+      else
+        this.$toast.error("IO busy");
     },
 
     slotPutFile(kwargs) {
@@ -105,6 +112,22 @@ var slots = {
       this.ws.send(rec);
     },
 
+    slotDependsOnMemoryToGetFile(kwargs) {
+      console.log('in slotDependsOnMemory');
+
+      this.getFilename = kwargs.filename;
+
+      var mf = kwargs.mf;
+
+      var fsize = kwargs.fsize;
+      console.log('fsize < 0.85 * mf', fsize < 0.85 * mf);
+      console.log(kwargs);
+      if (fsize < 0.85 * mf) {
+        this.ws.send('get_code(\'' + kwargs.filename + '\')\r');
+      } else {
+        this.slotGetFile(kwargs);
+      }
+    }
   }
 }
 

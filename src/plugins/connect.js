@@ -33,9 +33,15 @@ Connect.install = function (Vue, options) {
 
   Vue.prototype.$send = function (signal) {
     if (signal.sender.isParent) {
-      this.$refs[signal.receiver][signal.slot](signal.kwargs);
+      if (signal.receiver === 'self')
+        this[signal.slot](signal.kwargs)
+      else
+        this.$refs[signal.receiver][signal.slot](signal.kwargs);
     } else {
-      signal.sender.$emit('events', signal);
+      if (signal.receiver === 'self')
+        this[signal.slot](signal.kwargs)
+      else
+        signal.sender.$emit('events', signal);
       // console.log(signal.sender);
     }
   }

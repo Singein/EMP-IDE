@@ -1,6 +1,6 @@
 <template>
   <div>
-    <mu-linear-progress v-if="loading" color="secondary"></mu-linear-progress>
+    <mu-linear-progress v-if="tasklock" color="secondary"></mu-linear-progress>
     <mu-flex class="bg" direction='row' justify-content="start">
       <side-bar :listener="signals" @events="$connect"></side-bar>
       <multipane class="pane-layout" layout="vertical" @events="$connect">
@@ -16,7 +16,7 @@
           <multipane-resizer></multipane-resizer>
           <div class="terminal-container">
             <div class="terminal">
-              <cli ref='cli' :listener="signals" @events="$connect"></cli>
+              <cli ref='cli' :tasklock="tasklock" :listener="signals" @events="$connect"></cli>
             </div>
           </div>
         </multipane>
@@ -70,6 +70,7 @@ export default {
       showSettings: false,
       settings: null,
       switcher: -1,
+      tasklock: false
     };
   },
 

@@ -1,15 +1,7 @@
 <template>
   <div class="outer-container">
     <div class="inner-container">
-      <el-tree ref='tree' class="tree"
-        node-key="id" 
-        :empty-text="''" 
-        :data="data" 
-        :props="defaultProps" 
-        :highlight-current="true" 
-        :render-content="renderContent" 
-        v-on:node-contextmenu="renderMenu" 
-        @node-click="nodeClicked">
+      <el-tree ref='tree' class="tree" node-key="id" :empty-text="''" :data="data" :props="defaultProps" :highlight-current="true" :render-content="renderContent" v-on:node-contextmenu="renderMenu" @node-click="nodeClicked">
       </el-tree>
     </div>
   </div>
@@ -50,7 +42,8 @@ export default {
 
     nodeClicked(data, node, self) {
       if (node.childNodes.length === 0)
-        this.$send(this.SIGNAL_GET_FILE(this, this.getRealPath(node)));
+        // this.$send(this.SIGNAL_GET_FILE(this, this.getRealPath(node)));
+        this.$send(this.SIGNAL_DEPENDS_ON_MEMORY(this, this.getRealPath(node)));
     },
 
     getRealPath(node) {
@@ -112,15 +105,15 @@ export default {
   font-size: 18px;
   color: #e0e0e0;
 }
-.tree-node{
+.tree-node {
   width: 100%;
   height: 24px;
 }
-.tree-node-left{
+.tree-node-left {
   width: 20%;
 }
 
-.tree-node-right{
+.tree-node-right {
   width: 75%;
 }
 

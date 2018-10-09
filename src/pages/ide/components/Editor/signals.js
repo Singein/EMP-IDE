@@ -11,6 +11,15 @@ var signals = {
         }
       }
     },
+    SIGNAL_UNLOCK(sender, receiver = 'parent', slot = 'slotUnlock'){
+      return {
+        event: "unlock",
+        sender: sender,
+        receiver: receiver,
+        slot: slot,
+        kwargs: {}
+      }
+    },
   }
 }
 

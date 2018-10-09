@@ -84,7 +84,7 @@ var handleConnection = {
                   new_buf.set(this.getFileData);
                   new_buf.set(data.slice(2), this.getFileData.length);
                   this.getFileData = new_buf;
-                  this.$toast.info('Getting ' + this.getFilename + ', ' + this.getFileData.length + ' bytes');
+                  // this.$toast.info('Getting ' + this.getFilename + ', ' + this.getFileData.length + ' bytes');
                   var rec = new Uint8Array(1);
                   rec[0] = 0;
                   this.ws.send(rec);
@@ -121,8 +121,9 @@ var handleConnection = {
         if (this.recData.func === 'tree')
           this.$send(this.SIGNAL_UPDATE_TREE(this, [this.recData.data]));
         if (this.recData.func === 'get_code')
-          this.$send(this.SIGNAL_SHOW_CODES(this, this.recData.data));
-
+          this.$send(this.SIGNAL_SHOW_CODES_PMAX(this, this.recData.data));
+        if (this.recData.func === 'depends_on_memory')
+          this.$send(this.SIGNAL_DEPENDS_ON_MEMORY_TO_GET_FILE(this, this.recData))
       } catch (e) {
 
       }
