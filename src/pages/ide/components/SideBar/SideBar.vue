@@ -78,7 +78,8 @@ export default {
       return this.selectStyle[-1];
     },
     startConnect() {
-      this.$send(this.SIGNAL_OPENSET(this));
+      //   this.$send(this.SIGNAL_OPENSET(this));
+      this.$send(this.SIGNAL_OPEN_CONFIG(this));
     },
     clearTerm() {
       this.$send(this.SIGNAL_CLEAR(this));

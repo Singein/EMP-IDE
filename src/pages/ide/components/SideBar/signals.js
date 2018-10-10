@@ -31,6 +31,15 @@ var signals = {
         }
       }
     },
+    SIGNAL_OPEN_CONFIG(sender, receiver = 'cli', slot = 'slotToggleConfig') {
+      return {
+        event: "toggleConfig",
+        sender: sender,
+        receiver: receiver,
+        slot: slot,
+        kwargs: {}
+      }
+    },
   }
 }
 

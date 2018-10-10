@@ -1,5 +1,25 @@
 var signals = {
   methods: {
+    SIGNAL_REPORT_CONNECTED(sender, receiver = 'setting', slot = 'slotConnected') {
+      return {
+        event: "reportConnected",
+        sender: sender,
+        receiver: receiver,
+        slot: slot,
+        kwargs: {}
+      }
+    },
+
+    SIGNAL_REPORT_DISCONNECTED(sender, receiver = 'setting', slot = 'slotDisconnected') {
+      return {
+        event: "reportDisonnected",
+        sender: sender,
+        receiver: receiver,
+        slot: slot,
+        kwargs: {}
+      }
+    },
+
     SIGNAL_UPDATE_TREE(sender, data = null, receiver = 'folderTree', slot = 'slotUpdateTree') {
       return {
         event: "updateTree",
@@ -11,7 +31,8 @@ var signals = {
         }
       }
     },
-    SIGNAL_LOCK(sender, receiver = 'parent', slot = 'slotLock'){
+
+    SIGNAL_LOCK(sender, receiver = 'parent', slot = 'slotLock') {
       return {
         event: "lock",
         sender: sender,
@@ -20,6 +41,7 @@ var signals = {
         kwargs: {}
       }
     },
+
     SIGNAL_SHOW_CODES(sender, data = null, receiver = 'editor', slot = "slotShowCode") {
       return {
         event: "showCode",
@@ -34,7 +56,7 @@ var signals = {
       }
     },
 
-    SIGNAL_SHOW_CODES_PMAX(sender, data = null, receiver = 'editor', slot = "slotShowCode"){
+    SIGNAL_SHOW_CODES_PMAX(sender, data = null, receiver = 'editor', slot = "slotShowCode") {
       return {
         event: "showCode",
         sender: sender,

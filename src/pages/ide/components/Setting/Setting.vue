@@ -11,7 +11,7 @@
 
       </mu-flex>
 
-      <mu-button slot="actions" flat color="primary" @click="connect">Connect</mu-button>
+      <mu-button slot="actions" flat color="primary" @click="connect">{{buttonText}}</mu-button>
       <mu-button slot="actions" flat color="primary" @click="esc">ESC</mu-button>
     </mu-dialog>
   </div>
@@ -29,7 +29,9 @@ export default {
   data() {
     return {
       url: "ws://192.168.xxx.xxx:8266/",
-      passwd: ""
+      passwd: "",
+      buttonText: "connect",
+      webSocketStatus: false
     };
   },
   mounted: function() {
@@ -42,7 +44,12 @@ export default {
     connect() {
       this.setCookies();
       this.$send(this.SIGNAL_TOGGLE_SETTINGS(this));
-      this.$send(this.SIGNAL_CONNECT_TO_DEVICE(this));
+
+      if (this.webSocketStatus) {
+        this.$send(this.SIGNAL_CONNECT_TO_DEVICE(this));
+      } else {
+        this.$send(this.SIGNAL_DISCONNECT(this));
+      }
     },
 
     esc() {

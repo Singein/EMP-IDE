@@ -1,8 +1,11 @@
 <template>
-  <div ref="terminal" v-show="termVisible" class="term"></div>
+  <div ref="terminal" class="term">
+    <config :show="showConfig" @hide="slotToggleConfig" @connect="slotConnectToDevice"></config>
+  </div>
 </template>
 
 <script>
+import Config from "./Config.vue";
 import signals from "./signals.js";
 import slots from "./slots.js";
 import listener from "../../plugins/mixinEventsListener.js";
@@ -15,21 +18,20 @@ import "xterm/dist/xterm.css";
 Terminal.applyAddon(fit);
 Terminal.applyAddon(attach);
 
-var put_file_data = null;
-var put_file_name = null;
 export default {
   name: "cli",
   mixins: [signals, slots, handleConnection, listener, onEvent],
-  props: ['tasklock'],
+  props: ["tasklock"],
+  components: {
+    Config
+  },
   data() {
     return {
       ws: null,
       term: null,
-      lastCmd: null,
-      replPrint: null,
       recData: null,
       passwd: null,
-      termVisible: true,
+      showConfig: false,
       termOptions: {
         rows: 15,
         fontSize: 18,
@@ -57,7 +59,7 @@ export default {
         this.slotResizeTerm();
       });
     }
-  },
+  }
 };
 </script>
 
@@ -67,6 +69,5 @@ export default {
   width: 100%;
   height: 100%;
   padding: 15px;
-  /* border-top: 2px solid #61616161; */
 }
 </style>

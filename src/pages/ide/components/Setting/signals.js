@@ -13,6 +13,17 @@ var signals = {
         }
       }
     },
+
+    SIGNAL_DISCONNECT(sender, receiver = 'cli', slot = 'slotDisconnect') {
+      return {
+        event: "disconnect",
+        sender: sender,
+        receiver: receiver,
+        slot: slot,
+        kwargs: {}
+      }
+    },
+
     SIGNAL_TOGGLE_SETTINGS(sender, receiver = 'parent', slot = 'slotToggleSettings') {
       return {
         event: "toggleSettings",

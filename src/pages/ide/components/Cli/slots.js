@@ -3,10 +3,16 @@ var slots = {
     slotToggleTermVisible() {
       this.termVisible = !this.termVisible;
     },
+
+    slotToggleConfig(){
+      this.showConfig = !this.showConfig;
+    },
+
     slotResizeTerm() {
       // this.term.resize(20,1);
       this.term.fit();
     },
+
     slotClearTerm() {
       this.term.clear();
     },
@@ -18,9 +24,21 @@ var slots = {
       this.ws = new WebSocket(url);
       this.ws.binaryType = "arraybuffer";
       this.term.attach(this.ws, true, true);
-
+      
       this.ws.onopen = this.onOpen;
       this.ws.onclose = this.onClose;
+      // if(this.ws.readyState === 1){
+        // console.log(this.ws.readyState);
+        // this.$send(this.SIGNAL_REPORT_CONNECTED(this));
+      // }
+    },
+
+    slotDisconnect(){
+      this.ws.close();
+      // if(this.ws.readyState === 2){
+        console.log(this.ws.readyState);
+        this.$send(this.SIGNAL_REPORT_DISCONNECTED(this));
+      // }
     },
 
     slotSendCommands(kwargs) {

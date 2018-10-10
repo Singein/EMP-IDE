@@ -1,6 +1,6 @@
 <template>
   <div>
-    <mu-linear-progress v-if="tasklock" color="secondary"></mu-linear-progress>
+    <mu-linear-progress v-if="tasklock"  color="secondary" class="progress-bar"></mu-linear-progress>
     <mu-flex class="bg" direction='row' justify-content="start">
       <side-bar :listener="signals" @events="$connect"></side-bar>
       <multipane class="pane-layout" layout="vertical" @events="$connect">
@@ -85,6 +85,12 @@ export default {
 .bg {
   background: #1e1e1e;
   width: 100%;
+}
+
+.progress-bar{
+  position: fixed;
+  width: 100vw;
+  z-index: 999
 }
 
 .pane-layout {

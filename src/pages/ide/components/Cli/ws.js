@@ -2,6 +2,7 @@ var handleConnection = {
   data() {
     return {
       binaryState: 0,
+      recData: null,
       putFilename: null,
       putFileData: null,
       getFilename: null,
@@ -18,6 +19,10 @@ var handleConnection = {
       this.ws.send(this.passwd + '\r');
       this.ws.send("tree()\r");
       this.$toast.success("WebREPL connected!");
+      if (this.ws.readyState === 1) {
+        console.log(this.ws.readyState);
+        this.$send(this.SIGNAL_REPORT_CONNECTED(this));
+      }
 
     },
 
@@ -98,9 +103,6 @@ var handleConnection = {
             // final response
             if (this.decodeResp(data) == 0) {
               this.$toast.success('Got ' + this.getFilename + ', ' + this.getFileData.length + ' bytes');
-              // saveAs(new Blob([this.getFileData], {
-              //   type: "application/octet-stream"
-              // }), this.getFilename);
               var code = new TextDecoder("utf-8").decode(this.getFileData);
               this.$send(this.SIGNAL_SHOW_CODES(this, code));
 
