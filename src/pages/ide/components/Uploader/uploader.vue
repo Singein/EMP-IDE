@@ -7,7 +7,11 @@
         </mu-button>
         <mu-button small color="blue" @click="send">SEND</mu-button>
       </mu-flex>
-      <p class="putFilename">{{putFilename}}</p>
+      <mu-flex direction="column">
+        <mu-chip v-for="i in putFilename" :key="i" class="file-chip">
+          {{i}}
+        </mu-chip>
+      </mu-flex>
 
     </mu-flex>
     <input multiple type="file" ref="fileInput" style="display:none" @change="handleFiles">
@@ -65,12 +69,13 @@ export default {
 
 
 <style scoped>
-.putFilename {
+.file-chip {
   font-size: 16px;
-  color: white;
+
+  margin: 8px;
 }
 
 .uploader {
-  padding-top: 64px;
+  padding-top: 32px;
 }
 </style>

@@ -46,7 +46,13 @@ var slots = {
 
     slotPutFile(kwargs) {
       if (!this.tasklock) {
-        this.putFileData = kwargs.fileData;
+        if (kwargs.fileData.length > 0)
+          this.putFileData = kwargs.fileData;
+        else{
+          this.putFileData = new TextEncoder().encode(' ');
+          kwargs.fileData = new TextEncoder().encode(' ');
+        }
+
         // console.log(this.putFileData);
         var dest_fname = kwargs.filename;
         var dest_fsize = kwargs.fileData.length;
@@ -85,7 +91,7 @@ var slots = {
         this.$toast.info("Sending " + kwargs.filename + "...");
         this.$send(this.SIGNAL_LOCK(this));
         this.ws.send(rec);
-      } else{
+      } else {
         this.$toast.error("IO busy");
       }
     },
@@ -135,7 +141,7 @@ var slots = {
       var mf = kwargs.mf;
 
       var fsize = kwargs.fsize;
-     
+
       if (fsize < 0.85 * mf) {
         this.ws.send('get_code(\'' + kwargs.filename + '\')\r');
       } else {
