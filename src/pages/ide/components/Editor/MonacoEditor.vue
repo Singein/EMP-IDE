@@ -31,10 +31,6 @@ export default {
       type: String,
       default: ""
     },
-    openedFile: {
-      type: String,
-      default: ""
-    },
     theme: {
       type: String,
       default: "vs-dark"
@@ -47,7 +43,10 @@ export default {
       type: String,
       default: "python"
     },
-    syncInput: Boolean,
+    syncInput: {
+      type: Boolean,
+      default: true
+    },
     fontSize: {
       type: Number,
       default: 16
@@ -67,7 +66,7 @@ export default {
         this.buffer = val;
         this.editor.setValue(val);
       }
-    }
+    },
   },
   mounted() {
     this.initEditor();
@@ -95,6 +94,7 @@ export default {
       if (this.syncInput) {
         this.editor.onDidChangeModelContent(function() {
           that.buffer = that.editor.getValue();
+          that.$emit('input', that.buffer)
         });
       }
     },
@@ -104,7 +104,8 @@ export default {
     layout() {
       this.editor.layout();
     }
-  }
+  },
+  
 };
 </script>
 

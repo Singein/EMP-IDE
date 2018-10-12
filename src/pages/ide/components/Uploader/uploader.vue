@@ -1,16 +1,17 @@
 <template>
-    <div>
-        <mu-flex justify-content="center" align-items="center" direction="column">
-            <p class="putFilename">{{putFilename}}</p>
-            <mu-flex style="width:100%;padding-top:6px" align-items="center" justify-content="center">
-                <mu-button small @click="browse()" color="indigo400" style="margin:0 6px">
-                    Browser...
-                </mu-button>
-                <mu-button small color="blue" @click="send">SEND</mu-button>
-            </mu-flex>
-        </mu-flex>
-        <input type="file" ref="fileInput" style="display:none" @change="handleFiles">
-    </div>
+  <div>
+    <mu-flex justify-content="center" align-items="center" direction="column" class="uploader">
+      <mu-flex style="width:100%;padding-top:6px" align-items="center" justify-content="center">
+        <mu-button small @click="browse" color="indigo400" style="margin:0 16px">
+          Browser...
+        </mu-button>
+        <mu-button small color="blue" @click="send">SEND</mu-button>
+      </mu-flex>
+      <p class="putFilename">{{putFilename}}</p>
+
+    </mu-flex>
+    <input multiple type="file" ref="fileInput" style="display:none" @change="handleFiles">
+  </div>
 </template>
 
 <script>
@@ -22,8 +23,10 @@ export default {
   mixins: [signals, slots, listener, onEvent],
   data() {
     return {
-      putFilename: "",
-      putFileData: null,
+      putFilename: [],
+      putFileData: [],
+      files: null,
+      index: 0,
     };
   },
   methods: {
@@ -38,18 +41,23 @@ export default {
     handleFiles(evt) {
       // The event holds a FileList object which is a list of File objects,
       // but we only support single file selection at the moment.
-      var files = evt.target.files;
+      // var files = evt.target.files;
+      this.files = evt.target.files;
       let that = this;
       // Get the file info and load its data.
-      var f = files[0];
-      this.putFilename = f.name;
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        // console.log("sdfs", e.target.result);
-        that.putFileData = new Uint8Array(e.target.result);
-        console.log(that.putFileData);
-      };
-      reader.readAsArrayBuffer(f);
+      for (let i = 0; i < this.files.length; i++) {
+        let f = this.files[i];
+        that.putFilename.push(f.name);
+        let reader = new FileReader();
+        reader.onload = function(e) {
+          // console.log("sdfs", e.target.result);
+          that.putFileData.push(new Uint8Array(e.target.result));
+        };
+        reader.readAsArrayBuffer(f);
+      }
+
+      console.log(this.putFilename);
+      console.log(this.putFileData);
     }
   }
 };
@@ -60,5 +68,9 @@ export default {
 .putFilename {
   font-size: 16px;
   color: white;
+}
+
+.uploader {
+  padding-top: 64px;
 }
 </style>

@@ -1,6 +1,6 @@
 var signals = {
   methods: {
-    SIGNAL_REPORT_CONNECTED(sender, receiver = 'setting', slot = 'slotConnected') {
+    SIGNAL_REPORT_CONNECTED(sender, receiver = 'bottomBar', slot = 'slotConnected') {
       return {
         event: "reportConnected",
         sender: sender,
@@ -9,17 +9,15 @@ var signals = {
         kwargs: {}
       }
     },
-
-    SIGNAL_REPORT_DISCONNECTED(sender, receiver = 'setting', slot = 'slotDisconnected') {
+    SIGNAL_REPORT_DISCONNECTED(sender, receiver = 'bottomBar', slot = 'slotDisconnected') {
       return {
-        event: "reportDisonnected",
+        event: "reportDisconnected",
         sender: sender,
         receiver: receiver,
         slot: slot,
         kwargs: {}
       }
     },
-
     SIGNAL_UPDATE_TREE(sender, data = null, receiver = 'folderTree', slot = 'slotUpdateTree') {
       return {
         event: "updateTree",
@@ -35,6 +33,17 @@ var signals = {
     SIGNAL_LOCK(sender, receiver = 'parent', slot = 'slotLock') {
       return {
         event: "lock",
+        sender: sender,
+        receiver: receiver,
+        slot: slot,
+        kwargs: {}
+      }
+    },
+
+    SIGNAL_UNLOCK(sender, receiver = 'parent', slot = 'slotUnlock') {
+      console.log("in SIGNAL_UNLOCK");
+      return {
+        event: "unlock",
         sender: sender,
         receiver: receiver,
         slot: slot,
@@ -83,6 +92,17 @@ var signals = {
         }
       }
     },
+
+    SIGNAL_PUT_NEXT_FILE(sender, receiver = 'uploader', slot = "slotNextFile") {
+      return {
+        event: "nextFile",
+        sender: sender,
+        receiver: receiver,
+        slot: slot,
+        kwargs: {}
+      }
+    }
+
   }
 }
 

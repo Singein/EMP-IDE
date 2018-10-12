@@ -8,8 +8,8 @@ var signals = {
           receiver: receiver,
           slot: slot,
           kwargs: {
-            filename: this.putFilename,
-            fileData: this.putFileData
+            filename: this.putFilename[this.index],
+            fileData: this.putFileData[this.index]
           }
         }
       },

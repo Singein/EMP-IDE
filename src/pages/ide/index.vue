@@ -6,7 +6,7 @@
       <multipane class="pane-layout" layout="vertical" @events="$connect">
         <div class="left-pane">
           <folder-tree v-show="showFolderTree" ref="folderTree" :listener="signals" @events="$connect"></folder-tree>
-          <uploader v-show="showUploader" :listener="signals" @events="$connect"></uploader>
+          <uploader ref="uploader" v-show="showUploader" :listener="signals" @events="$connect"></uploader>
         </div>
         <multipane-resizer></multipane-resizer>
         <multipane class="subpane-layout" layout="horizontal" @events="$connect">

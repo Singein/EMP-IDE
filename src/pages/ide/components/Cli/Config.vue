@@ -37,13 +37,11 @@
 <script>
   export default {
     name: "config",
-    props: ["show"],
+    props: ["show","wsStatus"],
     data() {
       return {
         url: "ws://192.168.xxx.xxx:8266/",
         passwd: "",
-        buttonText: "connect",
-        webSocketStatus: false
       };
     },
     mounted: function () {
@@ -51,26 +49,32 @@
         this.getCookies();
       });
     },
+    computed:{
+      buttonText: function(){
+        if(!this.wsStatus){
+          return 'connect';
+        }else{
+          return 'disconnect';
+        }
+      },
+    },
 
     methods: {
       connect() {
         this.setCookies();
-        // this.$send(this.SIGNAL_TOGGLE_SETTINGS(this));
 
-        // if (this.webSocketStatus) {
+        if (!this.wsStatus) {
           this.$emit('connect', {url:this.url, passwd:this.passwd});
-          this.$emit('hide')
-        // } else {
-        //   this.$send(this.SIGNAL_DISCONNECT(this));
-        // }
+          this.$emit('hide');
+        } else {
+          this.$emit('disconnect');
+          this.$emit('hide');
+        }
       },
 
       esc() {
         this.setCookies();
-        // this.$send(this.SIGNAL_TOGGLE_SETTINGS(this));
-        // this.$emit('connect', {url:this.url, passwd:this.passwd});
         this.$emit('hide');
-
       },
 
       getCookies() {

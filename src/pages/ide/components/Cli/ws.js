@@ -20,8 +20,9 @@ var handleConnection = {
       this.ws.send("tree()\r");
       this.$toast.success("WebREPL connected!");
       if (this.ws.readyState === 1) {
-        console.log(this.ws.readyState);
+        // console.log(this.ws.readyState);
         this.$send(this.SIGNAL_REPORT_CONNECTED(this));
+        this.wsConnected = true;
       }
 
     },
@@ -45,6 +46,7 @@ var handleConnection = {
             break;
           case 12:
             // final response for put
+            this.$send(this.SIGNAL_UNLOCK(this));
             if (this.decodeResp(data) == 0) {
               this.$toast.success(
                 "success! " +
@@ -60,6 +62,8 @@ var handleConnection = {
             }
             this.binaryState = 0;
             this.ws.send('\r\r');
+            this.ws.send('tree()\r');
+            setTimeout(() => this.$send(this.SIGNAL_PUT_NEXT_FILE(this)), 300);
             setTimeout(() => this.slotClearTerm(), 300);
 
             break;
@@ -101,6 +105,7 @@ var handleConnection = {
             }
           case 23:
             // final response
+            // this.$send(this.SIGNAL_UNLOCK(this)); 为什么在这里无法调用 send函数? 
             if (this.decodeResp(data) == 0) {
               this.$toast.success('Got ' + this.getFilename + ', ' + this.getFileData.length + ' bytes');
               var code = new TextDecoder("utf-8").decode(this.getFileData);
@@ -113,6 +118,7 @@ var handleConnection = {
             this.getFilename = null;
             this.binaryState = 0;
             this.ws.send('\r\r');
+
             setTimeout(() => this.slotClearTerm(), 300);
             break;
         }
@@ -132,12 +138,12 @@ var handleConnection = {
     },
 
     onClose: function () {
-      this.is_connected = false;
+      this.wsConnected = false;
+      this.$send(this.SIGNAL_REPORT_DISCONNECTED(this));
       this.$toast.error("Disconnected");
       if (this.term) {
         this.term.write("\r\n\x1b[31mDisconnected\x1b[m\r\n");
       }
-      this.prepare();
     },
 
 
@@ -150,9 +156,6 @@ var handleConnection = {
       }
     },
 
-    prepare() {
-
-    }
   },
 
 }

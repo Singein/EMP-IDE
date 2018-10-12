@@ -4,7 +4,7 @@ var slots = {
       this.termVisible = !this.termVisible;
     },
 
-    slotToggleConfig(){
+    slotToggleConfig() {
       this.showConfig = !this.showConfig;
     },
 
@@ -24,21 +24,14 @@ var slots = {
       this.ws = new WebSocket(url);
       this.ws.binaryType = "arraybuffer";
       this.term.attach(this.ws, true, true);
-      
+
       this.ws.onopen = this.onOpen;
       this.ws.onclose = this.onClose;
-      // if(this.ws.readyState === 1){
-        // console.log(this.ws.readyState);
-        // this.$send(this.SIGNAL_REPORT_CONNECTED(this));
-      // }
     },
 
-    slotDisconnect(){
+    slotDisconnect() {
       this.ws.close();
-      // if(this.ws.readyState === 2){
-        console.log(this.ws.readyState);
-        this.$send(this.SIGNAL_REPORT_DISCONNECTED(this));
-      // }
+      console.log(this.ws.readyState);
     },
 
     slotSendCommands(kwargs) {
@@ -47,50 +40,54 @@ var slots = {
         if (kwargs.command.startsWith('depends_on_memory')) {
           this.$send(this.SIGNAL_LOCK(this));
         }
-      }
-      else
+      } else
         this.$toast.error("IO busy");
     },
 
     slotPutFile(kwargs) {
-      this.putFileData = kwargs.fileData;
-      // console.log(this.putFileData);
-      var dest_fname = kwargs.filename;
-      var dest_fsize = kwargs.fileData.length;
+      if (!this.tasklock) {
+        this.putFileData = kwargs.fileData;
+        // console.log(this.putFileData);
+        var dest_fname = kwargs.filename;
+        var dest_fsize = kwargs.fileData.length;
 
-      // WEBREPL_FILE = "<2sBBQLH64s"
-      var rec = new Uint8Array(2 + 1 + 1 + 8 + 4 + 2 + 64);
-      rec[0] = "W".charCodeAt(0);
-      rec[1] = "A".charCodeAt(0);
-      rec[2] = 1; // put
-      rec[3] = 0;
-      rec[4] = 0;
-      rec[5] = 0;
-      rec[6] = 0;
-      rec[7] = 0;
-      rec[8] = 0;
-      rec[9] = 0;
-      rec[10] = 0;
-      rec[11] = 0;
-      rec[12] = dest_fsize & 0xff;
-      rec[13] = (dest_fsize >> 8) & 0xff;
-      rec[14] = (dest_fsize >> 16) & 0xff;
-      rec[15] = (dest_fsize >> 24) & 0xff;
-      rec[16] = dest_fname.length & 0xff;
-      rec[17] = (dest_fname.length >> 8) & 0xff;
-      for (var i = 0; i < 64; ++i) {
-        if (i < dest_fname.length) {
-          rec[18 + i] = dest_fname.charCodeAt(i);
-        } else {
-          rec[18 + i] = 0;
+        // WEBREPL_FILE = "<2sBBQLH64s"
+        var rec = new Uint8Array(2 + 1 + 1 + 8 + 4 + 2 + 64);
+        rec[0] = "W".charCodeAt(0);
+        rec[1] = "A".charCodeAt(0);
+        rec[2] = 1; // put
+        rec[3] = 0;
+        rec[4] = 0;
+        rec[5] = 0;
+        rec[6] = 0;
+        rec[7] = 0;
+        rec[8] = 0;
+        rec[9] = 0;
+        rec[10] = 0;
+        rec[11] = 0;
+        rec[12] = dest_fsize & 0xff;
+        rec[13] = (dest_fsize >> 8) & 0xff;
+        rec[14] = (dest_fsize >> 16) & 0xff;
+        rec[15] = (dest_fsize >> 24) & 0xff;
+        rec[16] = dest_fname.length & 0xff;
+        rec[17] = (dest_fname.length >> 8) & 0xff;
+        for (var i = 0; i < 64; ++i) {
+          if (i < dest_fname.length) {
+            rec[18 + i] = dest_fname.charCodeAt(i);
+          } else {
+            rec[18 + i] = 0;
+          }
         }
-      }
 
-      // initiate put
-      this.binaryState = 11;
-      // this.show_message("Sending " + put_file_name + "...");
-      this.$toast.info("Sending " + kwargs.filename + "...");
-      this.ws.send(rec);
+        // initiate put
+        this.binaryState = 11;
+        // this.show_message("Sending " + put_file_name + "...");
+        this.$toast.info("Sending " + kwargs.filename + "...");
+        this.$send(this.SIGNAL_LOCK(this));
+        this.ws.send(rec);
+      } else{
+        this.$toast.error("IO busy");
+      }
     },
 
     slotGetFile(kwargs) {
@@ -131,21 +128,24 @@ var slots = {
     },
 
     slotDependsOnMemoryToGetFile(kwargs) {
-      console.log('in slotDependsOnMemory');
+      // console.log('in slotDependsOnMemory');
 
       this.getFilename = kwargs.filename;
 
       var mf = kwargs.mf;
 
       var fsize = kwargs.fsize;
-      console.log('fsize < 0.85 * mf', fsize < 0.85 * mf);
-      console.log(kwargs);
+     
       if (fsize < 0.85 * mf) {
         this.ws.send('get_code(\'' + kwargs.filename + '\')\r');
       } else {
         this.slotGetFile(kwargs);
       }
-    }
+    },
+
+    // slotSaveFile(kwargs){
+
+    // }
   }
 }
 

@@ -1,19 +1,19 @@
 <template>
-    <div class="monaco-editor-container">
-        <mu-flex direction="column" class="monaco-editor-container">
-            <mu-flex class="editor-tabs" justify-content="start" align-items="center">
-                <mu-flex justify-content="start" align-items="center" class="editor-tabs-flex">
-                    <mu-button icon color="white">
-                        <mu-icon value="save"></mu-icon>
-                    </mu-button>
-                    <p class="editor-tabs-title">{{openedFile.split('/')[openedFile.split('/').length-1]}}</p>
-                </mu-flex>
-                <mu-flex justify-content="end" align-items="center" class="editor-tabs-flex">
-                </mu-flex>
-            </mu-flex>
-            <monaco-editor ref="editor" :value="code"></monaco-editor>
+  <div class="monaco-editor-container">
+    <mu-flex direction="column" class="monaco-editor-container">
+      <mu-flex class="editor-tabs" justify-content="start" align-items="center">
+        <mu-flex justify-content="start" align-items="center" class="editor-tabs-flex">
+          <mu-button icon color="white" @click="saveFile">
+            <mu-icon value="save"></mu-icon>
+          </mu-button>
+          <p class="editor-tabs-title">{{openedFile.split('/')[openedFile.split('/').length-1]}}</p>
         </mu-flex>
-    </div>
+        <mu-flex justify-content="end" align-items="center" class="editor-tabs-flex">
+        </mu-flex>
+      </mu-flex>
+      <monaco-editor ref="editor" v-model="code" :sync-input="true"></monaco-editor>
+    </mu-flex>
+  </div>
 </template>
 
 
@@ -33,7 +33,12 @@ export default {
       code: "",
       openedFile: ""
     };
-  }
+  },
+  methods: {
+    saveFile() {
+      this.$send(this.SIGNAL_SAVE_FILE(this));
+    }
+  },
 };
 </script>
 
@@ -63,7 +68,6 @@ export default {
   width: 100%;
   /* padding-top: 6px; */
 }
-
 
 .editor-tabs-title {
   font-size: 16px !important;

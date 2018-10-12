@@ -1,20 +1,15 @@
 var slots = {
-    methods: {
-      //打开设置窗口,点击设置按钮时触发
-      SIGNAL_OPENSET(sender , receiver = 'parent', slot = 'slotToggleSettings') {
-        return {
-          event: "openset",
-          sender: sender,
-          receiver: receiver,
-          slot: slot,
-          kwargs: {
-            show: this.showSetting
-          }
-        }
-      },
-  
+  methods: {
+    //打开设置窗口,点击设置按钮时触发
+    slotConnected() {
+      this.connected = true;
+    },
+
+    slotDisconnected() {
+      this.connected = false;
     }
+
   }
-  
-  export default slots
-  
+}
+
+export default slots

@@ -20,6 +20,24 @@ var signals = {
         kwargs: {}
       }
     },
+
+    SIGNAL_SAVE_FILE(sender, receiver = 'cli', slot = 'slotPutFile'){
+      var fileData = new TextEncoder().encode(
+        this.code.replace(/\r\n/g, "\n")
+      );
+    
+      return {
+        event: "saveFile",
+        sender: sender,
+        receiver: receiver,
+        slot: slot,
+        kwargs: {
+          filename: this.openedFile,
+          fileData: fileData
+        }
+      }
+    },
+
   }
 }
 
