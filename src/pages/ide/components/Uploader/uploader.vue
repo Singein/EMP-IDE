@@ -1,17 +1,15 @@
 <template>
   <div>
     <mu-flex justify-content="center" align-items="center" direction="column" class="uploader">
-      <mu-flex style="width:100%;padding-top:6px" align-items="center" justify-content="center">
-        <mu-button small @click="browse" color="indigo400" style="margin:0 16px">
-          Browser...
-        </mu-button>
-        <mu-button small color="blue" @click="send">SEND</mu-button>
-      </mu-flex>
-      <mu-flex direction="column">
-        <mu-chip v-for="i in putFilename" :key="i" class="file-chip">
-          {{i}}
-        </mu-chip>
-      </mu-flex>
+
+      <el-upload style="backgroun: #212121" ref="eluploader" drag action="https://127.0.0.1/posts/" :auto-upload="false" :on-change="handleChange" multiple>
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">drag to here，or<em> click</em></div>
+
+        <div class="el-upload__tip" slot="tip">
+          <mu-button full-width color="primary" @click="send">Upload</mu-button>
+        </div>
+      </el-upload>
 
     </mu-flex>
     <input multiple type="file" ref="fileInput" style="display:none" @change="handleFiles">
@@ -30,7 +28,7 @@ export default {
       putFilename: [],
       putFileData: [],
       files: null,
-      index: 0,
+      index: 0
     };
   },
   methods: {
@@ -39,7 +37,26 @@ export default {
     },
 
     send() {
-      this.$send(this.SIGNAL_PUT_FILE(this));
+      if (this.putFilename.length > 0) this.$send(this.SIGNAL_PUT_FILE(this));
+    },
+
+    handleChange(file, fileList) {
+      // console.log(typeof file, file);
+      // console.log(typeof fileList, fileList);
+      // this.files = fileList;
+      let that = this;
+      // Get the file info and load its data.
+      // for (let i = 0; i < this.files.length; i++) {
+      let f = file.raw;
+      that.putFilename.push(f.name);
+      console.log(typeof f, f);
+      let reader = new FileReader();
+      reader.onload = function(e) {
+        console.log("sdfs", e.target.result);
+        that.putFileData.push(new Uint8Array(e.target.result));
+      };
+      reader.readAsArrayBuffer(f);
+      // }
     },
 
     handleFiles(evt) {
@@ -68,14 +85,18 @@ export default {
 </script>
 
 
-<style scoped>
-.file-chip {
-  font-size: 16px;
-
-  margin: 8px;
-}
-
-.uploader {
-  padding-top: 32px;
+<style>
+.el-upload-dragger {
+  background-color: #212121;
+  border: 1px #d9d9d9;
+  border-radius: 6px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 300px;
+  height: 180px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  margin-top: 32px;
 }
 </style>
