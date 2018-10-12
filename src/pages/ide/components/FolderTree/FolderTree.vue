@@ -4,6 +4,11 @@
       <el-tree ref='tree' class="tree" node-key="id" :empty-text="''" :data="data" :props="defaultProps" :highlight-current="true" :render-content="renderContent" v-on:node-contextmenu="renderMenu" @node-click="nodeClicked">
       </el-tree>
     </div>
+    <!-- <context-menu class="right-menu" :target="contextMenuTarget" :show="contextMenuVisible" @update:show="(show) => contextMenuVisible = show">
+      <a href="javascript:;" @click="copyMsg">复制</a>
+      <a href="javascript:;" @click="quoteMsg">引用</a>
+      <a href="javascript:;" @click="deleteMsg">删除</a>
+    </context-menu> -->
   </div>
 </template>
 
@@ -12,14 +17,22 @@ import signals from "./signals.js";
 import slots from "./slots.js";
 import listener from "../../plugins/mixinEventsListener.js";
 import onEvent from "../../plugins/mixinOnEvents.js";
+// import contextMenu from "vue-context-menu";
+// import { component as VueContextMenu } from "@xunlei/vue-context-menu";
+
 export default {
   name: "folderTree",
   mixins: [signals, slots, listener, onEvent],
   props: [],
+  components: {
+    // "vue-context-menu": VueContextMenu
+  },
   data() {
     return {
       panel: "",
       data: [],
+      contextMenuVisible: false,
+      contextMenuTarget: null,
       defaultProps: {
         children: "children",
         label: "name"
@@ -54,6 +67,9 @@ export default {
 
     renderMenu(event, data, node, self) {
       console.log(data.name);
+      // // this.$refs.ctxMenu.hide();
+      // this.contextMenuTarget = node;
+      // this.contextMenuVisible = true;
     },
 
     renderContent(h, { node, data, store }) {

@@ -12,6 +12,7 @@
     "docs:build": "vuepress build docs"
   },
   "dependencies": {
+    "@xunlei/vue-context-menu": "^1.0.2",
     "deformation": "^1.0.9",
     "element-ui": "^2.4.7",
     "element-ui-tree": "^2.0.10",
@@ -22,6 +23,7 @@
     "normalize.css": "^8.0.0",
     "term.js": "0.0.7",
     "vue": "^2.5.2",
+    "vue-context-menu": "^2.0.6",
     "vue-cookie": "^1.1.4",
     "vue-json-tree-view": "^2.1.4",
     "vue-m-monaco-editor": "^1.0.0",
