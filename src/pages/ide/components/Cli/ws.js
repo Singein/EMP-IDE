@@ -126,8 +126,10 @@ var handleConnection = {
 
       try {
         this.recData = JSON.parse(event.data);
-        if (this.recData.func === 'tree')
+        if (this.recData.func === 'tree') {
           this.$send(this.SIGNAL_UPDATE_TREE(this, [this.recData.data]));
+          this.$send(this.SIGNAL_UPDATE_FINDER(this, this.recData.data));
+        }
         if (this.recData.func === 'get_code')
           this.$send(this.SIGNAL_SHOW_CODES_PMAX(this, this.recData.data));
         if (this.recData.func === 'depends_on_memory')

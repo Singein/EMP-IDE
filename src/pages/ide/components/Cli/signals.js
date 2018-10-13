@@ -30,6 +30,18 @@ var signals = {
       }
     },
 
+    SIGNAL_UPDATE_FINDER(sender, data = null, receiver = 'finder', slot = 'slotUpdateFiles') {
+      return {
+        event: "updateTree",
+        sender: sender,
+        receiver: receiver,
+        slot: slot,
+        kwargs: {
+          files: data
+        }
+      }
+    },
+
     SIGNAL_LOCK(sender, receiver = 'parent', slot = 'slotLock') {
       return {
         event: "lock",

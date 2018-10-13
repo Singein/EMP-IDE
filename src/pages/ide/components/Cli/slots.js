@@ -149,9 +149,6 @@ var slots = {
       }
     },
 
-    // slotSaveFile(kwargs){
-
-    // }
   }
 }
 

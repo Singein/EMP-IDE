@@ -1,12 +1,13 @@
 <template>
   <div>
-    <mu-linear-progress v-if="tasklock"  color="secondary" class="progress-bar"></mu-linear-progress>
+    <mu-linear-progress v-if="tasklock" color="secondary" class="progress-bar"></mu-linear-progress>
     <mu-flex class="bg" direction='row' justify-content="start">
       <side-bar :listener="signals" @events="$connect"></side-bar>
       <multipane class="pane-layout" layout="vertical" @events="$connect">
         <div class="left-pane">
           <folder-tree v-show="showFolderTree" ref="folderTree" :listener="signals" @events="$connect"></folder-tree>
           <uploader ref="uploader" v-show="showUploader" :listener="signals" @events="$connect"></uploader>
+          <finder ref="finder" v-show="showFinder" :listener="signals" @events="$connect"></finder>
         </div>
         <multipane-resizer></multipane-resizer>
         <multipane class="subpane-layout" layout="horizontal" @events="$connect">
@@ -32,14 +33,16 @@ import BottomBar from "./components/BottomBar";
 import SideBar from "./components/SideBar";
 import { Multipane, MultipaneResizer } from "./components/Multipane";
 import FolderTree from "./components/FolderTree";
+import Uploader from "./components/Uploader";
+import Finder from "./components/Finder";
+
 import Editor from "./components/Editor";
 import Cli from "./components/Cli";
 import Setting from "./components/Setting";
-import Uploader from "./components/Uploader"
+
 import slots from "./slots";
 import signals from "./signals";
 import mixinData from "./props";
-
 
 export default {
   mixins: [signals, slots, mixinData],
@@ -52,15 +55,19 @@ export default {
     MultipaneResizer,
     Cli,
     Setting,
-    Uploader
+    Uploader,
+    Finder
   },
 
-  computed:{
-    showFolderTree:function(){
+  computed: {
+    showFolderTree: function() {
       return this.switcher === 0;
     },
-    showUploader: function(){
+    showUploader: function() {
       return this.switcher === 1;
+    },
+    showFinder: function() {
+      return this.switcher === 2;
     }
   },
 
@@ -87,10 +94,10 @@ export default {
   width: 100%;
 }
 
-.progress-bar{
+.progress-bar {
   position: fixed;
   width: 100vw;
-  z-index: 999
+  z-index: 999;
 }
 
 .pane-layout {
@@ -116,7 +123,6 @@ export default {
   flex-grow: 1;
   border-left: 2px solid #61616161;
 }
-
 
 .editor {
   padding: 0;
