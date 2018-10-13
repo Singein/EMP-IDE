@@ -3,5 +3,5 @@ export const VUE = {
 }
 
 export const MUSE_UI = {
-  theme: 'light'
+  theme: 'dark'
 }
