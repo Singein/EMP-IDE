@@ -9,6 +9,8 @@ import { MUSE_UI } from '@/config'
 import VueCookie from 'vue-cookie'
 import { Tree, Upload } from 'element-ui'
 import Connect from './connect'
+import contentmenu from 'v-contextmenu'
+import 'v-contextmenu/dist/index.css'
 
 
 
@@ -22,6 +24,7 @@ const installer = function (Vue) {
   Vue.use(Tree)
   Vue.use(Upload)
   Vue.use(Connect)
+  Vue.use(contentmenu)
   Vue.config.productionTip = false
 }
 

@@ -11,5 +11,5 @@ export default {
 </script>
 
 <style>
-@import "assets/style/common";
+@import "assets/style/main";
 </style>
