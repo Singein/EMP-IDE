@@ -7,7 +7,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import Toast from 'muse-ui-toast'
 import { MUSE_UI } from '@/config'
 import VueCookie from 'vue-cookie'
-import Tree from 'element-ui'
+import { Tree, Upload } from 'element-ui'
 import Connect from './connect'
 
 
@@ -20,6 +20,7 @@ const installer = function (Vue) {
   Vue.use(Toast)
   Vue.use(VueCookie)
   Vue.use(Tree)
+  Vue.use(Upload)
   Vue.use(Connect)
   Vue.config.productionTip = false
 }
