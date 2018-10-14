@@ -8,6 +8,7 @@
           <folder-tree v-show="showFolderTree" ref="folderTree" :listener="signals" @events="$connect"></folder-tree>
           <uploader ref="uploader" v-show="showUploader" :listener="signals" @events="$connect"></uploader>
           <finder ref="finder" v-show="showFinder" :listener="signals" @events="$connect"></finder>
+          <pypi ref="pypi" v-show="showPypi" :listener="signals" @events="$connect"></pypi>
         </div>
         <multipane-resizer></multipane-resizer>
         <multipane class="subpane-layout" layout="horizontal" @events="$connect">
@@ -29,12 +30,15 @@
 </template>
 
 <script>
+import { Multipane, MultipaneResizer } from "./components/Multipane";
+
 import BottomBar from "./components/BottomBar";
 import SideBar from "./components/SideBar";
-import { Multipane, MultipaneResizer } from "./components/Multipane";
+
 import FolderTree from "./components/FolderTree";
 import Uploader from "./components/Uploader";
 import Finder from "./components/Finder";
+import Pypi from "./components/Pypi";
 
 import Editor from "./components/Editor";
 import Cli from "./components/Cli";
@@ -56,7 +60,8 @@ export default {
     Cli,
     Setting,
     Uploader,
-    Finder
+    Finder,
+    Pypi
   },
 
   computed: {
@@ -68,6 +73,12 @@ export default {
     },
     showFinder: function() {
       return this.switcher === 2;
+    },
+    showPypi: function(){
+      return this.switcher === 3;
+    },
+    showDoc: function(){
+      return this.switcher === 4;
     }
   },
 

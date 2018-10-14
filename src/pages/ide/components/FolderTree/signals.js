@@ -20,7 +20,7 @@ var signals = {
         slot: slot,
         kwargs: {
           filename: filename,
-          command: 'depends_on_memory(\'' + filename + '\')\r'
+          command: 'memory_analysing(\'' + filename + '\')\r'
         }
       }
     },

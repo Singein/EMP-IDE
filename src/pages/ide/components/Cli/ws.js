@@ -132,8 +132,8 @@ var handleConnection = {
         }
         if (this.recData.func === 'get_code')
           this.$send(this.SIGNAL_SHOW_CODES_PMAX(this, this.recData.data));
-        if (this.recData.func === 'depends_on_memory')
-          this.$send(this.SIGNAL_DEPENDS_ON_MEMORY_TO_GET_FILE(this, this.recData))
+        if (this.recData.func === 'memory_analysing')
+          this.$send(this.SIGNAL_DEPENDS_ON_MEMORY_TO_GET_FILE(this, this.recData.data))
       } catch (e) {
 
       }
