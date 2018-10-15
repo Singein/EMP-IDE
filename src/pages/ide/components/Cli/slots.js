@@ -37,7 +37,7 @@ var slots = {
     slotSendCommands(kwargs) {
       if (!this.tasklock) {
         this.ws.send(kwargs.command);
-        if (kwargs.command.startsWith('depends_on_memory')) {
+        if (kwargs.command.startsWith('memory_analysing')) {
           this.$send(this.SIGNAL_LOCK(this));
         }
       } else

@@ -4,29 +4,15 @@
       <el-tree ref='tree' class="tree" node-key="id" :empty-text="''" :data="data" :props="defaultProps" :highlight-current="true" :render-content="renderContent" v-on:node-contextmenu="renderMenu" @node-click="nodeClicked">
       </el-tree>
     </div>
-    <v-contextmenu ref="contextmenu"
-      theme="dark">
+    <v-contextmenu ref="contextmenu" theme="dark">
       <template v-for="(node, index) in menu">
-        <v-contextmenu-item v-if="node.isdivider"
-          :key="index"
-          divider/>
-        <v-contextmenu-submenu v-else-if="node.children && node.children.length > 0"
-          :key="index"
-          :title="node.text">
-          <v-contextmenu-item v-for="(subNode, index) in node.children"
-            :key="index"
-            @click="handleContentMenuClick(subNode)">{{subNode.text}}</v-contextmenu-item>
+        <v-contextmenu-item v-if="node.isdivider" :key="index" divider />
+        <v-contextmenu-submenu v-else-if="node.children && node.children.length > 0" :key="index" :title="node.text">
+          <v-contextmenu-item v-for="(subNode, index) in node.children" :key="index" @click="handleContentMenuClick(subNode)">{{subNode.text}}</v-contextmenu-item>
         </v-contextmenu-submenu>
-        <v-contextmenu-item v-else
-          :key="index"
-          @click="handleContentMenuClick(node)">{{node.text}}</v-contextmenu-item>
+        <v-contextmenu-item v-else :key="index" @click="handleContentMenuClick(node)">{{node.text}}</v-contextmenu-item>
       </template>
     </v-contextmenu>
-    <!-- <context-menu class="right-menu" :target="contextMenuTarget" :show="contextMenuVisible" @update:show="(show) => contextMenuVisible = show">
-      <a href="javascript:;" @click="copyMsg">复制</a>
-      <a href="javascript:;" @click="quoteMsg">引用</a>
-      <a href="javascript:;" @click="deleteMsg">删除</a>
-    </context-menu> -->
   </div>
 </template>
 
@@ -35,17 +21,18 @@ import signals from "./signals.js";
 import slots from "./slots.js";
 import listener from "../../plugins/mixinEventsListener.js";
 import onEvent from "../../plugins/mixinOnEvents.js";
-// import contextMenu from "vue-context-menu";
-// import { component as VueContextMenu } from "@xunlei/vue-context-menu";
-import { menu, isFolder, showContentMenu, hideContentMenu } from './content-menu'
+import {
+  menu,
+  isFolder,
+  showContentMenu,
+  hideContentMenu
+} from "./content-menu";
 
 export default {
   name: "folderTree",
   mixins: [signals, slots, listener, onEvent],
   props: [],
-  components: {
-    // "vue-context-menu": VueContextMenu
-  },
+  components: {},
   data() {
     return {
       panel: "",
@@ -86,23 +73,20 @@ export default {
     },
 
     renderMenu(event, data, node, self) {
-      var _isFolder = isFolder(node)
+      var _isFolder = isFolder(node);
 
       if (_isFolder) {
-        return
+        return;
       }
       // choose the menu
-      this.menu = menu['file-default']
-      showContentMenu(this.$refs['contextmenu'], event)
-      // // this.$refs.ctxMenu.hide();
-      // this.contextMenuTarget = node;
-      // this.contextMenuVisible = true;
+      this.menu = menu["file-default"];
+      showContentMenu(this.$refs["contextmenu"], event);
     },
 
-    handleContentMenuClick (node) {
-      var code = node.code
+    handleContentMenuClick(node) {
+      var code = node.code;
       // TODO
-      alert('menu click. code: ' + code)
+      alert("menu click. code: " + code);
     },
 
     renderContent(h, { node, data, store }) {
