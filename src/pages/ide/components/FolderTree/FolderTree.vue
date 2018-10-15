@@ -63,23 +63,17 @@ export default {
     nodeClicked(data, node, self) {
       if (node.childNodes.length === 0)
         // this.$send(this.SIGNAL_GET_FILE(this, this.getRealPath(node)));
-        this.$send(this.SIGNAL_DEPENDS_ON_MEMORY(this, this.getRealPath(node)));
-    },
-
-    getRealPath(node) {
-      var realPath = node.data.name;
-      realPath = node.parent.data.name + "/" + realPath;
-      return realPath;
+        this.$send(this.SIGNAL_DEPENDS_ON_MEMORY(this, node.label));
     },
 
     renderMenu(event, data, node, self) {
       var _isFolder = isFolder(node);
 
       if (_isFolder) {
-        return;
+        this.menu = menu["folder"];
       }
       // choose the menu
-      this.menu = menu["file-default"];
+      else this.menu = menu["file"];
       showContentMenu(this.$refs["contextmenu"], event);
     },
 
@@ -103,7 +97,7 @@ export default {
           <mu-flex align-items="center" class="tree-node">
             <mu-icon value="folder" size="22" />
             <span class="tree-node-label">
-              {node.label.split("/")[node.label.split("/").length - 1]}
+              {node.label.split("/").slice(-1)}
             </span>
           </mu-flex>
         );
@@ -111,7 +105,9 @@ export default {
         return (
           <mu-flex align-items="center">
             <mu-icon value="description" size="22" />
-            <span class="tree-node-label">{node.label}</span>
+            <span class="tree-node-label">
+              {node.label.split("/").slice(-1)}
+            </span>
           </mu-flex>
         );
       }

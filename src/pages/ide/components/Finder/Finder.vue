@@ -29,11 +29,7 @@ export default {
       var children = node.children;
       if (children != null) {
         for (let i of children) {
-          files.push(
-            ...this.traverse(i).map(
-              path => node.name.split("/").slice(-1) + "/" + path
-            )
-          );
+          files.push(...this.traverse(i).map(path => path.replace("//", "/")));
         }
       } else files.push(node.name);
 

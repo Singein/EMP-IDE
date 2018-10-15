@@ -1,5 +1,28 @@
 var menu = {
-  'file-default': [
+  'file': [
+    {
+      text: '运行',
+      code: 'run'
+    },
+    {
+      text: '删除',
+      code: 'delete'
+    },
+    {
+      isdivider: true
+    },
+    {
+      text: 'test',
+      code: 'test',
+      children: [
+        {
+          text: 'sub menu',
+          code: 'test2'
+        }
+      ]
+    }
+  ],
+  'folder': [
     {
       text: '运行',
       code: 'run'
