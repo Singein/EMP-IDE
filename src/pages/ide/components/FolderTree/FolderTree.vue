@@ -4,7 +4,7 @@
       <el-tree ref='tree' class="tree" node-key="id" :empty-text="''" :data="data" :props="defaultProps" :highlight-current="true" :render-content="renderContent" v-on:node-contextmenu="renderMenu" @node-click="nodeClicked">
       </el-tree>
     </div>
-    <v-contextmenu ref="contextmenu" theme="dark">
+    <v-contextmenu ref="contextmenu" theme="default" style="width: 200px;">
       <template v-for="(node, index) in menu">
         <v-contextmenu-item v-if="node.isdivider" :key="index" divider />
         <v-contextmenu-submenu v-else-if="node.children && node.children.length > 0" :key="index" :title="node.text">
@@ -37,6 +37,7 @@ export default {
     return {
       panel: "",
       data: [],
+      currentNode: null,
       contextMenuVisible: false,
       contextMenuTarget: null,
       defaultProps: {
@@ -61,9 +62,14 @@ export default {
     },
 
     nodeClicked(data, node, self) {
+      // console.log(data.name);
+      // console.log(this.$refs["tree"].getCurrentNode().name);
       if (node.childNodes.length === 0)
-        // this.$send(this.SIGNAL_GET_FILE(this, this.getRealPath(node)));
-        this.$send(this.SIGNAL_DEPENDS_ON_MEMORY(this, node.label));
+        if (this.currentNode === null || this.currentNode.name != data.name) {
+          this.$send(this.SIGNAL_DEPENDS_ON_MEMORY(this, node.label));
+          this.currentNode = this.$refs["tree"].getCurrentNode();
+        }
+      this.hideMenu();
     },
 
     renderMenu(event, data, node, self) {
@@ -81,6 +87,10 @@ export default {
       var code = node.code;
       // TODO
       alert("menu click. code: " + code);
+    },
+
+    hideMenu() {
+      hideContentMenu(this.$refs["contextmenu"]);
     },
 
     renderContent(h, { node, data, store }) {
