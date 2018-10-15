@@ -13,13 +13,13 @@ var signals = {
     //   },
     SIGNAL_DEPENDS_ON_MEMORY(sender, filename = null, receiver = 'cli', slot = "slotSendCommands") {
       return {
-        event: "dependsOnMemory",
+        event: "memory_analysing",
         sender: sender,
         receiver: receiver,
         slot: slot,
         kwargs: {
           filename: filename,
-          command: 'depends_on_memory(\'' + filename + '\')\r'
+          command: 'memory_analysing(\'' + filename + '\')\r'
         }
       }
     },
