@@ -15,7 +15,7 @@ var menu = {
     },
     {
       text: '删除',
-      code: 'delete'
+      code: 'deleteFile'
     },
     {
       isdivider: true
@@ -29,7 +29,12 @@ var menu = {
     //   }]
     // }
   ],
-  'folder': [{
+  'folder': [
+    {
+      text: '重命名',
+      code: 'rename'
+    },
+    {
       text: '新建文件',
       code: 'newFile'
     },
@@ -45,7 +50,7 @@ var menu = {
     },
     {
       text: '删除文件夹',
-      code: 'delete'
+      code: 'deleteFolder'
     },
     // {
     //   text: '删除',
@@ -65,8 +70,8 @@ var menu = {
   ]
 }
 
-function isFolder(node) {
-  return node.childNodes.length > 0
+function isFolder(data) {
+  return 'children' in data;
 }
 
 function showContentMenu($contextmenu, event) {

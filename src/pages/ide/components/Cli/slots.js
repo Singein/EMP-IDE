@@ -1,3 +1,6 @@
+import * as emp from "../../emp.js";
+
+
 var slots = {
   methods: {
     slotToggleTermVisible() {
@@ -37,7 +40,8 @@ var slots = {
     slotSendCommands(kwargs) {
       if (!this.tasklock) {
         this.ws.send(kwargs.command);
-        if (kwargs.command.startsWith('memory_analysing')) {
+        if (kwargs.command.startsWith(emp.funcName(emp.memoryAnalysing))) {
+          // console.log(emp.funcName(emp.memoryAnalysing));
           this.$send(this.SIGNAL_LOCK(this));
         }
       } else
@@ -48,7 +52,7 @@ var slots = {
       if (!this.tasklock) {
         if (kwargs.fileData.length > 0)
           this.putFileData = kwargs.fileData;
-        else{
+        else {
           this.putFileData = new TextEncoder().encode(' ');
           kwargs.fileData = new TextEncoder().encode(' ');
         }
@@ -143,7 +147,8 @@ var slots = {
       var fsize = kwargs.fsize;
 
       if (fsize < 0.85 * mf) {
-        this.ws.send('get_code(\'' + kwargs.filename + '\')\r');
+        // this.ws.send('get_code(\'' + kwargs.filename + '\')\r');
+        this.ws.send(emp.getCode(kwargs.filename));
       } else {
         this.slotGetFile(kwargs);
       }

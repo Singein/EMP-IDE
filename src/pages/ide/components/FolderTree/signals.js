@@ -12,7 +12,7 @@ var signals = {
     },
 
     // 获取文件前 先获取内存与文件大小的比对,来决定 以下那种方式来获取文件内容
-    SIGNAL_DEPENDS_ON_MEMORY(sender, filename = null, receiver = 'cli', slot = "slotSendCommands"){
+    SIGNAL_DEPENDS_ON_MEMORY(sender, filename = null, receiver = 'cli', slot = "slotSendCommands") {
       return {
         event: "dependsOnMemory",
         sender: sender,
@@ -41,7 +41,7 @@ var signals = {
     },
 
     // 读大文件用, 内存不足的情况下求稳,但是现在无法设置下位机的数据帧大小
-    SIGNAL_GET_FILE(sender, filename = null, receiver = 'cli', slot = "slotGetFile") {
+    SIGNAL_GET_FILE(sender, filename = null, receiver = "cli", slot = "slotGetFile") {
       return {
         event: "getFile",
         sender: sender,
@@ -52,6 +52,19 @@ var signals = {
         }
       }
     },
+
+
+    SIGNAL_SEND_COMMAND(sender, command, receiver = "cli", slot = "slotSendCommands") {
+      return {
+        event: "sendComands",
+        sender: sender,
+        receiver: receiver,
+        slot: slot,
+        kwargs: {
+          command: command,
+        }
+      }
+    }
 
   }
 }

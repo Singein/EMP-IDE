@@ -36,8 +36,8 @@ export default {
       return files;
     },
     onSelect(value, item) {
-      console.log(value, item);
-      this.$send(this.SIGNAL_DEPENDS_ON_MEMORY(this, this.filename));
+      // console.log(value, item);
+      this.$send(this.SIGNAL_MEMORY_ANALYSING(this, this.filename));
     }
   }
 };

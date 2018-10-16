@@ -17,6 +17,7 @@
     "lodash": "^4.17.10",
     "material-design-icons": "^3.0.1",
     "muse-ui": "^3.0.0",
+    "muse-ui-message": "^0.2.1",
     "muse-ui-toast": "^0.3.0",
     "normalize.css": "^8.0.0",
     "term.js": "0.0.7",

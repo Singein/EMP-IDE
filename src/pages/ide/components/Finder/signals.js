@@ -1,3 +1,5 @@
+import * as emp from "../../emp"
+
 var signals = {
   methods: {
     //   SIGNAL_SHOW_SELECTED(sender, receiver = 'cli', slot = 'slotSendCommands') {
@@ -11,7 +13,7 @@ var signals = {
     //       }
     //     }
     //   },
-    SIGNAL_DEPENDS_ON_MEMORY(sender, filename = null, receiver = 'cli', slot = "slotSendCommands") {
+    SIGNAL_MEMORY_ANALYSING(sender, filename = null, receiver = 'cli', slot = "slotSendCommands") {
       return {
         event: "memory_analysing",
         sender: sender,
@@ -19,7 +21,8 @@ var signals = {
         slot: slot,
         kwargs: {
           filename: filename,
-          command: 'memory_analysing(\'' + filename + '\')\r'
+          command: emp.memoryAnalysing(filename),
+          // command: 'memory_analysing(\'' + filename + '\')\r'
         }
       }
     },
