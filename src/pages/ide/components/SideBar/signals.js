@@ -40,6 +40,17 @@ var signals = {
         kwargs: {}
       }
     },
+
+    SIGNAL_RUN(sender, receiver = 'folderTree', slot = 'slotRunCurrentScript') {
+      return {
+        event: "runCurrentScript",
+        sender: sender,
+        receiver: receiver,
+        slot: slot,
+        kwargs: {}
+      }
+    },
+
   }
 }
 

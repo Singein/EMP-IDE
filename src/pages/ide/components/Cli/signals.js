@@ -113,7 +113,30 @@ var signals = {
         slot: slot,
         kwargs: {}
       }
-    }
+    },
+
+    SIGNAL_SHOW_SYS_INFO(sender, data, receiver = 'bottomBar', slot = "slotShowSysInfo"){
+      return {
+        event: "ShowSysInfo",
+        sender: sender,
+        receiver: receiver,
+        slot: slot,
+        kwargs: {
+          data: data
+        }
+      }
+    },
+    SIGNAL_SHOW_MEMORY_STATUS(sender, data, receiver = 'bottomBar', slot = "slotShowMemoryStatus"){
+      return {
+        event: "ShowMemoryStatus",
+        sender: sender,
+        receiver: receiver,
+        slot: slot,
+        kwargs: {
+          data: data
+        }
+      }
+    },
 
   }
 }

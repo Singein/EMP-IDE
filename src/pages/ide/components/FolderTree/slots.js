@@ -1,3 +1,4 @@
+import * as emp from "../../emp";
 var slots = {
   methods: {
     //打开设置窗口,点击设置按钮时触发
@@ -16,6 +17,13 @@ var slots = {
       });
       this.data = kwargs.treeData;
       setTimeout(() => this.$send(this.SIGNAL_CLEAR(this)), 300);
+    },
+
+    slotRunCurrentScript(){
+      if(this.currentNode != null)
+        this.$send(this.SIGNAL_SEND_COMMAND(this,emp.runScript(this.currentNode.name)))
+      else
+        this.$toast.error('No file opened!')
     }
 
   }

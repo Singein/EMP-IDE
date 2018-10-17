@@ -18,6 +18,7 @@
 
 
 <script>
+import readme from "../../readme.js"
 import MonacoEditor from "./MonacoEditor.vue";
 import signals from "./signals.js";
 import slots from "./slots.js";
@@ -30,7 +31,7 @@ export default {
   },
   data() {
     return {
-      code: "",
+      code: readme,
       openedFile: ""
     };
   },

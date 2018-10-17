@@ -11,7 +11,7 @@
                     </div>
                     <div :style="changeStyle(1)">
                         <mu-button class="icon-button" icon color="grey" :ripple="false" @click="changePage(1)">
-                            <mu-icon size="36" value="get_app"></mu-icon>
+                            <mu-icon size="36" value="file_upload"></mu-icon>
                         </mu-button>
                     </div>
                     <div :style="changeStyle(2)">
@@ -32,12 +32,12 @@
                 </mu-flex>
 
                 <mu-flex justify-content="end" align-items="center" direction="column" style="height:50%">
-                    <mu-button class="icon-button" icon color="green">
+                    <mu-button class="icon-button" icon color="green" @click="runScript">
                         <mu-icon size="36" value="play_arrow"></mu-icon>
                     </mu-button>
-                    <mu-button class="icon-button" icon color="green" @click="clearTerm()">
+                    <!-- <mu-button class="icon-button" icon color="green">
                         <mu-icon size="36" value="memory"></mu-icon>
-                    </mu-button>
+                    </mu-button> -->
                     <mu-button class="icon-button" icon color="yellow" @click="startConnect()">
                         <mu-icon size="36" value="power"></mu-icon>
                     </mu-button>
@@ -61,7 +61,7 @@ export default {
     return {
       index: 0,
       selectStyle: [{ background: "#4CAF5099" }, { background: "#fff0" }],
-      routeMap: ["/ide"],
+    //   routeMap: ["/ide"],
       connected: false
     };
   },
@@ -78,11 +78,10 @@ export default {
       return this.selectStyle[-1];
     },
     startConnect() {
-      //   this.$send(this.SIGNAL_OPENSET(this));
       this.$send(this.SIGNAL_OPEN_CONFIG(this));
     },
-    clearTerm() {
-      this.$send(this.SIGNAL_CLEAR(this));
+    runScript() {
+      this.$send(this.SIGNAL_RUN(this));
     }
   },
   watch: {}

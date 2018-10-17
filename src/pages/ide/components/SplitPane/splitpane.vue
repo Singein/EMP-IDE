@@ -59,8 +59,18 @@ export default {
   methods: {
     onClick() {
       if (!this.hasMoved) {
-        this.percent = 50;
-        this.$emit("resize");
+        if(this.percent < 10){
+          this.percent = 20;
+          this.$emit("resize");
+        }
+        else if(this.percent > 90){
+          this.percent = 70;
+          this.$emit("resize");
+        }
+        // else{
+
+        // }
+       
       }
     },
     onMouseDown() {

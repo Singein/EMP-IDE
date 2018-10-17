@@ -7,7 +7,7 @@
                 emp-1zlab 模块是专门用来完成和empide进行交互的,,,,,
             </mu-card-text> -->
             <mu-card-actions>
-                <mu-button flat>下载/更新</mu-button>
+                <mu-button flat @click="pipInstall">下载/更新</mu-button>
             </mu-card-actions>
         </mu-card>
     </div>
@@ -16,10 +16,11 @@
 
 <script>
 // import slots from "./slots.js";
-// import signals from "./signals.js";
+import signals from "./signals.js";
+
 export default {
   name: "pypi",
-  //   mixins: [slots, signals],
+  mixins: [signals],
   data() {
     return {};
   },
@@ -29,7 +30,11 @@ export default {
     });
   },
 
-  methods: {}
+  methods: {
+      pipInstall(){
+          this.$send(this.SIGNAL_INSTALL(this,'emp-1zlab'));
+      }
+  }
 };
 </script>
 
