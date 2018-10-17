@@ -59,18 +59,23 @@ export default {
   methods: {
     onClick() {
       if (!this.hasMoved) {
-        if(this.percent < 10){
-          this.percent = 20;
-          this.$emit("resize");
+        if (this.split === "vertical") {
+          if (this.percent > 20 || this.percent === 0) {
+            this.percent = 20;
+            this.$emit("resize");
+          } else {
+            this.percent = 0;
+            this.$emit("resize");
+          }
+        } else {
+          if (this.percent < 70 || this.percent === 100) {
+            this.percent = 70;
+            this.$emit("resize");
+          } else {
+            this.percent = 100;
+            this.$emit("resize");
+          }
         }
-        else if(this.percent > 90){
-          this.percent = 70;
-          this.$emit("resize");
-        }
-        // else{
-
-        // }
-       
       }
     },
     onMouseDown() {
