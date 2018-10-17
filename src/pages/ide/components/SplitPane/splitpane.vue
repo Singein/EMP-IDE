@@ -15,11 +15,13 @@
 </template>
 
 <script>
+import slots from "./slots.js"
 import Resizer from "./resizer.vue";
 import Pane from "./pane.vue";
 
 export default {
   name: "splitPane",
+  mixins: [slots],
   components: { Resizer, Pane },
   props: {
     minPercent: {

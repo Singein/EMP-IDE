@@ -3,7 +3,7 @@
         <mu-linear-progress v-if="tasklock" color="secondary" class="progress-bar"></mu-linear-progress>
         <mu-flex class="bg" direction='row' justify-content="start">
             <side-bar :listener="signals" @events="$connect"></side-bar>
-            <split-pane @resize="handleResize" :min-percent='0' :default-percent='0' split="vertical" class="pane-layout">
+            <split-pane ref="splitVertical" @resize="handleResize" :min-percent='0' :default-percent='0' split="vertical" class="pane-layout">
                 <template slot="paneL" class="left-pane">
                     <folder-tree v-show="showFolderTree" ref="folderTree" :listener="signals" @events="$connect"></folder-tree>
                     <uploader ref="uploader" v-show="showUploader" :listener="signals" @events="$connect"></uploader>

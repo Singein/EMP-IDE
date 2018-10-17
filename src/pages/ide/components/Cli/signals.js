@@ -115,7 +115,7 @@ var signals = {
       }
     },
 
-    SIGNAL_SHOW_SYS_INFO(sender, data, receiver = 'bottomBar', slot = "slotShowSysInfo"){
+    SIGNAL_SHOW_SYS_INFO(sender, data, receiver = 'bottomBar', slot = "slotShowSysInfo") {
       return {
         event: "ShowSysInfo",
         sender: sender,
@@ -126,7 +126,7 @@ var signals = {
         }
       }
     },
-    SIGNAL_SHOW_MEMORY_STATUS(sender, data, receiver = 'bottomBar', slot = "slotShowMemoryStatus"){
+    SIGNAL_SHOW_MEMORY_STATUS(sender, data, receiver = 'bottomBar', slot = "slotShowMemoryStatus") {
       return {
         event: "ShowMemoryStatus",
         sender: sender,
@@ -135,6 +135,16 @@ var signals = {
         kwargs: {
           data: data
         }
+      }
+    },
+
+    SIGNAL_SHOW_PANE(sender, receiver = 'splitVertical', slot = 'slotShowPane') {
+      return {
+        event: "showPane",
+        sender: sender,
+        receiver: receiver,
+        slot: slot,
+        kwargs: {}
       }
     },
 

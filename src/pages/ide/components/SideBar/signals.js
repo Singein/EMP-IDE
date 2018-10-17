@@ -51,6 +51,26 @@ var signals = {
       }
     },
 
+    SIGNAL_TOGGLE_PANE(sender, receiver = 'splitVertical', slot = 'slotTogglePane') {
+      return {
+        event: "showPane",
+        sender: sender,
+        receiver: receiver,
+        slot: slot,
+        kwargs: {}
+      }
+    },
+
+    SIGNAL_SHOW_PANE(sender, receiver = 'splitVertical', slot = 'slotShowPane') {
+      return {
+        event: "hidePane",
+        sender: sender,
+        receiver: receiver,
+        slot: slot,
+        kwargs: {}
+      }
+    }
+
   }
 }
 

@@ -133,10 +133,10 @@ var handleConnection = {
 
       try {
         this.recData = JSON.parse(event.data);
-        // console.log(this.recData.func, this.recData.data)
         if (this.recData.func === emp.funcName(emp.tree)) {
           this.$send(this.SIGNAL_UPDATE_TREE(this, [this.recData.data]));
           this.$send(this.SIGNAL_UPDATE_FINDER(this, this.recData.data));
+          this.$send(this.SIGNAL_SHOW_PANE(this));
         }
         if (this.recData.func === emp.funcName(emp.getCode))
           this.$send(this.SIGNAL_SHOW_CODES_PMAX(this, this.recData.data));
@@ -149,7 +149,6 @@ var handleConnection = {
       } catch (e) {
         // 容错处理放在这儿
         if (event.data.indexOf('Traceback (most recent call last):') >= 0) {
-          // console.log('should unlock')
           this.$send(this.SIGNAL_UNLOCK(this));
         }
       }

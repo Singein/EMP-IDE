@@ -44,7 +44,7 @@ export default {
   computed: {
     title: function() {
       if (this.openedFile.length > 0) {
-        return openedFile.split("/").slice(-1)[0];
+        return this.openedFile.split("/").slice(-1)[0];
       } else return "README";
     }
   },

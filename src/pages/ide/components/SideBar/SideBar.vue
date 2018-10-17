@@ -24,10 +24,12 @@
                             <mu-icon size="36" value="extension"></mu-icon>
                         </mu-button>
                     </div>
-                    <div :style="changeStyle(4)">
-                        <mu-button class="icon-button" icon color="grey" :ripple="false" @click="changePage(4)">
-                            <mu-icon size="36" value="book"></mu-icon>
-                        </mu-button>
+                    <div>
+                        <a href="http://www.1zlab.com" target="_blank">
+                            <mu-button class="icon-button" icon color="grey" :ripple="false">
+                                <mu-icon size="36" value="book"></mu-icon>
+                            </mu-button>
+                        </a>
                     </div>
                 </mu-flex>
 
@@ -61,7 +63,7 @@ export default {
     return {
       index: 0,
       selectStyle: [{ background: "#4CAF5099" }, { background: "#fff0" }],
-    //   routeMap: ["/ide"],
+      //   routeMap: ["/ide"],
       connected: false
     };
   },
@@ -70,6 +72,9 @@ export default {
   },
   methods: {
     changePage(index) {
+      if (index === this.index) {
+        this.$send(this.SIGNAL_TOGGLE_PANE(this));
+      } else this.$send(this.SIGNAL_SHOW_PANE(this));
       this.index = index;
       this.$send(this.SIGNAL_SWITCH(this));
     },

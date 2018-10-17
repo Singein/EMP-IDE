@@ -25,14 +25,14 @@
   position: absolute;
   left: 0px;
   height: 100%;
-  padding-right: 3px;
+  /* padding-right: 3px; */
 }
 
 .splitter-pane.vertical.splitter-paneR {
   position: absolute;
   right: 0px;
   height: 100%;
-  padding-left: 3px;
+  /* padding-left: 3px; */
 }
 
 .splitter-pane.horizontal.splitter-paneL {
