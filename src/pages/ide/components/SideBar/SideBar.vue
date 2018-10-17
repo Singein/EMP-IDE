@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="z-index: 999;">
         <div class="pane left-pane">
             <mu-flex justify-content="start" align-items="center" direction="column" style="height:100%">
 
@@ -59,7 +59,7 @@ export default {
   props: [],
   data() {
     return {
-      index: 4,
+      index: 0,
       selectStyle: [{ background: "#4CAF5099" }, { background: "#fff0" }],
       routeMap: ["/ide"],
       connected: false

@@ -1,5 +1,5 @@
 <template>
-    <div style="padding:12px">
+    <div style="padding:12px;background:#252526;height:100%">
         <mu-card style="width: 100%;min-width:300px;margin: 0 auto;">
             <mu-card-header title="EMP" sub-title="make things easy on micropython.">
             </mu-card-header>

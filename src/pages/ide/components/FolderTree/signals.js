@@ -1,3 +1,5 @@
+import * as emp from "../../emp"
+
 var signals = {
   methods: {
 
@@ -20,7 +22,7 @@ var signals = {
         slot: slot,
         kwargs: {
           filename: filename,
-          command: 'memory_analysing(\'' + filename + '\')\r'
+          command: emp.memoryAnalysing(filename)
         }
       }
     },
@@ -35,7 +37,7 @@ var signals = {
         slot: slot,
         kwargs: {
           filename: filename,
-          command: 'get_code(\'' + filename + '\')\r'
+          command: emp.getCode(filename)
         }
       }
     },

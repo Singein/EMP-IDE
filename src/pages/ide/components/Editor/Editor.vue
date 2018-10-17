@@ -11,7 +11,7 @@
         <mu-flex justify-content="end" align-items="center" class="editor-tabs-flex">
         </mu-flex>
       </mu-flex>
-      <monaco-editor ref="editor" v-model="code" :sync-input="true"></monaco-editor>
+      <monaco-editor ref="editor" class="monaco-editor" v-model="code" :sync-input="true"></monaco-editor>
     </mu-flex>
   </div>
 </template>
@@ -52,7 +52,7 @@ export default {
   height: 48px;
   width: 100%;
   background: #252526;
-  /* position: fixed; */
+  position: fixed;
   line-height: 48px;
   padding: 0 12px;
 }
@@ -67,6 +67,7 @@ export default {
   height: 100%;
   width: 100%;
   /* padding-top: 6px; */
+  margin-top: 48px;
 }
 
 .editor-tabs-title {

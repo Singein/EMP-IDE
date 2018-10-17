@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="z-index: 999;">
     <mu-flex :style="background" class="ide-bottom-bar" justify-content="end" align-items="center">
       <!-- 左侧logo help -->
       <mu-flex class="ide-bottom-bar-left" justify-content="start" align-items="center">

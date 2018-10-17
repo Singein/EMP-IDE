@@ -10,6 +10,26 @@ var signals = {
         kwargs: {}
       }
     },
+
+    SIGNAL_RESIZE_TERM(sender, receiver = 'cli', slot = 'slotResizeTerm') {
+      return {
+        event: "onResize",
+        sender: sender,
+        receiver: receiver,
+        slot: slot,
+        kwargs: {}
+      }
+    },
+ 
+    SIGNAL_RESIZE_EDITOR(sender, receiver = 'editor', slot = 'slotResizeEditor') {
+      return {
+        event: "onResize",
+        sender: sender,
+        receiver: receiver,
+        slot: slot,
+        kwargs: {}
+      }
+    }
   }
 }
 

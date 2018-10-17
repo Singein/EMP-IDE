@@ -1,5 +1,5 @@
 <template>
-  <div style="padding:12px">
+  <div style="padding:12px;background:#252526;height:100%">
     <mu-auto-complete @select="onSelect" full-width :data="files" label="Type to search" v-model="filename"></mu-auto-complete>
   </div>
 </template>

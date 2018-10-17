@@ -1,36 +1,36 @@
-<template>
-  <div>
-    <mu-linear-progress v-if="tasklock" color="secondary" class="progress-bar"></mu-linear-progress>
-    <mu-flex class="bg" direction='row' justify-content="start">
-      <side-bar :listener="signals" @events="$connect"></side-bar>
-      <multipane class="pane-layout" layout="vertical" @events="$connect">
-        <div class="left-pane">
-          <folder-tree v-show="showFolderTree" ref="folderTree" :listener="signals" @events="$connect"></folder-tree>
-          <uploader ref="uploader" v-show="showUploader" :listener="signals" @events="$connect"></uploader>
-          <finder ref="finder" v-show="showFinder" :listener="signals" @events="$connect"></finder>
-          <pypi ref="pypi" v-show="showPypi" :listener="signals" @events="$connect"></pypi>
-        </div>
-        <multipane-resizer></multipane-resizer>
-        <multipane class="subpane-layout" layout="horizontal" @events="$connect">
-          <div class="editor">
-            <editor ref='editor' :listener="signals" @events="$connect" style="height:100%;width:100%"></editor>
-          </div>
-          <multipane-resizer></multipane-resizer>
-          <div class="terminal-container">
-            <div class="terminal">
-              <cli ref='cli' :tasklock="tasklock" :listener="signals" @events="$connect"></cli>
-            </div>
-          </div>
-        </multipane>
-      </multipane>
+ <template>
+    <mu-flex direction='column'>
+        <mu-linear-progress v-if="tasklock" color="secondary" class="progress-bar"></mu-linear-progress>
+        <mu-flex class="bg" direction='row' justify-content="start">
+            <side-bar :listener="signals" @events="$connect"></side-bar>
+            <split-pane @resize="handleResize" :min-percent='0' :default-percent='25' split="vertical" class="pane-layout">
+                <template slot="paneL" class="left-pane">
+                    <folder-tree v-show="showFolderTree" ref="folderTree" :listener="signals" @events="$connect"></folder-tree>
+                    <uploader ref="uploader" v-show="showUploader" :listener="signals" @events="$connect"></uploader>
+                    <finder ref="finder" v-show="showFinder" :listener="signals" @events="$connect"></finder>
+                    <pypi ref="pypi" v-show="showPypi" :listener="signals" @events="$connect"></pypi>
+                </template>
+
+                <template slot="paneR">
+                    <split-pane @resize="handleResize" split="horizontal" :min-percent='0' :default-percent='70'>
+                        <template slot="paneL" class="editor">
+                            <editor ref='editor' :listener="signals" @events="$connect" style="height:100%;width:100%"></editor>
+                        </template>
+                        <template slot="paneR" >
+                            <cli class="terminal-container" ref='cli' :tasklock="tasklock" :listener="signals" @events="$connect"></cli>
+                        </template>
+                    </split-pane>
+                </template>
+
+            </split-pane>
+        </mu-flex>
+        <setting ref='setting' :listener="signals" @events="$connect" :show="showSettings"></setting>
+        <bottom-bar ref='bottomBar' :listener="signals" @events="$connect"></bottom-bar>
     </mu-flex>
-    <setting ref='setting' :listener="signals" @events="$connect" :show="showSettings"></setting>
-    <bottom-bar ref='bottomBar' :listener="signals" @events="$connect"></bottom-bar>
-  </div>
 </template>
 
 <script>
-import { Multipane, MultipaneResizer } from "./components/Multipane";
+import SplitPane from "./components/SplitPane";
 
 import BottomBar from "./components/BottomBar";
 import SideBar from "./components/SideBar";
@@ -55,8 +55,7 @@ export default {
     SideBar,
     FolderTree,
     Editor,
-    Multipane,
-    MultipaneResizer,
+    SplitPane,
     Cli,
     Setting,
     Uploader,
@@ -74,10 +73,10 @@ export default {
     showFinder: function() {
       return this.switcher === 2;
     },
-    showPypi: function(){
+    showPypi: function() {
       return this.switcher === 3;
     },
-    showDoc: function(){
+    showDoc: function() {
       return this.switcher === 4;
     }
   },
@@ -87,14 +86,19 @@ export default {
       loading: false,
       showSettings: false,
       settings: null,
-      switcher: -1,
+      switcher: 0,
       tasklock: false
     };
   },
 
   beforeDestroy() {},
   mounted() {},
-  methods: {},
+  methods: {
+    handleResize() {
+      this.$send(this.SIGNAL_RESIZE_TERM(this));
+      this.$send(this.SIGNAL_RESIZE_EDITOR(this));
+    }
+  },
   watch: {}
 };
 </script>
@@ -103,6 +107,7 @@ export default {
 .bg {
   background: #1e1e1e;
   width: 100%;
+  position: relative;
 }
 
 .progress-bar {
@@ -115,6 +120,7 @@ export default {
   width: calc(100% - 70px);
   max-width: calc(100% - 70px);
   height: 97vh;
+  max-height: 97vh;
 }
 
 .left-pane {
@@ -131,7 +137,7 @@ export default {
   width: 80%;
   min-width: 60%;
   height: 100%;
-  flex-grow: 1;
+  /* flex-grow: 1; */
   border-left: 2px solid #61616161;
 }
 
@@ -140,20 +146,19 @@ export default {
   overflow: hidden;
   background: #1e1e1e;
   width: 100%;
-  max-height: calc(100% - 48px);
-  min-height: 48px;
+  /* max-height: calc(100% - 48px);
+  min-height: 48px; */
+  height: 100%;
 }
 
 .terminal-container {
   border-top: 2px solid #61616161;
   flex-grow: 1;
-  /* height: 100%; */
+  height: 100%;
   min-height: 0;
   overflow: hidden;
+  padding: 15px;
   background: #1e1e1e;
 }
 
-.terminal {
-  height: 100%;
-}
 </style>

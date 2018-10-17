@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <mu-flex justify-content="center" align-items="center" direction="column" class="uploader">
+  <div style="background: #252526 !important;height:100%">
+    <mu-flex justify-content="center" align-items="center">
 
       <el-upload style="backgroun: #212121" ref="eluploader" drag action="https://127.0.0.1/posts/" :auto-upload="false" :on-change="handleChange" multiple>
         <i class="el-icon-upload"></i>
@@ -12,7 +12,6 @@
       </el-upload>
 
     </mu-flex>
-    <input multiple type="file" ref="fileInput" style="display:none" @change="handleFiles">
   </div>
 </template>
 
@@ -93,6 +92,7 @@ export default {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   width: 300px;
+  /* width: 100%; */
   height: 180px;
   text-align: center;
   position: relative;
