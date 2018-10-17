@@ -3,10 +3,10 @@
     <mu-flex direction="column" class="monaco-editor-container">
       <mu-flex class="editor-tabs" justify-content="start" align-items="center">
         <mu-flex justify-content="start" align-items="center" class="editor-tabs-flex">
-          <mu-button icon color="white" @click="saveFile">
+          <mu-button v-if="openedFile" icon color="white" @click="saveFile">
             <mu-icon value="save"></mu-icon>
           </mu-button>
-          <p class="editor-tabs-title">{{openedFile.split('/')[openedFile.split('/').length-1]}}</p>
+          <p class="editor-tabs-title"><strong>{{title}}</strong></p>
         </mu-flex>
         <mu-flex justify-content="end" align-items="center" class="editor-tabs-flex">
         </mu-flex>
@@ -18,7 +18,8 @@
 
 
 <script>
-import readme from "../../readme.js"
+// this.editor.updateOptions({readOnly: val})
+import readme from "../../readme.js";
 import MonacoEditor from "./MonacoEditor.vue";
 import signals from "./signals.js";
 import slots from "./slots.js";
@@ -40,6 +41,25 @@ export default {
       this.$send(this.SIGNAL_SAVE_FILE(this));
     }
   },
+  computed: {
+    title: function() {
+      if (this.openedFile.length > 0) {
+        return openedFile.split("/").slice(-1)[0];
+      } else return "README";
+    }
+  },
+  mounted() {
+    this.$nextTick(function() {
+      this.$refs["editor"].editor.updateOptions({ readOnly: true });
+    });
+  },
+  watch: {
+    openedFile() {
+      if (this.openedFile.length > 0) {
+        this.$refs["editor"].editor.updateOptions({ readOnly: false });
+      }
+    }
+  }
 };
 </script>
 

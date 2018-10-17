@@ -35,9 +35,9 @@
                     <mu-button class="icon-button" icon color="green" @click="runScript">
                         <mu-icon size="36" value="play_arrow"></mu-icon>
                     </mu-button>
-                    <!-- <mu-button class="icon-button" icon color="green">
+                    <mu-button class="icon-button" icon color="green">
                         <mu-icon size="36" value="memory"></mu-icon>
-                    </mu-button> -->
+                    </mu-button>
                     <mu-button class="icon-button" icon color="yellow" @click="startConnect()">
                         <mu-icon size="36" value="power"></mu-icon>
                     </mu-button>
