@@ -29,6 +29,8 @@
     "vue-multipane": "^0.9.5",
     "vue-router": "^3.0.1",
     "vue-splitpane": "^1.0.2",
+    "vue2-scrollbar": "^0.0.3",
+    "vuebar": "^0.0.20",
     "xterm": "^3.6.0"
   },
   "devDependencies": {

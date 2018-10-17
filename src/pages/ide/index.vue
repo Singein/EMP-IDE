@@ -17,7 +17,7 @@
                             <editor ref='editor' :listener="signals" @events="$connect" style="height:100%;width:100%"></editor>
                         </template>
                         <template slot="paneR" >
-                            <cli class="terminal-container" ref='cli' :tasklock="tasklock" :listener="signals" @events="$connect"></cli>
+                            <cli class="terminal-container cli-scroll-bar" ref='cli' :tasklock="tasklock" :listener="signals" @events="$connect"></cli>
                         </template>
                     </split-pane>
                 </template>
@@ -155,10 +155,35 @@ export default {
   border-top: 2px solid #61616161;
   flex-grow: 1;
   height: 100%;
+  width: 100%;
   min-height: 0;
   overflow: hidden;
-  padding: 15px;
+  padding-top: 15px;
+  padding-left: 15px;
+  padding-right: 0;
+  padding-bottom: 15px;
   background: #1e1e1e;
+}
+
+.cli-scroll-bar::-webkit-scrollbar {
+  /*滚动条整体样式*/
+  width: 10px;
+  /*高宽分别对应横竖滚动条的尺寸*/
+  height: 1px;
+}
+
+.cli-scroll-bar::-webkit-scrollbar-thumb {
+  /*滚动条里面小方块*/
+  border-radius: 0px;
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background:  rgba(0, 0, 0, 0.2);
+}
+
+.cli-scroll-bar::-webkit-scrollbar-track {
+  /*滚动条里面轨道*/
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  border-radius: 0px;
+  background: #00000000;
 }
 
 </style>
