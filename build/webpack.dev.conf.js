@@ -64,7 +64,15 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         to: config.dev.assetsSubDirectory,
         ignore: ['.*']
       }
-    ])
+    ]),
+    new webpack.ContextReplacementPlugin(
+      /monaco-editor(\\|\/)esm(\\|\/)vs(\\|\/)editor(\\|\/)common(\\|\/)services/,
+      __dirname
+    ),
+    new webpack.ContextReplacementPlugin(
+      /lazy-debug-legacy(\\|\/)src/,
+      __dirname
+    )
   ]
 })
 
