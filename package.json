@@ -12,6 +12,7 @@
     "docs:build": "vuepress build docs"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "deformation": "^1.0.9",
     "element-ui": "^2.4.7",
     "lodash": "^4.17.10",
