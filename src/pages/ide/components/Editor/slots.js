@@ -9,7 +9,7 @@ var slots = {
       // }, 200);
     },
 
-   
+
     slotShowCode(kwargs) {
       this.code = kwargs.code;
       this.openedFile = kwargs.filename;
@@ -17,7 +17,11 @@ var slots = {
       setTimeout(() => this.$send(this.SIGNAL_CLEAR_TERM(this)), 300);
       // this.$send(this.SIGNAL_CLEAR_TERM(this));
     },
-    
+
+    slotApplyFontSize(kwargs) {
+      this.fontSize = parseInt(kwargs.fontSize);
+    },
+
   }
 }
 

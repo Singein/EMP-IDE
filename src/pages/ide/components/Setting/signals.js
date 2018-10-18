@@ -34,6 +34,18 @@ var signals = {
       }
     },
 
+    SIGNAL_APPLY_FONTSIZE(sender, receiver = 'editor', slot = 'slotApplyFontSize') {
+      return {
+        event: "applyFontSize",
+        sender: sender,
+        receiver: receiver,
+        slot: slot,
+        kwargs: {
+          fontSize: this.fontSize
+        }
+      }
+    }
+
   }
 }
 

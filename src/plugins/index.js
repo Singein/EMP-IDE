@@ -11,7 +11,6 @@ import VueCookie from 'vue-cookie'
 import { Tree, Upload } from 'element-ui'
 import Connect from './connect'
 import contentmenu from 'v-contextmenu'
-import Vuebar from 'vuebar';
 import 'v-contextmenu/dist/index.css'
 
 
@@ -29,7 +28,6 @@ const installer = function (Vue) {
   Vue.use(Upload)
   Vue.use(Connect)
   Vue.use(contentmenu)
-  Vue.use(Vuebar)
   Vue.config.productionTip = false
 }
 

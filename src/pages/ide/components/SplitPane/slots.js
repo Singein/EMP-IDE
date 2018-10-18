@@ -18,6 +18,17 @@ var slots = {
       setTimeout(() => this.$emit("resize"), 100);
     },
 
+    slotToggleTerm(){
+      if (this.percent < 100) {
+        this.percent = 100;
+        this.$emit("resize");
+        setTimeout(() => this.$emit("resize"), 100);
+      } else {
+        this.percent = 70;
+        this.$emit("resize");
+        setTimeout(() => this.$emit("resize"), 100);
+      }
+    }
     // slotHidePane() {
     //   this.percent = 0;
     //   this.$emit("resize");

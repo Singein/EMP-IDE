@@ -37,10 +37,10 @@
                     <mu-button class="icon-button" icon color="green" @click="runScript">
                         <mu-icon size="36" value="play_arrow"></mu-icon>
                     </mu-button>
-                    <mu-button class="icon-button" icon color="green">
+                    <mu-button class="icon-button" icon color="green" @click="gcCollect">
                         <mu-icon size="36" value="memory"></mu-icon>
                     </mu-button>
-                    <mu-button class="icon-button" icon color="yellow" @click="startConnect()">
+                    <mu-button class="icon-button" icon color="yellow" @click="startConnect">
                         <mu-icon size="36" value="power"></mu-icon>
                     </mu-button>
                 </mu-flex>
@@ -87,6 +87,9 @@ export default {
     },
     runScript() {
       this.$send(this.SIGNAL_RUN(this));
+    },
+    gcCollect() {
+      this.$send(this.SIGNAL_GC_COLLECT(this));
     }
   },
   watch: {}

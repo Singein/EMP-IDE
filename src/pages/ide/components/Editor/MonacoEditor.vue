@@ -67,6 +67,9 @@ export default {
         this.editor.setValue(val);
       }
     },
+    fontSize(val) {
+      this.editor.updateOptions({ fontSize: val });
+    }
   },
   mounted() {
     this.initEditor();
@@ -94,7 +97,7 @@ export default {
       if (this.syncInput) {
         this.editor.onDidChangeModelContent(function() {
           that.buffer = that.editor.getValue();
-          that.$emit('input', that.buffer)
+          that.$emit("input", that.buffer);
         });
       }
     },
@@ -104,8 +107,7 @@ export default {
     layout() {
       this.editor.layout();
     }
-  },
-  
+  }
 };
 </script>
 

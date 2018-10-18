@@ -1,3 +1,4 @@
+import * as emp from "../../emp"
 var signals = {
   methods: {
     // 打开设置窗口,点击设置按钮时触发
@@ -69,7 +70,19 @@ var signals = {
         slot: slot,
         kwargs: {}
       }
-    }
+    },
+
+    SIGNAL_GC_COLLECT(sender, receiver = 'cli', slot = 'slotSendCommands'){
+      return {
+        event: "gcCollect",
+        sender: sender,
+        receiver: receiver,
+        slot: slot,
+        kwargs: {
+          command: emp.memoryStatus()
+        }
+      }
+    },
 
   }
 }

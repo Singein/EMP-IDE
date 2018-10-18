@@ -9,4 +9,8 @@ export default `
     to provide a faster and more efficient development experience 
     for MicroPython enthusiasts.
 
+    GitHub:   https://github.com/Fuermohao/EMP-IDE
+    HomePage: http://www.1zlab.com
+    Docs:     em..coming soon...
+
 `

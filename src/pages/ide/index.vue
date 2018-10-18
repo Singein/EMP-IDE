@@ -12,7 +12,7 @@
                 </template>
 
                 <template slot="paneR">
-                    <split-pane @resize="handleResize" split="horizontal" :min-percent='0' :default-percent='100'>
+                    <split-pane ref="splitHorizontal" @resize="handleResize" split="horizontal" :min-percent='0' :default-percent='100'>
                         <template slot="paneL" class="editor">
                             <editor ref='editor' :listener="signals" @events="$connect" style="height:100%;width:100%"></editor>
                         </template>
@@ -164,26 +164,4 @@ export default {
   padding-bottom: 15px;
   background: #1e1e1e;
 }
-
-.cli-scroll-bar::-webkit-scrollbar {
-  /*滚动条整体样式*/
-  width: 10px;
-  /*高宽分别对应横竖滚动条的尺寸*/
-  height: 1px;
-}
-
-.cli-scroll-bar::-webkit-scrollbar-thumb {
-  /*滚动条里面小方块*/
-  border-radius: 0px;
-  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-  background:  rgba(0, 0, 0, 0.2);
-}
-
-.cli-scroll-bar::-webkit-scrollbar-track {
-  /*滚动条里面轨道*/
-  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-  border-radius: 0px;
-  background: #00000000;
-}
-
 </style>

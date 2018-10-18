@@ -12,6 +12,15 @@ var signals = {
         }
       }
     },
+    SIGNAL_TOGGLE_TERM(sender, receiver = 'splitHorizontal', slot = 'slotToggleTerm') {
+      return {
+        event: "toggleTerm",
+        sender: sender,
+        receiver: receiver,
+        slot: slot,
+        kwargs: {}
+      }
+    },
 
   }
 }
