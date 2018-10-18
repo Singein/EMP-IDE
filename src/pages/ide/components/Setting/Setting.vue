@@ -66,7 +66,7 @@ export default {
 
     getCookies() {
       this.fontSize = this.$cookie.get("fontSize");
- 
+      this.$send(this.SIGNAL_APPLY_FONTSIZE(this));
     },
 
     setCookies() {
