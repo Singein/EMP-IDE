@@ -13,11 +13,11 @@
 
                 <template slot="paneR">
                     <split-pane ref="splitHorizontal" @resize="handleResize" split="horizontal" :min-percent='0' :default-percent='100'>
-                        <template slot="paneL" class="editor">
-                            <editor ref='editor' :listener="signals" @events="$connect" style="height:100%;width:100%"></editor>
+                        <template slot="paneL">
+                            <editor ref='editor' :listener="signals" @events="$connect" class="editor"></editor>
                         </template>
                         <template slot="paneR" >
-                            <cli class="terminal-container cli-scroll-bar" ref='cli' :tasklock="tasklock" :listener="signals" @events="$connect"></cli>
+                            <cli ref='cli' :tasklock="tasklock" :listener="signals" @events="$connect" class="terminal-container" ></cli>
                         </template>
                     </split-pane>
                 </template>
@@ -142,12 +142,9 @@ export default {
 }
 
 .editor {
-  padding: 0;
-  overflow: hidden;
+  /* overflow: hidden; */
   background: #1e1e1e;
   width: 100%;
-  /* max-height: calc(100% - 48px);
-  min-height: 48px; */
   height: 100%;
 }
 

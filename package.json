@@ -20,17 +20,11 @@
     "muse-ui-message": "^0.2.1",
     "muse-ui-toast": "^0.3.0",
     "normalize.css": "^8.0.0",
-    "term.js": "0.0.7",
     "v-contextmenu": "^2.8.0",
     "vue": "^2.5.2",
     "vue-cookie": "^1.1.4",
-    "vue-m-monaco-editor": "^1.0.0",
-    "vue-monaco": "^0.2.0",
-    "vue-multipane": "^0.9.5",
     "vue-router": "^3.0.1",
     "vue-splitpane": "^1.0.2",
-    "vue2-scrollbar": "^0.0.3",
-    "vuebar": "^0.0.20",
     "xterm": "^3.6.0"
   },
   "devDependencies": {

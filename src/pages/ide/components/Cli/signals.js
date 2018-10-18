@@ -53,7 +53,7 @@ var signals = {
     },
 
     SIGNAL_UNLOCK(sender, receiver = 'parent', slot = 'slotUnlock') {
-      console.log("in SIGNAL_UNLOCK");
+      // console.log("in SIGNAL_UNLOCK");
       return {
         event: "unlock",
         sender: sender,
@@ -70,7 +70,6 @@ var signals = {
         receiver: receiver,
         slot: slot,
         kwargs: {
-          // code: data.code,
           code: data,
           filename: this.getFilename
         }
@@ -85,7 +84,6 @@ var signals = {
         slot: slot,
         kwargs: {
           code: data.code,
-          // code: data,
           filename: this.getFilename
         }
       }

@@ -40,28 +40,19 @@ export default {
     },
 
     handleChange(file, fileList) {
-      // console.log(typeof file, file);
-      // console.log(typeof fileList, fileList);
-      // this.files = fileList;
       let that = this;
-      // Get the file info and load its data.
-      // for (let i = 0; i < this.files.length; i++) {
       let f = file.raw;
       that.putFilename.push(f.name);
-      console.log(typeof f, f);
+ 
       let reader = new FileReader();
       reader.onload = function(e) {
-        console.log("sdfs", e.target.result);
+  
         that.putFileData.push(new Uint8Array(e.target.result));
       };
       reader.readAsArrayBuffer(f);
-      // }
     },
 
     handleFiles(evt) {
-      // The event holds a FileList object which is a list of File objects,
-      // but we only support single file selection at the moment.
-      // var files = evt.target.files;
       this.files = evt.target.files;
       let that = this;
       // Get the file info and load its data.
@@ -70,14 +61,11 @@ export default {
         that.putFilename.push(f.name);
         let reader = new FileReader();
         reader.onload = function(e) {
-          // console.log("sdfs", e.target.result);
+
           that.putFileData.push(new Uint8Array(e.target.result));
         };
         reader.readAsArrayBuffer(f);
       }
-
-      console.log(this.putFilename);
-      console.log(this.putFileData);
     }
   }
 };
@@ -86,7 +74,7 @@ export default {
 
 <style>
 .el-upload-dragger {
-  background-color: #212121;
+  background-color: #212121 !important;
   border: 1px #d9d9d9;
   border-radius: 6px;
   -webkit-box-sizing: border-box;

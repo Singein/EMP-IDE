@@ -19,7 +19,9 @@ var slots = {
     },
 
     slotApplyFontSize(kwargs) {
-      this.fontSize = parseInt(kwargs.fontSize);
+      let fontSize = parseInt(kwargs.fontSize);
+      if (fontSize != NaN)
+        this.fontSize = fontSize
     },
 
   }

@@ -56,7 +56,6 @@ export default {
       this.setCookies();
       this.$send(this.SIGNAL_TOGGLE_SETTINGS(this));
       this.$send(this.SIGNAL_APPLY_FONTSIZE(this));
-      
     },
 
     esc() {
@@ -65,15 +64,16 @@ export default {
     },
 
     getCookies() {
-      this.fontSize = this.$cookie.get("fontSize");
-      this.$send(this.SIGNAL_APPLY_FONTSIZE(this));
+      console.log(this.$cookie.get("fontSize"));
+      if (this.$cookie.get("fontSize") != null)
+        this.fontSize = this.$cookie.get("fontSize");
+      // this.$send(this.SIGNAL_APPLY_FONTSIZE(this));
     },
 
     setCookies() {
       this.$cookie.set("fontSize", this.fontSize, {
         expires: "1Y"
       });
-    
     }
   }
 };
