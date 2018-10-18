@@ -46,7 +46,7 @@ export default {
         readOnly: true
       });
       if (this.$cookie.get("fontSize") != null) {
-        this.fontSize = this.$cookie.get("fontSize");
+        this.fontSize = parseInt(this.$cookie.get("fontSize"));
       }
     }
   },

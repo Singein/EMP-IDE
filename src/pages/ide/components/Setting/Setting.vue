@@ -66,8 +66,7 @@ export default {
     getCookies() {
       console.log(this.$cookie.get("fontSize"));
       if (this.$cookie.get("fontSize") != null)
-        this.fontSize = this.$cookie.get("fontSize");
-      // this.$send(this.SIGNAL_APPLY_FONTSIZE(this));
+        this.fontSize = parseInt(this.$cookie.get("fontSize"));
     },
 
     setCookies() {

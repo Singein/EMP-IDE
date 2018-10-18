@@ -1,5 +1,5 @@
  <template>
-    <mu-flex direction='column'>
+    <mu-flex direction='column' v-resize="handleResize">
         <mu-linear-progress v-if="tasklock" color="secondary" class="progress-bar"></mu-linear-progress>
         <mu-flex class="bg" direction='row' justify-content="start">
             <side-bar :listener="signals" @events="$connect"></side-bar>
