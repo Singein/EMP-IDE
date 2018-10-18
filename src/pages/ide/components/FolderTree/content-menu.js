@@ -31,6 +31,10 @@ var menu = {
   ],
   'folder': [
     {
+      text: '刷新',
+      code: 'refresh'
+    },
+    {
       text: '重命名',
       code: 'rename'
     },
