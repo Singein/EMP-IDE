@@ -9,6 +9,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
@@ -70,15 +71,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       to: config.dev.assetsSubDirectory,
       ignore: ['.*']
     }]),
-
-    new webpack.ContextReplacementPlugin(
-
-      /monaco-editor(\\|\/)esm(\\|\/)vs(\\|\/)editor(\\|\/)common(\\|\/)services/,
-
-      __dirname
-
-    ),
-
+    new MonacoWebpackPlugin(),
     new webpack.ContextReplacementPlugin(
 
       /lazy-debug-legacy(\\|\/)src/,

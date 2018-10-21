@@ -1,4 +1,4 @@
-import Vue from 'vue'
+const Vue = require('vue')
 import Router from 'vue-router'
 import cloneDeep from 'lodash/cloneDeep'
 import routerMap from './map'

@@ -1,5 +1,4 @@
-import MuseUI from 'muse-ui'
-import 'muse-ui/dist/muse-ui.css'
+// import 'muse-ui/dist/muse-ui.css'
 import 'normalize.css'
 import 'material-design-icons/iconfont/material-icons.css'
 import 'element-ui/lib/theme-chalk/index.css';
@@ -11,6 +10,7 @@ import { Tree, Upload } from 'element-ui'
 import Connect from './connect'
 import contentmenu from 'v-contextmenu'
 import 'v-contextmenu/dist/index.css'
+const MuseUI = require('muse-ui')
 
 
 
