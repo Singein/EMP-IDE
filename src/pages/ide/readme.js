@@ -11,6 +11,6 @@ export default `
 
     GitHub:   https://github.com/Fuermohao/EMP-IDE
     HomePage: http://www.1zlab.com
-    Docs:     http://www.1zlab.com/docs/emp-ide
+    Docs:     http://www.1zlab.com/doc/emp
 
 `

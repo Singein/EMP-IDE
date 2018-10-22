@@ -25,7 +25,7 @@
                         </mu-button>
                     </div>
                     <div>
-                        <a href="http://www.1zlab.com" target="_blank">
+                        <a href="http://www.1zlab.com/doc/emp" target="_blank">
                             <mu-button class="icon-button" icon color="grey" :ripple="false">
                                 <mu-icon size="36" value="book"></mu-icon>
                             </mu-button>
