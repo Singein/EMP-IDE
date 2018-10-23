@@ -1,20 +1,20 @@
 var menu = {
   'file': [{
-      text: '运行',
+      text: 'Run 运行',
       code: 'run'
     },
     {
       isdivider: true
     },
     {
-      text: '重命名',
+      text: 'Rename 重命名',
       code: 'rename'
     },
     {
       isdivider: true
     },
     {
-      text: '删除',
+      text: 'Delete 删除',
       code: 'deleteFile'
     },
     {
@@ -31,29 +31,35 @@ var menu = {
   ],
   'folder': [
     {
-      text: '刷新',
+      text: 'Refresh 刷新',
       code: 'refresh'
     },
     {
-      text: '重命名',
+      isdivider: true
+    },
+    {
+      text: 'Rename 重命名',
       code: 'rename'
     },
     {
-      text: '新建文件',
+      isdivider: true
+    },
+    {
+      text: 'New File 新建文件',
       code: 'newFile'
     },
     {
       isdivider: true
     },
     {
-      text: '新建文件夹',
+      text: 'New Folder 新建文件夹',
       code: 'newFolder'
     },
     {
       isdivider: true
     },
     {
-      text: '删除文件夹',
+      text: 'Delete 删除文件夹',
       code: 'deleteFolder'
     },
     // {
