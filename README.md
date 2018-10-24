@@ -1,5 +1,6 @@
 # EMP IDE
 [中文README](https://github.com/Fuermohao/EMP-IDE/blob/master/README_CN.md)
+
 The EasyMicroPython (EMP) IDE is an open source project led by 1Z Labs to provide a more efficient and convenient development experience for the MicroPython community. You can visit our website at [emp.1zlab.com] (emp.1zlab.com) To use the EMP IDE, although it is hosted online, all interactions with your motherboard are still in your own network. Currently supports the latest versions of Firefox and Chrome.
 
 Inspired by the MicroPython/webrepl project, the EMP IDE leverages its existing communication protocols and modifies the webrepl module to design and implement functional modules that make MicroPython-related interactions easier.
