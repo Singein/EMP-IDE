@@ -29,8 +29,8 @@ coming...
 ## 关于我们
 ![Logo](./static/image/logo.png)
 
-邮箱: fuermohao@outlook.com
-QQ群: 218214240 
+- 邮箱: fuermohao@outlook.com
+- QQ群: 218214240 
 
 ## License
 

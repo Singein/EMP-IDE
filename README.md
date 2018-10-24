@@ -30,11 +30,11 @@ Coming...
 ## About us
 ![Logo](./static/image/logo.png)
 
-Email: fuermohao@outlook.com
-QQ Group: 218214240 
+- Email: fuermohao@outlook.com
+- QQ Group: 218214240 
 
 ## License
 
-[MIT] (http://opensource.org/licenses/MIT)
+[MIT](http://opensource.org/licenses/MIT)
 
 Copyright (c) 2018-present, 1zlab
