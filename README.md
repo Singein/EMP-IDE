@@ -2,13 +2,24 @@
 
 # EMP IDE
 
-EasyMicroPython(EMP) IDE 是由1Z实验室引导的一个开源项目，旨在为MicroPython社区提供更高效便捷的开发体验，你可以通过访问我们的网址：[emp.1zlab.com](emp.1zlab.com) 来使用EMP IDE，虽然它在线托管，但与您的主板的所有交互仍然在您自己的网络中进行。目前支持最新版本的Firefox和Chrome。
+The EasyMicroPython (EMP) IDE is an open source project led by 1Z Labs to provide a more efficient and convenient development experience for the MicroPython community. You can visit our website at [emp.1zlab.com] (emp.1zlab.com) To use the EMP IDE, although it is hosted online, all interactions with your motherboard are still in your own network. Currently supports the latest versions of Firefox and Chrome.
 
-EMP IDE受到了MicroPython/webrepl 项目的启发，采用了其现有的通信协议，并对webrepl模块进行了改造，设计并实现了一些功能模块，以此来通过WebSocket实现和MicroPython设备的更丰富，更高效的信息交互。
+Inspired by the MicroPython/webrepl project, the EMP IDE leverages its existing communication protocols and modifies the webrepl module to design and implement functional modules that make MicroPython-related interactions easier.
 
 ![](http://src.1zlab.com/empide-guide/connected.png)
 
-## 使用说明文档
+## Future
+
+- Monaco Eidtor
+- Edit and synchronize script files online
+- xterm based terminal
+- Supports necessary operations such as creating, deleting, and renaming file directories
+- Support one-click running script
+- Display system firmware, memory status, etc.
+- Multi-file bulk upload, support drag and drop upload operation
+- File search
+
+## Instructions for use
 
 [emp-1zlab-user-guide](http://1zlab.com/doc/emp)
 
@@ -17,29 +28,26 @@ EMP IDE受到了MicroPython/webrepl 项目的启发，采用了其现有的通�
 ``` bash
 
 # install dependencies
-yarn install
+Yarn install
 # serve with hot reload at localhost:8080
-yarn run dev
+Yarn run dev
 # build for production with minification
-yarn run build
+Yarn run build
 # build for production and view the bundle analyzer report
-yarn run build --report
+Yarn run build --report
 # docs
-yarn run docs:dev
+Yarn run docs:dev
 
 ```
 
 ## Document
 
-coming...
+Coming...
 
-## Future
 
-[todo list](https://github.com/Fuermohao/1ZLAB-MicroIDE/wiki/TO-DO)
 
 ## License
 
-[MIT](http://opensource.org/licenses/MIT)
+[MIT] (http://opensource.org/licenses/MIT)
 
 Copyright (c) 2018-present, 1zlab
-
