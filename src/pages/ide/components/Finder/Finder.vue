@@ -37,8 +37,7 @@ export default {
 
       return files;
     },
-    onSelect(value, item) {
-      // console.log(value, item);
+    onSelect() {
       this.$send(this.SIGNAL_MEMORY_ANALYSING(this, this.filename));
     }
   }

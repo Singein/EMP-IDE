@@ -64,7 +64,6 @@ export default {
     },
 
     getCookies() {
-      console.log(this.$cookie.get("fontSize"));
       if (this.$cookie.get("fontSize") != null)
         this.fontSize = parseInt(this.$cookie.get("fontSize"));
     },

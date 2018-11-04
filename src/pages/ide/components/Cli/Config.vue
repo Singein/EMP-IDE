@@ -42,7 +42,6 @@ export default {
       //http://www.1zlab.com/ide/get/ip/
       let that = this;
       axios.get("http://www.1zlab.com/ide/get/ip/").then(function(rsp) {
-        // console.log(rsp);
         let records = rsp.data.ip.map(_ip => `ws://${_ip}:8266`).slice(0, -1);
         that.espIP.push(...records);
         that.url = that.espIP[that.espIP.length - 1];

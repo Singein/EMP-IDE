@@ -7,7 +7,6 @@ var slots = {
 
     slotSwitch(kwargs) {
       this.switcher = kwargs.index;
-      // console.log(this.switcher);
     },
 
     slotLock() {

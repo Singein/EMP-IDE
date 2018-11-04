@@ -26,7 +26,6 @@ var handleConnection = {
       
       this.$toast.success("WebREPL connected!");
       if (this.ws.readyState === 1) {
-        // console.log(this.ws.readyState);
         this.$send(this.SIGNAL_REPORT_CONNECTED(this));
         this.wsConnected = true;
       }
@@ -79,7 +78,7 @@ var handleConnection = {
             // first response for get
             if (this.decodeResp(data) == 0) {
               this.binaryState = 22;
-              var rec = new Uint8Array(1);
+              let rec = new Uint8Array(1);
               rec[0] = 0;
               this.ws.send(rec);
             }

@@ -61,7 +61,7 @@ export default {
     };
   },
   watch: {
-    value(val, old) {
+    value(val) {
       if (this.buffer.length !== val.length || this.buffer !== val) {
         this.buffer = val;
         this.editor.setValue(val);

@@ -39,7 +39,7 @@ export default {
       if (this.putFilename.length > 0) this.$send(this.SIGNAL_PUT_FILE(this));
     },
 
-    handleChange(file, fileList) {
+    handleChange(file) {
       let that = this;
       let f = file.raw;
       that.putFilename.push(f.name);

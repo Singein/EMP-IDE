@@ -34,14 +34,12 @@ var slots = {
 
     slotDisconnect() {
       this.ws.close();
-      console.log(this.ws.readyState);
     },
 
     slotSendCommands(kwargs) {
       if (!this.tasklock) {
         this.ws.send(kwargs.command);
         if (kwargs.command.startsWith(emp.funcName(emp.memoryAnalysing))) {
-          // console.log(emp.funcName(emp.memoryAnalysing));
           this.$send(this.SIGNAL_LOCK(this));
         }
       } else
@@ -57,7 +55,6 @@ var slots = {
           kwargs.fileData = new TextEncoder().encode(' ');
         }
 
-        // console.log(this.putFileData);
         var dest_fname = kwargs.filename;
         var dest_fsize = kwargs.fileData.length;
 
@@ -138,8 +135,6 @@ var slots = {
     },
 
     slotDependsOnMemoryToGetFile(kwargs) {
-      // console.log('in slotDependsOnMemory');
-
       this.getFilename = kwargs.filename;
 
       var mf = kwargs.mf;

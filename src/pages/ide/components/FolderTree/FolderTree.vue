@@ -63,8 +63,7 @@ export default {
       this.panel = panel === this.panel ? "" : panel;
     },
 
-    nodeClicked(data, node, self) {
-      // console.log(data);
+    nodeClicked(data, node) {
       if (!("children" in data))
         if (this.currentNode === null || this.currentNode.name != data.name) {
           this.$send(this.SIGNAL_DEPENDS_ON_MEMORY(this, node.label));
@@ -73,11 +72,9 @@ export default {
       this.hideMenu();
     },
 
-    renderMenu(event, data, node, self) {
+    renderMenu(event, data) {
       this.menuTarget = data.name;
-      console.log(this.menuTarget);
       var _isFolder = isFolder(data);
-      // console.log(_isFolder)
 
       if (_isFolder) {
         this.menu = menu["folder"];
@@ -106,12 +103,8 @@ export default {
           }
         }).then(({ result, value }) => {
           if (result) {
-            // this.$toast.message('文件名' + value);
-            // let newName = this.menuTarget.split('/').slice(0,-2).push(value).join('/');
-            // console.log(newName);
             command = emp.rename(this.menuTarget, value);
             this.$send(this.SIGNAL_SEND_COMMAND(this, command));
-          } else {
           }
         });
       } else if (code === "newFile") {
@@ -127,7 +120,6 @@ export default {
             // this.$toast.message('文件名' + value);
             command = emp.newFile(`${this.menuTarget}/${value}`);
             this.$send(this.SIGNAL_SEND_COMMAND(this, command));
-          } else {
           }
         });
       } else if (code === "refresh") {
@@ -145,7 +137,6 @@ export default {
             // this.$toast.message('文件名' + value);
             command = emp.newFolder(`${this.menuTarget}/${value}`);
             this.$send(this.SIGNAL_SEND_COMMAND(this, command));
-          } else {
           }
         });
       } else if (code === "deleteFolder")
@@ -159,7 +150,7 @@ export default {
       hideContentMenu(this.$refs["contextmenu"]);
     },
 
-    renderContent(h, { node, data, store }) {
+    renderContent(h, { node, data }) {
       if (data.children) {
         if (node.label === "/") {
           return (

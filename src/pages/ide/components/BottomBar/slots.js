@@ -10,12 +10,10 @@ var slots = {
     },
 
     slotShowMemoryStatus(kwargs){
-      // console.log(kwargs);
       this.memoryStatus = kwargs.data;
     },
 
     slotShowSysInfo(kwargs){
-      // console.log(kwargs);
       this.sysInfo = kwargs.data;
     }
 

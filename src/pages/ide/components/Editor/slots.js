@@ -20,7 +20,7 @@ var slots = {
 
     slotApplyFontSize(kwargs) {
       let fontSize = parseInt(kwargs.fontSize);
-      if (fontSize != NaN)
+      if (!isNaN(fontSize))
         this.fontSize = fontSize
     },
 

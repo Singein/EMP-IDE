@@ -53,7 +53,6 @@ var signals = {
     },
 
     SIGNAL_UNLOCK(sender, receiver = 'parent', slot = 'slotUnlock') {
-      // console.log("in SIGNAL_UNLOCK");
       return {
         event: "unlock",
         sender: sender,
