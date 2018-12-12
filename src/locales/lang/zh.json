@@ -1,4 +1,14 @@
 {
-    "freeMemory": "剩余内存",
-    "allocMemory": "已消耗内存"
+    "placeholder": {},
+    "BottomBar": {},
+    "Cli": {},
+    "Editor": {},
+    "Finder": {},
+    "FolderTree": {},
+    "Pypi": {},
+    "Setting": {},
+    "SideBar": {},
+    "SplitPane": {},
+    "Uploader": {},
+    "README":"     _____  __  __  ____    ___  ____   _____\n    | ____||  \\/  ||  _ \\  |_ _||  _ \\ | ____|\n    |  _|  | |\\/| || |_) |  | | | | | ||  _|\n    | |___ | |  | ||  __/   | | | |_| || |___\n    |_____||_|  |_||_|     |___||____/ |_____|\n\n    Easy MicroPython (EMP) 是一个由1Z实验室主导的开源项目，旨在为广大的\n    MicroPython爱好者提供更加快速和高效的开发体验。\n\n    GitHub:  https://github.com/Fuermohao/EMP-IDE\n    主页：    http://www.1zlab.com\n    文档：    http://www.1zlab.com/wiki/micropython-esp32/emp-ide-userguide/\n\n    在开始使用之前，你需要在你的MicroPython设备上安装 emp-1zlab 模块。请按\n    照如下的步骤进行：\n    \n    import upip\n    upip.install('emp-1zlab')\n\n    import emp_boot\n    emp_boot.set_boot_mode()\n\n    输入2，回车。这将重新覆盖你的 boot.py 文件，之后你的设备将会进行一次重启。\n    重启之后按照命令行中的提示来使你的设备连接至WiFi网络。在这之后，webrepl将会\n    自动开启，默认的连接密码为'1zlab', 你可以在 webrepl.pass 文件中修改它。"
 }

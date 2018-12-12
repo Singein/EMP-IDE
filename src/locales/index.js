@@ -52,5 +52,5 @@ export const setup = lang => {
   i18n.locale = lang
 }
 
-setup()
+// setup()
 export default i18n

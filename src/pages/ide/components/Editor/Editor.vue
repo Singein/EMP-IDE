@@ -6,12 +6,19 @@
           <mu-button v-if="openedFile" icon color="white" @click="saveFile">
             <mu-icon value="save"></mu-icon>
           </mu-button>
-          <p class="editor-tabs-title"><strong>{{title}}</strong></p>
+          <p class="editor-tabs-title">
+            <strong>{{title}}</strong>
+          </p>
         </mu-flex>
-        <mu-flex justify-content="end" align-items="center" class="editor-tabs-flex">
-        </mu-flex>
+        <mu-flex justify-content="end" align-items="center" class="editor-tabs-flex"></mu-flex>
       </mu-flex>
-      <monaco-editor ref="editor" class="monaco-editor" v-model="code" :font-size="fontSize" :sync-input="true"></monaco-editor>
+      <monaco-editor
+        ref="editor"
+        class="monaco-editor"
+        v-model="code"
+        :font-size="fontSize"
+        :sync-input="true"
+      ></monaco-editor>
     </mu-flex>
   </div>
 </template>
@@ -19,7 +26,7 @@
 
 <script>
 // this.editor.updateOptions({readOnly: val})
-import readme from "../../readme.js";
+// import readme from "../../readme.js";
 import MonacoEditor from "./MonacoEditor.vue";
 import signals from "./signals.js";
 import slots from "./slots.js";
@@ -32,7 +39,7 @@ export default {
   },
   data() {
     return {
-      code: readme,
+      code: this.$t("README"),
       openedFile: "",
       fontSize: 16
     };
