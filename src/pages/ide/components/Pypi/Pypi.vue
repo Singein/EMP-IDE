@@ -7,7 +7,18 @@
                 emp-1zlab 模块是专门用来完成和empide进行交互的,,,,,
             </mu-card-text> -->
             <mu-card-actions>
-                <mu-button flat @click="pipInstall">下载/更新</mu-button>
+                <mu-button flat @click="pipInstall('emp-1zlab')">下载/更新</mu-button>
+            </mu-card-actions>
+        </mu-card>
+
+        <mu-card style="width: 100%;min-width:300px;margin: 0 auto;">
+            <mu-card-header title="mpython" sub-title="掌控宝">
+            </mu-card-header>
+            <!-- <mu-card-text>
+                emp-1zlab 模块是专门用来完成和empide进行交互的,,,,,
+            </mu-card-text> -->
+            <mu-card-actions>
+                <mu-button flat @click="pipInstall('mpython')">下载/更新</mu-button>
             </mu-card-actions>
         </mu-card>
     </div>
@@ -31,8 +42,8 @@ export default {
   },
 
   methods: {
-      pipInstall(){
-          this.$send(this.SIGNAL_INSTALL(this,'emp-1zlab'));
+      pipInstall(pkg){
+          this.$send(this.SIGNAL_INSTALL(this, pkg));
       }
   }
 };
