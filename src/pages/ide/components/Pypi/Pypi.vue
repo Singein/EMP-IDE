@@ -11,7 +11,7 @@
     </mu-card>
 
     <mu-card style="width: 100%;min-width:300px;margin: 6px auto;">
-      <mu-card-header title="mpython" sub-title="掌控宝"></mu-card-header>
+      <mu-card-header title="mpython" sub-title="掌控板"></mu-card-header>
       <!-- <mu-card-text>
                 emp-1zlab 模块是专门用来完成和empide进行交互的,,,,,
       </mu-card-text>-->
