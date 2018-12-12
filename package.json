@@ -20,6 +20,7 @@
     "v-contextmenu": "^2.8.0",
     "vue": "^2.5.17",
     "vue-cookie": "^1.1.4",
+    "vue-i18n": "^8.4.0",
     "vue-router": "^3.0.1",
     "vue-splitpane": "^1.0.2",
     "xterm": "^3.8.0"

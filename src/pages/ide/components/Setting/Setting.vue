@@ -1,8 +1,14 @@
 <template>
   <div>
-    <mu-dialog title="EMP IDE configs" width="400" max-width="80%" :esc-press-close="false" :overlay-close="false" :open.sync="show">
-
-      <mu-flex direction='column'>
+    <mu-dialog
+      title="EMP IDE configs"
+      width="400"
+      max-width="80%"
+      :esc-press-close="false"
+      :overlay-close="false"
+      :open.sync="show"
+    >
+      <mu-flex direction="column">
         <!-- <mu-text-field label="Url"
           color="primary"
           v-model="url"
@@ -14,17 +20,14 @@
           v-model="passwd"
           full-width
           placeholder="password"
-          type="password"></mu-text-field> -->
-
+        type="password"></mu-text-field>-->
         <mu-text-field label="Editor fontsize" color="primary" v-model="fontSize" full-width></mu-text-field>
 
         <mu-text-field label="Memory limit" color="primary" full-width disabled></mu-text-field>
-
       </mu-flex>
 
       <mu-button slot="actions" flat color="primary" @click="apply">Apply</mu-button>
       <mu-button slot="actions" flat color="primary" @click="esc">ESC</mu-button>
-
     </mu-dialog>
   </div>
 </template>
