@@ -1,27 +1,25 @@
 <template>
-    <div style="padding:12px;background:#252526;height:100%">
-        <mu-card style="width: 100%;min-width:300px;margin: 0 auto;">
-            <mu-card-header title="EMP" sub-title="make things easy on micropython.">
-            </mu-card-header>
-            <!-- <mu-card-text>
+  <div style="padding:12px;background:#252526;height:100%">
+    <mu-card style="width: 100%;min-width:300px;margin: 6px auto;">
+      <mu-card-header title="EMP" sub-title="make things easy on micropython."></mu-card-header>
+      <!-- <mu-card-text>
                 emp-1zlab 模块是专门用来完成和empide进行交互的,,,,,
-            </mu-card-text> -->
-            <mu-card-actions>
-                <mu-button flat @click="pipInstall('emp-1zlab')">下载/更新</mu-button>
-            </mu-card-actions>
-        </mu-card>
+      </mu-card-text>-->
+      <mu-card-actions>
+        <mu-button flat @click="pipInstall('emp-1zlab')">下载/更新</mu-button>
+      </mu-card-actions>
+    </mu-card>
 
-        <mu-card style="width: 100%;min-width:300px;margin: 0 auto;">
-            <mu-card-header title="mpython" sub-title="掌控宝">
-            </mu-card-header>
-            <!-- <mu-card-text>
+    <mu-card style="width: 100%;min-width:300px;margin: 6px auto;">
+      <mu-card-header title="mpython" sub-title="掌控宝"></mu-card-header>
+      <!-- <mu-card-text>
                 emp-1zlab 模块是专门用来完成和empide进行交互的,,,,,
-            </mu-card-text> -->
-            <mu-card-actions>
-                <mu-button flat @click="pipInstall('mpython')">下载/更新</mu-button>
-            </mu-card-actions>
-        </mu-card>
-    </div>
+      </mu-card-text>-->
+      <mu-card-actions>
+        <mu-button flat @click="pipInstall('mpython')">下载/更新</mu-button>
+      </mu-card-actions>
+    </mu-card>
+  </div>
 </template>
 
 
@@ -42,9 +40,9 @@ export default {
   },
 
   methods: {
-      pipInstall(pkg){
-          this.$send(this.SIGNAL_INSTALL(this, pkg));
-      }
+    pipInstall(pkg) {
+      this.$send(this.SIGNAL_INSTALL(this, pkg));
+    }
   }
 };
 </script>
