@@ -16,6 +16,9 @@
           full-width
         ></mu-text-field>
         <mu-text-field :label="$t('Settings.MemoryLimit')" color="primary" full-width disabled></mu-text-field>
+        <mu-select label="Normal" v-model="$i18n.locale" full-width>
+          <mu-option v-for="option in options" :key="option" :label="option" :value="option"></mu-option>
+        </mu-select>
       </mu-flex>
 
       <mu-button slot="actions" flat color="primary" @click="apply">{{ $t('Action.Apply') }}</mu-button>
@@ -37,7 +40,8 @@ export default {
     return {
       fontSize: 16,
       buttonText: "connect",
-      webSocketStatus: false
+      webSocketStatus: false,
+      options: ["en-US", "zh-CN"]
     };
   },
   mounted: function() {
@@ -65,6 +69,9 @@ export default {
 
     setCookies() {
       this.$cookie.set("fontSize", this.fontSize, {
+        expires: "1Y"
+      });
+      this.$cookie.set("lang", this.$i18n.locale, {
         expires: "1Y"
       });
     }

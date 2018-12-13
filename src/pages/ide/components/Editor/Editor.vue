@@ -39,7 +39,7 @@ export default {
   },
   data() {
     return {
-      code: this.$t("README"),
+      code: "",
       openedFile: "",
       fontSize: 16
     };
@@ -49,6 +49,7 @@ export default {
       this.$send(this.SIGNAL_SAVE_FILE(this));
     },
     init() {
+      this.code = this.$t("README");
       this.$refs["editor"].editor.updateOptions({
         readOnly: true
       });

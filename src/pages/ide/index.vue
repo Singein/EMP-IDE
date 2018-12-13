@@ -115,7 +115,9 @@ export default {
   },
 
   beforeDestroy() {},
-  mounted() {},
+  mounted() {
+    this.$i18n.locale = this.$cookie.get('lang')
+  },
   methods: {
     handleResize() {
       this.$send(this.SIGNAL_RESIZE_TERM(this));

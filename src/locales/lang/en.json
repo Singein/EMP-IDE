@@ -11,8 +11,8 @@
         "Search": "Search",
         "Modules": "Modules",
         "Docs": "Documents",
-        "RunScripts": "Run Scripts",
-        "MemoryClean": "MemoryClean",
+        "RunScript": "Run Scripts",
+        "MemoryClean": "Memory Clean",
         "Connect": "Connect",
         "Settings": "Settings"
     },

@@ -3,7 +3,7 @@ import VueI18n from 'vue-i18n'
 
 Vue.use(VueI18n)
 
-const DEFAULT_LANG = 'zh-CN'
+const DEFAULT_LANG = 'en-US'
 const LOCALE_KEY = 'localeLanguage'
 
 const locales = {
