@@ -116,7 +116,7 @@ export default {
 
   beforeDestroy() {},
   mounted() {
-    this.$i18n.locale = this.$cookie.get('lang')
+    this.$i18n.locale = this.$cookie.get("lang");
   },
   methods: {
     handleResize() {

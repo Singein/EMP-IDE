@@ -42,7 +42,6 @@ import listener from "../../plugins/mixinEventsListener.js";
 import onEvent from "../../plugins/mixinOnEvents.js";
 import * as emp from "../../emp.js";
 import {
-  menu,
   isFolder,
   showContentMenu,
   hideContentMenu
@@ -96,8 +95,6 @@ export default {
       var _isFolder = isFolder(data);
 
       if (_isFolder) {
-        // this.menu = menu["folder"];
-        // console.log(this.$t("Menu.file"));
         this.menu = this.$t("FolderTree.Menu.Folder");
       }
       // choose the menu
