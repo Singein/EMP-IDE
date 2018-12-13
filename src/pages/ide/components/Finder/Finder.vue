@@ -1,7 +1,13 @@
 <template>
   <div style="padding:12px;background:#252526;height:100%;width:100%">
     <div>
-      <mu-auto-complete @select="onSelect" full-width :data="files" label="Type to search" v-model="filename"></mu-auto-complete>
+      <mu-auto-complete
+        @select="onSelect"
+        full-width
+        :data="files"
+        :label="$t('Finder.Label')"
+        v-model="filename"
+      ></mu-auto-complete>
     </div>
   </div>
 </template>

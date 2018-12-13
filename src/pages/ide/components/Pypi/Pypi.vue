@@ -6,7 +6,7 @@
                 emp-1zlab 模块是专门用来完成和empide进行交互的,,,,,
       </mu-card-text>-->
       <mu-card-actions>
-        <mu-button flat @click="pipInstall('emp-1zlab')">下载/更新</mu-button>
+        <mu-button flat @click="pipInstall('emp-1zlab')">{{$t('Pypi.Download')}}</mu-button>
       </mu-card-actions>
     </mu-card>
 
@@ -16,7 +16,7 @@
                 emp-1zlab 模块是专门用来完成和empide进行交互的,,,,,
       </mu-card-text>-->
       <mu-card-actions>
-        <mu-button flat @click="pipInstall('mpython')">下载/更新</mu-button>
+        <mu-button flat @click="pipInstall('mpython')">{{$t('Pypi.Download')}}</mu-button>
       </mu-card-actions>
     </mu-card>
   </div>

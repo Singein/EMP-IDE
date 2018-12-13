@@ -1,21 +1,16 @@
 <template>
   <div>
-    <mu-dialog title="Connect to your device" width="400" max-width="80%" :esc-press-close="true" :overlay-close="false" :open.sync="show">
+    <mu-dialog :title="$t('Cli.DialogTitle')" width="400" max-width="80%" :esc-press-close="true" :overlay-close="false" :open.sync="show">
 
       <mu-flex direction='column'>
-        <!-- <mu-text-field label="Url"
-          color="primary"
-          v-model="url"
-          full-width
-          placeholder="ws://192.168.xxx.xxx:8266/"></mu-text-field> -->
+       
+        <mu-auto-complete :data="espIP" :label="$t('Cli.URL')" :max-search-results="5" placeholder="ws://192.168.xxx.xxx:8266/" full-width v-model="url" open-on-focus></mu-auto-complete>
 
-        <mu-auto-complete :data="espIP" label="url" :max-search-results="5" placeholder="ws://192.168.xxx.xxx:8266/" full-width v-model="url" open-on-focus></mu-auto-complete>
-
-        <mu-text-field label="Password" color="primary" v-model="passwd" full-width placeholder="password" type="password"></mu-text-field>
+        <mu-text-field :label="$t('Cli.Password')" color="primary" v-model="passwd" full-width placeholder="password" type="password"></mu-text-field>
       </mu-flex>
 
       <mu-button slot="actions" flat color="primary" @click="connect">{{buttonText}}</mu-button>
-      <mu-button slot="actions" flat color="primary" @click="esc">ESC</mu-button>
+      <mu-button slot="actions" flat color="primary" @click="esc">{{ $t('Action.Esc') }}</mu-button>
     </mu-dialog>
   </div>
 </template>
@@ -51,9 +46,9 @@ export default {
   computed: {
     buttonText: function() {
       if (!this.wsStatus) {
-        return "connect";
+        return this.$t('Cli.Connect');
       } else {
-        return "disconnect";
+        return this.$t('Cli.Disconnect');
       }
     }
   },

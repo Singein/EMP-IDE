@@ -1,32 +1,55 @@
  <template>
-    <mu-flex direction='column' v-resize="handleResize">
-        <mu-linear-progress v-if="tasklock" color="secondary" class="progress-bar"></mu-linear-progress>
-        <mu-flex class="bg" direction='row' justify-content="start">
-            <side-bar :listener="signals" @events="$connect"></side-bar>
-            <split-pane ref="splitVertical" @resize="handleResize" :min-percent='0' :default-percent='0' split="vertical" class="pane-layout">
-                <template slot="paneL" class="left-pane">
-                    <folder-tree v-show="showFolderTree" ref="folderTree" :listener="signals" @events="$connect"></folder-tree>
-                    <uploader ref="uploader" v-show="showUploader" :listener="signals" @events="$connect"></uploader>
-                    <finder ref="finder" v-show="showFinder" :listener="signals" @events="$connect"></finder>
-                    <pypi ref="pypi" v-show="showPypi" :listener="signals" @events="$connect"></pypi>
-                </template>
+  <mu-flex direction="column" v-resize="handleResize">
+    <mu-linear-progress v-if="tasklock" color="secondary" class="progress-bar"></mu-linear-progress>
+    <mu-flex class="bg" direction="row" justify-content="start">
+      <side-bar :listener="signals" @events="$connect"></side-bar>
+      <split-pane
+        ref="splitVertical"
+        @resize="handleResize"
+        :min-percent="0"
+        :default-percent="0"
+        split="vertical"
+        class="pane-layout"
+      >
+        <template slot="paneL" class="left-pane">
+          <folder-tree
+            v-show="showFolderTree"
+            ref="folderTree"
+            :listener="signals"
+            @events="$connect"
+          ></folder-tree>
+          <uploader ref="uploader" v-show="showUploader" :listener="signals" @events="$connect"></uploader>
+          <finder ref="finder" v-show="showFinder" :listener="signals" @events="$connect"></finder>
+          <pypi ref="pypi" v-show="showPypi" :listener="signals" @events="$connect"></pypi>
+        </template>
 
-                <template slot="paneR">
-                    <split-pane ref="splitHorizontal" @resize="handleResize" split="horizontal" :min-percent='0' :default-percent='100'>
-                        <template slot="paneL">
-                            <editor ref='editor' :listener="signals" @events="$connect" class="editor"></editor>
-                        </template>
-                        <template slot="paneR" >
-                            <cli ref='cli' :tasklock="tasklock" :listener="signals" @events="$connect" class="terminal-container" ></cli>
-                        </template>
-                    </split-pane>
-                </template>
-
-            </split-pane>
-        </mu-flex>
-        <setting ref='setting' :listener="signals" @events="$connect" :show="showSettings"></setting>
-        <bottom-bar ref='bottomBar' :listener="signals" @events="$connect"></bottom-bar>
+        <template slot="paneR">
+          <split-pane
+            ref="splitHorizontal"
+            @resize="handleResize"
+            split="horizontal"
+            :min-percent="0"
+            :default-percent="100"
+          >
+            <template slot="paneL">
+              <editor ref="editor" :listener="signals" @events="$connect" class="editor"></editor>
+            </template>
+            <template slot="paneR">
+              <cli
+                ref="cli"
+                :tasklock="tasklock"
+                :listener="signals"
+                @events="$connect"
+                class="terminal-container"
+              ></cli>
+            </template>
+          </split-pane>
+        </template>
+      </split-pane>
     </mu-flex>
+    <setting ref="setting" :listener="signals" @events="$connect" :show="showSettings"></setting>
+    <bottom-bar ref="bottomBar" :listener="signals" @events="$connect"></bottom-bar>
+  </mu-flex>
 </template>
 
 <script>

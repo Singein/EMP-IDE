@@ -19,12 +19,14 @@
       <mu-flex class="ide-bottom-bar-right"
         justify-content="end"
         align-items="center">
-        <mu-button small
-          icon
-          color="white"
-          @click="toggleSettings">
-          <mu-icon value="settings"></mu-icon>
-        </mu-button>
+        <el-tooltip class="item" effect="dark" :content="$t('placeholder.Settings')" open-delay="2000" placement="left-start">
+          <mu-button small
+            icon
+            color="white"
+            @click="toggleSettings">
+            <mu-icon value="settings"></mu-icon>
+          </mu-button>
+        </el-tooltip>
       </mu-flex>
 
     </mu-flex>

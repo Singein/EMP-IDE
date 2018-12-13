@@ -1,7 +1,7 @@
 <template>
   <div>
     <mu-dialog
-      title="EMP IDE configs"
+      :title="$t('Settings.Title')"
       width="400"
       max-width="80%"
       :esc-press-close="false"
@@ -9,25 +9,17 @@
       :open.sync="show"
     >
       <mu-flex direction="column">
-        <!-- <mu-text-field label="Url"
+        <mu-text-field
+          :label="$t('Settings.FontSize')"
           color="primary"
-          v-model="url"
+          v-model="fontSize"
           full-width
-          placeholder="ws://192.168.xxx.xxx:8266/"></mu-text-field>
-
-        <mu-text-field label="Password"
-          color="primary"
-          v-model="passwd"
-          full-width
-          placeholder="password"
-        type="password"></mu-text-field>-->
-        <mu-text-field label="Editor fontsize" color="primary" v-model="fontSize" full-width></mu-text-field>
-
-        <mu-text-field label="Memory limit" color="primary" full-width disabled></mu-text-field>
+        ></mu-text-field>
+        <mu-text-field :label="$t('Settings.MemoryLimit')" color="primary" full-width disabled></mu-text-field>
       </mu-flex>
 
-      <mu-button slot="actions" flat color="primary" @click="apply">Apply</mu-button>
-      <mu-button slot="actions" flat color="primary" @click="esc">ESC</mu-button>
+      <mu-button slot="actions" flat color="primary" @click="apply">{{ $t('Action.Apply') }}</mu-button>
+      <mu-button slot="actions" flat color="primary" @click="esc">{{ $t('Action.Esc') }}</mu-button>
     </mu-dialog>
   </div>
 </template>

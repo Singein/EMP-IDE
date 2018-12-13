@@ -4,45 +4,61 @@
             <mu-flex justify-content="start" align-items="center" direction="column" style="height:100%">
 
                 <mu-flex justify-content="start" align-items="center" direction="column" style="height:50%">
-                    <div :style="changeStyle(0)">
-                        <mu-button class="icon-button" icon color="grey" :ripple="false" @click="changePage(0)">
-                            <mu-icon size="36" value="code"></mu-icon>
-                        </mu-button>
-                    </div>
-                    <div :style="changeStyle(1)">
-                        <mu-button class="icon-button" icon color="grey" :ripple="false" @click="changePage(1)">
-                            <mu-icon size="36" value="file_upload"></mu-icon>
-                        </mu-button>
-                    </div>
-                    <div :style="changeStyle(2)">
-                        <mu-button class="icon-button" icon color="grey" :ripple="false" @click="changePage(2)">
-                            <mu-icon size="36" value="search"></mu-icon>
-                        </mu-button>
-                    </div>
-                    <div :style="changeStyle(3)">
-                        <mu-button class="icon-button" icon color="grey" :ripple="false" @click="changePage(3)">
-                            <mu-icon size="36" value="extension"></mu-icon>
-                        </mu-button>
-                    </div>
-                    <div>
-                        <a href="http://www.1zlab.com/doc/emp" target="_blank">
-                            <mu-button class="icon-button" icon color="grey" :ripple="false">
-                                <mu-icon size="36" value="book"></mu-icon>
+                    <el-tooltip class="item" effect="dark" :content="$t('placeholder.Editor')" open-delay="2000" placement="right">
+                        <div :style="changeStyle(0)">
+                            <mu-button class="icon-button" icon color="grey" :ripple="false" @click="changePage(0)">
+                                <mu-icon size="36" value="code"></mu-icon>
                             </mu-button>
-                        </a>
-                    </div>
+                        </div>
+                    </el-tooltip>
+                    <el-tooltip class="item" effect="dark" :content="$t('placeholder.Uploader')" open-delay="2000" placement="right">
+                        <div :style="changeStyle(1)">
+                            <mu-button class="icon-button" icon color="grey" :ripple="false" @click="changePage(1)">
+                                <mu-icon size="36" value="file_upload"></mu-icon>
+                            </mu-button>
+                        </div>
+                    </el-tooltip>
+                    <el-tooltip class="item" effect="dark" :content="$t('placeholder.Search')" open-delay="2000" placement="right">
+                        <div :style="changeStyle(2)">
+                            <mu-button class="icon-button" icon color="grey" :ripple="false" @click="changePage(2)">
+                                <mu-icon size="36" value="search"></mu-icon>
+                            </mu-button>
+                        </div>
+                    </el-tooltip>
+                    <el-tooltip class="item" effect="dark" :content="$t('placeholder.Modules')" open-delay="2000" placement="right">
+                        <div :style="changeStyle(3)">
+                            <mu-button class="icon-button" icon color="grey" :ripple="false" @click="changePage(3)">
+                                <mu-icon size="36" value="extension"></mu-icon>
+                            </mu-button>
+                        </div>
+                    </el-tooltip>
+                    <el-tooltip class="item" effect="dark" :content="$t('placeholder.Docs')" open-delay="2000" placement="right">
+                        <div>
+                            <a href="http://www.1zlab.com/wiki/micropython-esp32/emp-ide-userguide/" target="_blank">
+                                <mu-button class="icon-button" icon color="grey" :ripple="false">
+                                    <mu-icon size="36" value="book"></mu-icon>
+                                </mu-button>
+                            </a>
+                        </div>
+                    </el-tooltip>
                 </mu-flex>
 
                 <mu-flex justify-content="end" align-items="center" direction="column" style="height:50%">
-                    <mu-button class="icon-button" icon color="green" @click="runScript">
-                        <mu-icon size="36" value="play_arrow"></mu-icon>
-                    </mu-button>
-                    <mu-button class="icon-button" icon color="green" @click="gcCollect">
-                        <mu-icon size="36" value="memory"></mu-icon>
-                    </mu-button>
-                    <mu-button class="icon-button" icon color="yellow" @click="startConnect">
-                        <mu-icon size="36" value="power"></mu-icon>
-                    </mu-button>
+                    <el-tooltip class="item" effect="dark" :content="$t('placeholder.RunScript')" open-delay="2000" placement="right">
+                        <mu-button class="icon-button" icon color="green" @click="runScript">
+                            <mu-icon size="36" value="play_arrow"></mu-icon>
+                        </mu-button>
+                    </el-tooltip>
+                    <el-tooltip class="item" effect="dark" :content="$t('placeholder.MemoryClean')" open-delay="2000" placement="right">
+                        <mu-button class="icon-button" icon color="green" @click="gcCollect">
+                            <mu-icon size="36" value="memory"></mu-icon>
+                        </mu-button>
+                    </el-tooltip>
+                    <el-tooltip class="item" effect="dark" :content="$t('placeholder.Connect')" open-delay="2000" placement="right">
+                        <mu-button class="icon-button" icon color="yellow" @click="startConnect">
+                            <mu-icon size="36" value="power"></mu-icon>
+                        </mu-button>
+                    </el-tooltip>
                 </mu-flex>
 
             </mu-flex>

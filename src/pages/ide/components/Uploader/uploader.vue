@@ -1,16 +1,25 @@
 <template>
   <div style="background: #252526 !important;height:100%">
     <mu-flex justify-content="center" align-items="center">
-
-      <el-upload style="backgroun: #212121" ref="eluploader" drag action="https://127.0.0.1/posts/" :auto-upload="false" :on-change="handleChange" multiple>
+      <el-upload
+        style="backgroun: #212121"
+        ref="eluploader"
+        drag
+        action="https://127.0.0.1/posts/"
+        :auto-upload="false"
+        :on-change="handleChange"
+        multiple
+      >
         <i class="el-icon-upload"></i>
-        <div class="el-upload__text">drag to here，or<em> click</em></div>
+        <div class="el-upload__text">
+          {{$t('Uploader.DragToHere')}}
+          <em>{{$t('Action.Click')}}</em>
+        </div>
 
         <div class="el-upload__tip" slot="tip">
-          <mu-button full-width color="primary" @click="send">Upload</mu-button>
+          <mu-button full-width color="primary" @click="send">{{$t('Uploader.Upload')}}</mu-button>
         </div>
       </el-upload>
-
     </mu-flex>
   </div>
 </template>
@@ -43,10 +52,9 @@ export default {
       let that = this;
       let f = file.raw;
       that.putFilename.push(f.name);
- 
+
       let reader = new FileReader();
       reader.onload = function(e) {
-  
         that.putFileData.push(new Uint8Array(e.target.result));
       };
       reader.readAsArrayBuffer(f);
@@ -61,7 +69,6 @@ export default {
         that.putFilename.push(f.name);
         let reader = new FileReader();
         reader.onload = function(e) {
-
           that.putFileData.push(new Uint8Array(e.target.result));
         };
         reader.readAsArrayBuffer(f);
