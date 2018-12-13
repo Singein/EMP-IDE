@@ -19,7 +19,7 @@
       <mu-flex class="ide-bottom-bar-right"
         justify-content="end"
         align-items="center">
-        <el-tooltip class="item" effect="dark" :content="$t('placeholder.Settings')" open-delay="2000" placement="left-start">
+        <el-tooltip class="item" effect="dark" :content="$t('placeholder.Settings')" :open-delay="2000" placement="left-start">
           <mu-button small
             icon
             color="white"
