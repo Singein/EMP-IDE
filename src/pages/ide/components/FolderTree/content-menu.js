@@ -1,25 +1,25 @@
 var menu = {
   'file': [{
-      text: 'Run 运行',
-      code: 'run'
-    },
-    {
-      isdivider: true
-    },
-    {
-      text: 'Rename 重命名',
-      code: 'rename'
-    },
-    {
-      isdivider: true
-    },
-    {
-      text: 'Delete 删除',
-      code: 'deleteFile'
-    },
-    {
-      isdivider: true
-    },
+    text: 'Run 运行',
+    code: 'run'
+  },
+  {
+    isdivider: true
+  },
+  {
+    text: 'Rename 重命名',
+    code: 'rename'
+  },
+  {
+    isdivider: true
+  },
+  {
+    text: 'Delete 删除',
+    code: 'deleteFile'
+  },
+  {
+    isdivider: true
+  },
     // {
     //   text: 'test',
     //   code: 'test',

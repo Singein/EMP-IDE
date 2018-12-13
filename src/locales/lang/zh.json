@@ -28,7 +28,68 @@
     "Finder": {
         "Label": "输入以搜索"
     },
-    "FolderTree": {},
+    "FolderTree": {
+      
+        "Menu": {
+            "File": [
+                {
+                    "text": "运行",
+                    "code": "run"
+                },
+                {
+                    "isdivider": true
+                },
+                {
+                    "text": "重命名",
+                    "code": "rename"
+                },
+                {
+                    "isdivider": true
+                },
+                {
+                    "text": "删除",
+                    "code": "deleteFile"
+                },
+                {
+                    "isdivider": true
+                }
+            ],
+            "Folder": [
+                {
+                    "text": "刷新",
+                    "code": "refresh"
+                },
+                {
+                    "isdivider": true
+                },
+                {
+                    "text": "重命名",
+                    "code": "rename"
+                },
+                {
+                    "isdivider": true
+                },
+                {
+                    "text": "新建文件",
+                    "code": "newFile"
+                },
+                {
+                    "isdivider": true
+                },
+                {
+                    "text": "新建文件夹",
+                    "code": "newFolder"
+                },
+                {
+                    "isdivider": true
+                },
+                {
+                    "text": "删除文件夹",
+                    "code": "deleteFolder"
+                }
+            ]
+        }
+    },
     "Pypi": {
         "Download": "下载/更新"
     },

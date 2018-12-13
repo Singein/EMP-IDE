@@ -28,7 +28,68 @@
     "Finder": {
         "Label": "Type to search"
     },
-    "FolderTree": {},
+    "FolderTree": {
+       
+        "Menu": {
+            "File": [
+                {
+                    "text": "Run",
+                    "code": "run"
+                },
+                {
+                    "isdivider": true
+                },
+                {
+                    "text": "Rename",
+                    "code": "rename"
+                },
+                {
+                    "isdivider": true
+                },
+                {
+                    "text": "Delete",
+                    "code": "deleteFile"
+                },
+                {
+                    "isdivider": true
+                }
+            ],
+            "Folder": [
+                {
+                    "text": "Refresh",
+                    "code": "refresh"
+                },
+                {
+                    "isdivider": true
+                },
+                {
+                    "text": "Rename",
+                    "code": "rename"
+                },
+                {
+                    "isdivider": true
+                },
+                {
+                    "text": "New File",
+                    "code": "newFile"
+                },
+                {
+                    "isdivider": true
+                },
+                {
+                    "text": "New Folder",
+                    "code": "newFolder"
+                },
+                {
+                    "isdivider": true
+                },
+                {
+                    "text": "Delete",
+                    "code": "deleteFolder"
+                }
+            ]
+        }
+    },
     "Pypi": {
         "Download": "Download/Update"
     },

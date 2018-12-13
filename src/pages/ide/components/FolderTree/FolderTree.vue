@@ -1,14 +1,33 @@
 <template>
   <div class="outer-container">
     <div class="inner-container">
-      <el-tree ref='tree' class="tree" node-key="id" :empty-text="''" :data="data" :props="defaultProps" :highlight-current="true" :render-content="renderContent" :default-expand-all="true" v-on:node-contextmenu="renderMenu" @node-click="nodeClicked">
-      </el-tree>
+      <el-tree
+        ref="tree"
+        class="tree"
+        node-key="id"
+        :empty-text="''"
+        :data="data"
+        :props="defaultProps"
+        :highlight-current="true"
+        :render-content="renderContent"
+        :default-expand-all="true"
+        v-on:node-contextmenu="renderMenu"
+        @node-click="nodeClicked"
+      ></el-tree>
     </div>
     <v-contextmenu ref="contextmenu" theme="default" style="width: 200px;">
       <template v-for="(node, index) in menu">
-        <v-contextmenu-item v-if="node.isdivider" :key="index" divider />
-        <v-contextmenu-submenu v-else-if="node.children && node.children.length > 0" :key="index" :title="node.text">
-          <v-contextmenu-item v-for="(subNode, index) in node.children" :key="index" @click="handleContentMenuClick(subNode)">{{subNode.text}}</v-contextmenu-item>
+        <v-contextmenu-item v-if="node.isdivider" :key="index" divider/>
+        <v-contextmenu-submenu
+          v-else-if="node.children && node.children.length > 0"
+          :key="index"
+          :title="node.text"
+        >
+          <v-contextmenu-item
+            v-for="(subNode, index) in node.children"
+            :key="index"
+            @click="handleContentMenuClick(subNode)"
+          >{{subNode.text}}</v-contextmenu-item>
         </v-contextmenu-submenu>
         <v-contextmenu-item v-else :key="index" @click="handleContentMenuClick(node)">{{node.text}}</v-contextmenu-item>
       </template>
@@ -77,10 +96,12 @@ export default {
       var _isFolder = isFolder(data);
 
       if (_isFolder) {
-        this.menu = menu["folder"];
+        // this.menu = menu["folder"];
+        // console.log(this.$t("Menu.file"));
+        this.menu = this.$t("FolderTree.Menu.Folder");
       }
       // choose the menu
-      else this.menu = menu["file"];
+      else this.menu = this.$t("FolderTree.Menu.File");
       showContentMenu(this.$refs["contextmenu"], event);
     },
 
