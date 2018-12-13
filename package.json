@@ -5,10 +5,12 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "commit": "git-cz"
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "commitizen": "^3.0.5",
     "element-ui": "^2.4.9",
     "lodash": "^4.17.11",
     "material-design-icons": "^3.0.1",
@@ -58,5 +60,10 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-conventional-changelog"
+    }
+  }
 }
