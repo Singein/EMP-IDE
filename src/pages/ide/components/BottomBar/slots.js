@@ -9,12 +9,15 @@ var slots = {
       this.connected = false;
     },
 
-    slotShowMemoryStatus(kwargs){
+    slotShowMemoryStatus(kwargs) {
       this.memoryStatus = kwargs.data;
     },
 
-    slotShowSysInfo(kwargs){
+    slotShowSysInfo(kwargs) {
       this.sysInfo = kwargs.data;
+      if (kwargs.data.platform === 'esp8266') {
+        this.$send(this.SIGNAL_ADJUST_MEMLIMIT(this))
+      }
     }
 
   }

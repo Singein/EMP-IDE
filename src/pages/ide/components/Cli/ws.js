@@ -8,7 +8,8 @@ var handleConnection = {
       putFilename: null,
       putFileData: null,
       getFilename: null,
-      getFileData: null
+      getFileData: null,
+      chunks: '',
     }
   },
 
@@ -23,7 +24,7 @@ var handleConnection = {
       this.ws.send(emp.deviceInfo());
       this.ws.send(emp.memoryStatus());
       this.ws.send(emp.tree());
-      
+
       this.$toast.success("WebREPL connected!");
       if (this.ws.readyState === 1) {
         this.$send(this.SIGNAL_REPORT_CONNECTED(this));
@@ -131,6 +132,7 @@ var handleConnection = {
       }
 
       try {
+
         this.recData = JSON.parse(event.data);
         if (this.recData.func === emp.funcName(emp.tree)) {
           this.$send(this.SIGNAL_UPDATE_TREE(this, [this.recData.data]));
@@ -141,7 +143,7 @@ var handleConnection = {
           this.$send(this.SIGNAL_SHOW_CODES_PMAX(this, this.recData.data));
         if (this.recData.func === emp.funcName(emp.memoryAnalysing))
           this.$send(this.SIGNAL_DEPENDS_ON_MEMORY_TO_GET_FILE(this, this.recData.data));
-        if (this.recData.func === emp.funcName(emp.deviceInfo)) 
+        if (this.recData.func === emp.funcName(emp.deviceInfo))
           this.$send(this.SIGNAL_SHOW_SYS_INFO(this, this.recData.data));
         if (this.recData.func === emp.funcName(emp.memoryStatus))
           this.$send(this.SIGNAL_SHOW_MEMORY_STATUS(this, this.recData.data));

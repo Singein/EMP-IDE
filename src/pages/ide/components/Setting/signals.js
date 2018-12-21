@@ -44,7 +44,19 @@ var signals = {
           fontSize: this.fontSize
         }
       }
-    }
+    },
+
+    // SIGNAL_ADJUST_MEMLIMIT(sender, receiver = 'cli', slot = 'slotAdjustMemLimit'){
+    //   return{
+    //     event: "adjustMemLimit",
+    //     sender: sender,
+    //     receiver: receiver,
+    //     slot: slot,
+    //     kwargs: {
+    //       memLimit: this.fontSize
+    //     }
+    //   }
+    // }
 
   }
 }

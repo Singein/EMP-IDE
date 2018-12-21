@@ -141,13 +141,17 @@ var slots = {
 
       var fsize = kwargs.fsize;
 
-      if (fsize < 0.85 * mf) {
+      if (fsize < this.memLimit * mf) {
         // this.ws.send('get_code(\'' + kwargs.filename + '\')\r');
         this.ws.send(emp.getCode(kwargs.filename));
       } else {
         this.slotGetFile(kwargs);
       }
     },
+
+    slotAdjustMemLimit(kwargs){
+      this.memLimit = kwargs.memLimit
+    }
 
   }
 }

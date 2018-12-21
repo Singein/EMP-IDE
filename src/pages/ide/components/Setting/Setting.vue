@@ -39,6 +39,7 @@ export default {
   data() {
     return {
       fontSize: 16,
+      // memLimit: 0.8,
       buttonText: "connect",
       webSocketStatus: false,
       options: ["en-US", "zh-CN"]

@@ -1,6 +1,12 @@
 <template>
   <div ref="terminal" class="term cli-scroll-bar">
-    <config :ws-status="wsConnected" :show="showConfig" @hide="slotToggleConfig" @connect="slotConnectToDevice" @disconnect="slotDisconnect"></config>
+    <config
+      :ws-status="wsConnected"
+      :show="showConfig"
+      @hide="slotToggleConfig"
+      @connect="slotConnectToDevice"
+      @disconnect="slotDisconnect"
+    ></config>
   </div>
 </template>
 
@@ -33,6 +39,7 @@ export default {
       recData: null,
       passwd: null,
       showConfig: false,
+      memLimit: 0.85,
       termOptions: {
         rows: 15,
         fontSize: 18,
@@ -81,7 +88,7 @@ export default {
 .xterm-viewport::-webkit-scrollbar-thumb {
   /*滚动条里面小方块*/
   border-radius: 0px;
-  background: #424242 ;
+  background: #424242;
   /* background: blue; */
 }
 
