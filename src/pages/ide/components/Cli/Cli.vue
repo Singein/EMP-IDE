@@ -1,12 +1,11 @@
 <template>
-  <div ref="terminal" class="term cli-scroll-bar">
-    <config
+  <div class="term cli-scroll-bar"
+    ref="terminal">
+    <config :show="showConfig"
       :ws-status="wsConnected"
-      :show="showConfig"
-      @hide="slotToggleConfig"
       @connect="slotConnectToDevice"
       @disconnect="slotDisconnect"
-    ></config>
+      @hide="slotToggleConfig"></config>
   </div>
 </template>
 

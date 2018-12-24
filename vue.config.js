@@ -14,7 +14,8 @@ module.exports = {
     ],
     externals: {
       'vue': 'Vue',
-      'muse-ui': 'MuseUI'
+      'muse-ui': 'MuseUI',
+      'element-ui': 'ELEMENT'
     }
   }
 }

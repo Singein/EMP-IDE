@@ -1,3 +1,7 @@
+# 注意：本仓库已转移至[EasyMicroPython/EMP-IDE](https://github.com/Easy-MicroPython/EMP-IDE)
+
+## 这里的内容将不会再更新！请移步上面的链接！
+------
 # EMP IDE
 
 EasyMicroPython(EMP) IDE 是由1Z实验室引导的一个开源项目，旨在为MicroPython社区提供更高效便捷的开发体验，你可以通过访问我们的网址：[emp.1zlab.com](emp.1zlab.com) 来使用EMP IDE，虽然它在线托管，但与您的主板的所有交互仍然在您自己的网络中进行。目前支持最新版本的Firefox和Chrome。

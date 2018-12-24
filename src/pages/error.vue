@@ -1,16 +1,14 @@
 <template>
-  <div>
-    ERROR: {{errorCode}}
-  </div>
+  <div>ERROR: {{errorCode}}</div>
 </template>
 
 <script>
 export default {
-  name: 'error',
+  name: "error",
   computed: {
-    errorCode () {
-      return this.$route.meta.errorCode || '404'
+    errorCode() {
+      return this.$route.meta.errorCode || "404";
     }
   }
-}
+};
 </script>
